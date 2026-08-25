@@ -476,6 +476,8 @@ async function getInfo(url, type) {
   const args = [
     ...baseYtArgs(),
 
+    "-v",
+
     "--dump-single-json",
 
     "--skip-download",
