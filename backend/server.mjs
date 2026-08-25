@@ -362,7 +362,7 @@ function baseYtArgs() {
     "node",
 
     "--socket-timeout",
-    "30",
+    "10",
 
     "--extractor-args",
     `youtubepot-bgutilhttp:base_url=${
