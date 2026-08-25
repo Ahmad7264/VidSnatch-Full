@@ -958,14 +958,31 @@ app.post("/api/info", rateLimit(20), async (req, res) => {
     });
   }
 
+  const requestStart = Date.now();
+
+  console.log(`[api/info] START type=${type} url=${url}`);
+
   try {
+    const ytDlpStart = Date.now();
+
     await ensureYtDlp();
+
+    console.log(`[api/info] ensureYtDlp: ${Date.now() - ytDlpStart}ms`);
+
+    const infoStart = Date.now();
 
     const data = await getInfo(url, type);
 
+    console.log(`[api/info] getInfo: ${Date.now() - infoStart}ms`);
+
+    console.log(`[api/info] TOTAL: ${Date.now() - requestStart}ms`);
+
     return res.json(data);
   } catch (err) {
-    console.error("[api/info]", err);
+    console.error(
+      `[api/info] FAILED after ${Date.now() - requestStart}ms`,
+      err,
+    );
 
     return res.status(500).json({
       error: sanitizeError(err.stderr || err.message),
