@@ -1,0 +1,20 @@
+{
+  "name": "vidsnatch-fullstack",
+  "private": true,
+  "version": "3.0.0",
+  "description": "VidSnatch full-stack Vite + Express downloader for Render and Cloudflare Pages.",
+  "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace frontend",
+    "build": "npm run build --workspace frontend",
+    "prepare:render": "node scripts/prepare-render.mjs",
+    "start": "npm start --workspace backend"
+  },
+  "engines": {
+    "node": ">=24.14.1 <25"
+  }
+}

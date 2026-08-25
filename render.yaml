@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: vidsnatch-api
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build && npm run prepare:render
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: 24.14.1
+      - key: VITE_API_URL
+        value: ""
+      - key: CORS_ORIGIN
+        value: https://vidsnatch.in,https://www.vidsnatch.in
+      - key: MAX_ACTIVE_JOBS
+        value: "2"

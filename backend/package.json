@@ -1,0 +1,13 @@
+{
+  "name": "vidsnatch-backend",
+  "private": true,
+  "version": "3.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "cors": "2.8.6",
+    "express": "5.2.1"
+  }
+}
