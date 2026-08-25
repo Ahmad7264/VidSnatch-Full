@@ -10,11 +10,14 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspace frontend",
-    "build": "npm run build --workspace frontend",
+    "build": "npm run prepare:render && npm run build --workspace frontend",
     "prepare:render": "node scripts/prepare-render.mjs",
     "start": "npm start --workspace backend"
   },
   "engines": {
     "node": ">=24.14.1 <25"
+  },
+  "dependencies": {
+    "adm-zip": "^0.6.0"
   }
 }

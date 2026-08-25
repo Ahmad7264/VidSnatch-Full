@@ -1,9 +1,14 @@
-node_modules/
-frontend/dist/
 .env
 .env.*
 !.env.example
+
 *.log
+
 .DS_Store
 Thumbs.db
-backend/bin/yt-dlp
+
+node_modules/
+frontend/dist/
+
+backend/.bgutil/
+backend/bin/
