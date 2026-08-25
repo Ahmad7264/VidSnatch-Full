@@ -328,14 +328,34 @@ function ytDlpExecutable() {
     (fs.existsSync(BUNDLED_YTDLP) ? BUNDLED_YTDLP : YTDLP_PATH)
   );
 }
+let youtubeCookiesPath = null;
+async function prepareYouTubeCookies() {
+  const cookieData = process.env.YOUTUBE_COOKIES;
 
+  if (!cookieData || !cookieData.trim()) {
+    console.log("YouTube cookies not configured.");
+    return null;
+  }
+
+  const cookiePath = path.join(os.tmpdir(), "vidsnatch-youtube-cookies.txt");
+
+  await fsp.writeFile(cookiePath, cookieData, {
+    encoding: "utf8",
+    mode: 0o600,
+  });
+
+  console.log("YouTube cookies file prepared.");
+
+  return cookiePath;
+}
 /* =========================================================
    BASE YT-DLP ARGUMENTS
    ========================================================= */
 
 function baseYtArgs() {
-  return [
+  const args = [
     "--no-warnings",
+
     "--no-playlist",
 
     "--js-runtimes",
@@ -349,8 +369,15 @@ function baseYtArgs() {
       process.env.BGUTIL_POT_BASE_URL || "http://127.0.0.1:4416"
     }`,
   ];
-}
 
+  if (youtubeCookiesPath && fs.existsSync(youtubeCookiesPath)) {
+    args.push("--cookies", youtubeCookiesPath);
+
+    console.log("YouTube cookies enabled.");
+  }
+
+  return args;
+}
 /* =========================================================
    FORMAT HELPERS
    ========================================================= */
@@ -1205,7 +1232,7 @@ setInterval(async () => {
 /* =========================================================
    START SERVER
    ========================================================= */
-
+youtubeCookiesPath = await prepareYouTubeCookies();
 const server = app.listen(PORT, HOST, () => {
   console.log(`VidSnatch backend listening on http://${HOST}:${PORT}`);
 
