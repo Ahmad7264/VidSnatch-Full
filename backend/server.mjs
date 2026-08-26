@@ -425,7 +425,7 @@ function baseYtArgs(type = "youtube") {
   /*
    * Common lightweight arguments.
    */
-  const args = ["--no-warnings", "--no-playlist", "--socket-timeout", "6"];
+  const args = ["--no-warnings", "--no-playlist", "--socket-timeout", "30"];
 
   /*
    * ONLY YOUTUBE:
