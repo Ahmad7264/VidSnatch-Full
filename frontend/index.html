@@ -5,17 +5,22 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>VidSnatch — Free YouTube & Instagram Video Downloader</title>
+    <title>VidSnatch — Free Instagram Reel & YouTube Video Downloader</title>
 
     <meta
       name="description"
-      content="VidSnatch is a free online YouTube and Instagram video downloader. Download public YouTube videos up to 1440p and Instagram Reels as video without sign-up."
+      content="Download public Instagram Reels and YouTube videos online for free with VidSnatch. Download YouTube videos in available quality up to 1440p or save supported YouTube audio as MP3."
     />
 
     <meta name="author" content="VidSnatch" />
 
     <meta
       name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+
+    <meta
+      name="googlebot"
       content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     />
 
@@ -35,12 +40,12 @@
 
     <meta
       property="og:title"
-      content="VidSnatch — Free YouTube & Instagram Video Downloader"
+      content="VidSnatch — Free Instagram Reel & YouTube Video Downloader"
     />
 
     <meta
       property="og:description"
-      content="Download public YouTube videos up to 1440p and Instagram Reels online for free with VidSnatch."
+      content="Download public Instagram Reels and YouTube videos online for free. Choose an available YouTube video quality or download supported YouTube audio as MP3."
     />
 
     <meta property="og:url" content="https://vidsnatch.fun/" />
@@ -49,7 +54,7 @@
 
     <meta
       property="og:image:alt"
-      content="VidSnatch YouTube and Instagram video downloader"
+      content="VidSnatch free Instagram Reel and YouTube video downloader"
     />
 
     <meta property="og:image:width" content="1200" />
@@ -63,12 +68,12 @@
 
     <meta
       name="twitter:title"
-      content="VidSnatch — Free YouTube & Instagram Video Downloader"
+      content="VidSnatch — Free Instagram Reel & YouTube Video Downloader"
     />
 
     <meta
       name="twitter:description"
-      content="Download public YouTube videos up to 1440p and Instagram Reels online for free."
+      content="Download public Instagram Reels and YouTube videos online for free. YouTube video downloads are available in supported quality up to 1440p, with MP3 audio for supported videos."
     />
 
     <meta name="twitter:image" content="https://vidsnatch.fun/og-image.png" />
@@ -93,9 +98,10 @@
         "@graph": [
           {
             "@type": "WebApplication",
+            "@id": "https://vidsnatch.fun/#webapp",
             "name": "VidSnatch",
             "url": "https://vidsnatch.fun/",
-            "description": "Free online YouTube and Instagram video downloader.",
+            "description": "Free online Instagram Reel and YouTube video downloader with supported video quality options and YouTube MP3 audio downloads.",
             "applicationCategory": "MultimediaApplication",
             "operatingSystem": "Web",
             "browserRequirements": "Requires JavaScript",
@@ -107,51 +113,16 @@
           },
           {
             "@type": "WebSite",
+            "@id": "https://vidsnatch.fun/#website",
             "name": "VidSnatch",
             "url": "https://vidsnatch.fun/",
-            "description": "Free YouTube and Instagram video downloader."
-          },
-          {
-            "@type": "FAQPage",
-            "mainEntity": [
-              {
-                "@type": "Question",
-                "name": "How do I download an Instagram Reel?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Copy the URL of a public Instagram Reel, paste it into VidSnatch, fetch the video information, and select the download option."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "How do I download a YouTube video?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Copy a public YouTube video URL, paste it into VidSnatch, choose an available video quality up to 1440p, and start the download."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Is VidSnatch free?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes. VidSnatch provides its online video downloader without requiring an account or subscription."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "What video quality does VidSnatch support?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "VidSnatch supports available YouTube video qualities up to 1440p. Instagram Reels are downloaded as video."
-                }
-              }
-            ]
+            "description": "Free Instagram Reel and YouTube video downloader."
           }
         ]
       }
     </script>
   </head>
+
   <body>
     <!-- ─── Background blobs ─────────────────────────────────────── -->
     <div class="bg-blob blob-1"></div>
@@ -164,12 +135,20 @@
         <span class="logo-icon">⚡</span>
         <span class="logo-text">VidSnatch</span>
       </div>
+
       <nav class="header-nav">
-        <a href="#instagram-section" class="nav-link" id="nav-instagram">
-          <span class="nav-icon">📸</span> Instagram
+        <a
+          href="/instagram-reel-downloader/"
+          class="nav-link"
+          id="nav-instagram"
+        >
+          <span class="nav-icon">📸</span>
+          Instagram
         </a>
-        <a href="#youtube-section" class="nav-link" id="nav-youtube">
-          <span class="nav-icon">▶️</span> YouTube
+
+        <a href="/youtube-video-downloader/" class="nav-link" id="nav-youtube">
+          <span class="nav-icon">▶️</span>
+          YouTube
         </a>
       </nav>
     </header>
@@ -177,18 +156,24 @@
     <!-- ─── Hero ─────────────────────────────────────────────────── -->
     <section class="hero">
       <h1 class="hero-title">
-        Free <span class="gradient-text">Instagram Reel</span><br />& YouTube
-        Video Downloader
+        Free
+        <span class="gradient-text">Instagram Reel</span>
+        <br />
+        & YouTube Video Downloader
       </h1>
+
       <p class="hero-sub">
         Download public YouTube videos and Instagram Reels online. Preview your
         video, choose an available quality, and download quickly — simple, fast,
         and free.
       </p>
+
       <div class="platform-pills">
-        <span class="pill pill-ig">📸 Instagram Reels</span>
-        <span class="pill pill-yt">▶️ YouTube Videos</span>
-        <span class="pill pill-audio">🎵 YouTube MP3</span>
+        <span class="pill pill-ig"> 📸 Instagram Reels </span>
+
+        <span class="pill pill-yt"> ▶️ YouTube Videos </span>
+
+        <span class="pill pill-audio"> 🎵 YouTube MP3 </span>
       </div>
     </section>
 
@@ -196,8 +181,10 @@
     <section class="download-section" id="instagram-section">
       <div class="section-header">
         <div class="section-icon ig-gradient">📸</div>
+
         <div>
           <h2 class="section-title">Instagram Reel Downloader</h2>
+
           <p class="section-desc">
             Paste a public Instagram Reel URL to preview and download the video.
           </p>
@@ -213,6 +200,7 @@
           autocomplete="off"
           spellcheck="false"
         />
+
         <button
           id="ig-fetch-btn"
           class="neo-btn neo-btn--primary"
@@ -229,6 +217,7 @@
           <!-- Video Preview -->
           <div class="preview-card neo-card">
             <div class="preview-label">Preview</div>
+
             <video
               id="ig-video"
               class="video-preview"
@@ -240,11 +229,15 @@
           <!-- Info & Download -->
           <div class="info-card neo-card">
             <div class="info-badge ig-badge">Instagram Reel</div>
+
             <h3 id="ig-title" class="media-title">—</h3>
+
             <div class="meta-row">
-              <span class="meta-chip" id="ig-duration">⏱ —</span>
-              <span class="meta-chip" id="ig-resolution">📐 —</span>
+              <span class="meta-chip" id="ig-duration"> ⏱ — </span>
+
+              <span class="meta-chip" id="ig-resolution"> 📐 — </span>
             </div>
+
             <div class="download-actions">
               <button
                 id="ig-dl-btn"
@@ -252,22 +245,25 @@
                 onclick="downloadInstagramVideo()"
               >
                 <span class="btn-icon">⬇️</span>
-                <span class="btn-label">Download Reel</span>
+                <span class="btn-label"> Download Reel </span>
               </button>
             </div>
+
             <div id="ig-progress" class="progress-bar-wrap hidden">
               <div class="progress-track">
                 <div class="progress-fill" id="ig-progress-fill"></div>
               </div>
-              <span class="progress-label" id="ig-progress-label"
-                >Preparing…</span
-              >
+
+              <span class="progress-label" id="ig-progress-label">
+                Preparing…
+              </span>
             </div>
           </div>
         </div>
       </div>
 
       <div id="ig-error" class="error-msg hidden"></div>
+
       <div id="ig-loader" class="loader-wrap hidden">
         <div class="spinner"></div>
         <span>Fetching reel info…</span>
@@ -283,13 +279,13 @@
     <section class="download-section" id="youtube-section">
       <div class="section-header">
         <div class="section-icon yt-gradient">▶️</div>
+
         <div>
-          <h2 class="section-title">YouTube Downloader</h2>
+          <h2 class="section-title">YouTube Video & MP3 Downloader</h2>
+
           <p class="section-desc">
-            <p class="section-desc">
-  Choose an available video quality up to 1440p or download
-  YouTube audio as MP3.
-</p>
+            Choose an available video quality up to 1440p or download supported
+            YouTube audio as MP3.
           </p>
         </div>
       </div>
@@ -303,6 +299,7 @@
           autocomplete="off"
           spellcheck="false"
         />
+
         <button
           id="yt-fetch-btn"
           class="neo-btn neo-btn--primary"
@@ -319,29 +316,36 @@
           <!-- Thumbnail / Preview -->
           <div class="preview-card neo-card">
             <div class="preview-label">Thumbnail</div>
+
             <img
               id="yt-thumbnail"
               class="yt-thumb"
               src=""
-              alt="YouTube Thumbnail"
+              alt="YouTube video thumbnail"
             />
           </div>
 
           <!-- Info & Download -->
           <div class="info-card neo-card">
             <div class="info-badge yt-badge">YouTube</div>
+
             <h3 id="yt-title" class="media-title">—</h3>
+
             <div class="meta-row">
-              <span class="meta-chip" id="yt-duration">⏱ —</span>
-              <span class="meta-chip" id="yt-uploader">👤 —</span>
-              <span class="meta-chip" id="yt-views">👁 —</span>
+              <span class="meta-chip" id="yt-duration"> ⏱ — </span>
+
+              <span class="meta-chip" id="yt-uploader"> 👤 — </span>
+
+              <span class="meta-chip" id="yt-views"> 👁 — </span>
             </div>
 
             <!-- Quality Selector -->
             <div class="quality-section">
               <p class="quality-label">📹 Choose Video Quality</p>
+
               <div id="yt-formats" class="format-grid"></div>
-              <!-- Download Video Button (shown after selecting quality) -->
+
+              <!-- Download Video Button -->
               <div id="yt-dl-wrap" class="hidden" style="margin-top: 14px">
                 <button
                   id="yt-dl-btn"
@@ -349,7 +353,10 @@
                   onclick="downloadYouTubeVideo()"
                 >
                   <span class="btn-icon">⬇️</span>
-                  <span class="btn-label" id="yt-dl-label">Download Video</span>
+
+                  <span class="btn-label" id="yt-dl-label">
+                    Download Video
+                  </span>
                 </button>
               </div>
             </div>
@@ -357,13 +364,15 @@
             <!-- Audio Download -->
             <div class="audio-section">
               <p class="quality-label">🎵 Audio Only</p>
+
               <button
                 id="yt-audio-btn"
                 class="neo-btn neo-btn--audio"
                 onclick="downloadYouTubeAudio()"
               >
                 <span class="btn-icon">🎵</span>
-                <span class="btn-label">Download MP3</span>
+
+                <span class="btn-label"> Download MP3 </span>
               </button>
             </div>
 
@@ -371,15 +380,17 @@
               <div class="progress-track">
                 <div class="progress-fill" id="yt-progress-fill"></div>
               </div>
-              <span class="progress-label" id="yt-progress-label"
-                >Preparing…</span
-              >
+
+              <span class="progress-label" id="yt-progress-label">
+                Preparing…
+              </span>
             </div>
           </div>
         </div>
       </div>
 
       <div id="yt-error" class="error-msg hidden"></div>
+
       <div id="yt-loader" class="loader-wrap hidden">
         <div class="spinner"></div>
         <span>Fetching video info…</span>
@@ -390,155 +401,165 @@
     <section class="features-strip">
       <div class="feature-card neo-card">
         <span class="feature-icon">⚡</span>
+
         <h3>Lightning Fast</h3>
-        <p>High-speed servers deliver your downloads instantly</p>
+
+        <p>High-speed servers deliver your downloads quickly.</p>
       </div>
+
       <div class="feature-card neo-card">
         <span class="feature-icon">🎯</span>
+
         <h3>High Quality</h3>
-<p>Choose available YouTube video quality up to 1440p or clear MP3 audio</p>
+
+        <p>
+          Choose available YouTube video quality up to 1440p or clear MP3 audio.
+        </p>
       </div>
+
       <div class="feature-card neo-card">
         <span class="feature-icon">🔒</span>
+
         <h3>Secure & Private</h3>
-        <p>No data stored. Downloads happen directly to you</p>
+
+        <p>
+          No account required. Download processing is designed for simple
+          browser use.
+        </p>
       </div>
+
       <div class="feature-card neo-card">
         <span class="feature-icon">🆓</span>
+
         <h3>100% Free</h3>
-        <p>No sign-up, no watermarks, no hidden charges</p>
+
+        <p>No sign-up, no watermarks, no hidden charges.</p>
       </div>
     </section>
 
     <!-- ─── SEO / Help Content ───────────────────────────────────── -->
-   <section
-  class="seo-content neo-card"
-  aria-labelledby="about-title"
->
-  <h2 id="about-title">
-    Free YouTube & Instagram Video Downloader
-  </h2>
+    <section class="seo-content neo-card" aria-labelledby="about-title">
+      <h2 id="about-title">Free Instagram Reel & YouTube Video Downloader</h2>
 
-  <p>
-    VidSnatch is a free online video downloader for public
-    YouTube videos and Instagram Reels. Paste a supported
-    video URL to preview the media, choose an available
-    quality, and download your video without creating an account.
-  </p>
-
-  <div class="faq-grid">
-    <article>
-      <h3>Instagram Reel Downloader</h3>
       <p>
-        Copy a public Instagram Reel URL and paste it into
-        VidSnatch. Preview the Reel and download it as a video.
+        VidSnatch is a free online video downloader for public YouTube videos
+        and Instagram Reels. Paste a supported video URL to preview the media,
+        choose an available quality, and download your video without creating an
+        account.
       </p>
-    </article>
 
-    <article>
-      <h3>YouTube Video Downloader</h3>
-      <p>
-        Paste a public YouTube video URL, view the available
-        video qualities, select your preferred resolution,
-        and start the download.
-      </p>
-    </article>
+      <div class="faq-grid">
+        <article>
+          <h3>Instagram Reel Downloader</h3>
 
-    <article>
-      <h3>YouTube MP3 Downloader</h3>
-      <p>
-        VidSnatch also provides an audio-only option for
-        supported YouTube videos, allowing you to download
-        the audio as an MP3 file.
-      </p>
-    </article>
+          <p>
+            Copy a public Instagram Reel URL and paste it into VidSnatch.
+            Preview the Reel and download it as a video.
+          </p>
+        </article>
 
-    <article>
-      <h3>Is VidSnatch free?</h3>
-      <p>
-        Yes. VidSnatch provides its online downloader without
-        requiring account registration or a subscription.
-      </p>
-    </article>
+        <article>
+          <h3>YouTube Video Downloader</h3>
 
-    <article>
-      <h3>What YouTube quality is supported?</h3>
-      <p>
-        VidSnatch supports available YouTube video qualities
-        up to 1440p. The actual options depend on the source
-        video.
-      </p>
-    </article>
+          <p>
+            Paste a public YouTube video URL, view the available video
+            qualities, select your preferred resolution, and start the download.
+          </p>
+        </article>
 
-    <article>
-      <h3>What can I download?</h3>
-      <p>
-        Only download videos and media that you own or have
-        permission to download. Always respect copyright laws,
-        creators' rights, and the terms of the relevant platform.
-      </p>
-    </article>
-  </div>
-</section>
+        <article>
+          <h3>YouTube MP3 Downloader</h3>
+
+          <p>
+            VidSnatch also provides an audio-only option for supported YouTube
+            videos, allowing you to download the audio as an MP3 file.
+          </p>
+        </article>
+
+        <article>
+          <h3>Is VidSnatch free?</h3>
+
+          <p>
+            Yes. VidSnatch provides its online downloader without requiring
+            account registration or a subscription.
+          </p>
+        </article>
+
+        <article>
+          <h3>What YouTube quality is supported?</h3>
+
+          <p>
+            VidSnatch supports available YouTube video qualities up to 1440p.
+            The actual options depend on the source video.
+          </p>
+        </article>
+
+        <article>
+          <h3>What can I download?</h3>
+
+          <p>
+            Only download videos and media that you own or have permission to
+            download. Always respect copyright laws, creators' rights, and the
+            terms of the relevant platform.
+          </p>
+        </article>
+      </div>
+    </section>
 
     <!-- ─── Footer ───────────────────────────────────────────────── -->
     <footer class="site-footer">
-  <div class="footer-logo">⚡ VidSnatch</div>
+      <div class="footer-logo">⚡ VidSnatch</div>
 
-  <p class="footer-note">
-    For personal use only. Respect copyright laws and content creators.
-  </p>
+      <p class="footer-note">
+        For personal use only. Respect copyright laws and content creators.
+      </p>
 
-  <nav class="footer-links" aria-label="Footer navigation">
-    <button type="button" onclick="openLegalModal('terms')">
-      Terms of Service
-    </button>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <button type="button" onclick="openLegalModal('terms')">
+          Terms of Service
+        </button>
 
-    <button type="button" onclick="openLegalModal('privacy')">
-      Privacy Policy
-    </button>
+        <button type="button" onclick="openLegalModal('privacy')">
+          Privacy Policy
+        </button>
 
-    <button type="button" onclick="openLegalModal('copyright')">
-      Copyright
-    </button>
+        <button type="button" onclick="openLegalModal('copyright')">
+          Copyright
+        </button>
 
-    <button type="button" onclick="openLegalModal('contact')">
-      Contact
-    </button>
-  </nav>
+        <button type="button" onclick="openLegalModal('contact')">
+          Contact
+        </button>
+      </nav>
 
-  <p class="footer-copyright">
-    © 2026 VidSnatch. All rights reserved.
-  </p>
-</footer>
-<!-- Legal Modal -->
-<div
-  id="legal-modal"
-  class="legal-modal hidden"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="legal-modal-title"
->
-  <div class="legal-modal-backdrop" onclick="closeLegalModal()"></div>
+      <p class="footer-copyright">© 2026 VidSnatch. All rights reserved.</p>
+    </footer>
 
-  <div class="legal-modal-card">
-    <button
-      type="button"
-      class="legal-modal-close"
-      onclick="closeLegalModal()"
-      aria-label="Close"
-    >
-      ×
-    </button>
-
-    <h2 id="legal-modal-title">Terms of Service</h2>
-
+    <!-- Legal Modal -->
     <div
-      id="legal-modal-content"
-      class="legal-modal-content"
-    ></div>
-  </div>
-</div>
+      id="legal-modal"
+      class="legal-modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="legal-modal-title"
+    >
+      <div class="legal-modal-backdrop" onclick="closeLegalModal()"></div>
+
+      <div class="legal-modal-card">
+        <button
+          type="button"
+          class="legal-modal-close"
+          onclick="closeLegalModal()"
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+        <h2 id="legal-modal-title">Terms of Service</h2>
+
+        <div id="legal-modal-content" class="legal-modal-content"></div>
+      </div>
+    </div>
 
     <!-- ─── Toast ─────────────────────────────────────────────────── -->
     <div id="toast" class="toast" role="alert" aria-live="polite"></div>

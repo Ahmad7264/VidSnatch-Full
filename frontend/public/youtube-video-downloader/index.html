@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>YouTube Video Downloader — Download Videos & MP3 | VidSnatch</title>
+
+    <meta
+      name="description"
+      content="Download public YouTube videos online for free with VidSnatch. Choose an available video quality up to 1440p or download supported YouTube audio as MP3."
+    />
+
+    <meta name="author" content="VidSnatch" />
+
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+
+    <meta
+      name="googlebot"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+
+    <meta name="theme-color" content="#f5eecc" />
+
+    <meta name="application-name" content="VidSnatch" />
+
+    <meta name="apple-mobile-web-app-title" content="VidSnatch" />
+
+    <!-- Canonical -->
+    <link
+      rel="canonical"
+      href="https://vidsnatch.fun/youtube-video-downloader/"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+
+    <meta property="og:site_name" content="VidSnatch" />
+
+    <meta
+      property="og:title"
+      content="YouTube Video Downloader — Download Videos & MP3 | VidSnatch"
+    />
+
+    <meta
+      property="og:description"
+      content="Download public YouTube videos for free. Choose an available video quality up to 1440p or download supported YouTube audio as MP3."
+    />
+
+    <meta
+      property="og:url"
+      content="https://vidsnatch.fun/youtube-video-downloader/"
+    />
+
+    <meta property="og:image" content="https://vidsnatch.fun/og-image.png" />
+
+    <meta
+      property="og:image:alt"
+      content="VidSnatch YouTube Video Downloader"
+    />
+
+    <meta property="og:image:width" content="1200" />
+
+    <meta property="og:image:height" content="630" />
+
+    <meta property="og:image:type" content="image/png" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta
+      name="twitter:title"
+      content="YouTube Video Downloader — Download Videos & MP3 | VidSnatch"
+    />
+
+    <meta
+      name="twitter:description"
+      content="Download public YouTube videos online for free with VidSnatch. Choose an available quality or download supported YouTube audio as MP3."
+    />
+
+    <meta name="twitter:image" content="https://vidsnatch.fun/og-image.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "@id": "https://vidsnatch.fun/#webapp",
+            "name": "VidSnatch",
+            "url": "https://vidsnatch.fun/",
+            "description": "Free online Instagram Reel and YouTube video downloader with YouTube MP3 audio downloads.",
+            "applicationCategory": "MultimediaApplication",
+            "operatingSystem": "Web",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://vidsnatch.fun/youtube-video-downloader/#webpage",
+            "url": "https://vidsnatch.fun/youtube-video-downloader/",
+            "name": "YouTube Video Downloader — Download Videos & MP3 | VidSnatch",
+            "description": "Free online YouTube video downloader with available quality options and supported MP3 audio downloads.",
+            "isPartOf": {
+              "@id": "https://vidsnatch.fun/#website"
+            }
+          }
+        ]
+      }
+    </script>
+  </head>
+
+  <body>
+    <main class="landing-page">
+      <!-- Header -->
+      <header class="landing-header">
+        <a href="/" class="landing-logo" aria-label="VidSnatch Home">
+          ⚡ VidSnatch
+        </a>
+      </header>
+
+      <!-- Hero -->
+      <section class="landing-hero">
+        <p class="landing-eyebrow">▶️ YouTube Video Downloader</p>
+
+        <h1>YouTube Video Downloader</h1>
+
+        <p class="landing-subtitle">
+          Download public YouTube videos online for free. Choose an available
+          video quality or save supported YouTube audio as MP3.
+        </p>
+
+        <div class="landing-action">
+          <label for="youtube-url" class="sr-only"> YouTube Video URL </label>
+
+          <input
+            id="youtube-url"
+            type="url"
+            placeholder="Paste YouTube video URL..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+
+          <button id="youtube-fetch" type="button">🔍 Fetch Video</button>
+        </div>
+
+        <p id="youtube-message" class="landing-message" aria-live="polite"></p>
+      </section>
+
+      <!-- Result -->
+      <section id="youtube-result" class="youtube-result hidden">
+        <div class="result-card">
+          <div class="thumbnail-wrapper">
+            <img
+              id="youtube-thumbnail"
+              src=""
+              alt="YouTube video thumbnail"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="video-info">
+            <div class="badge">▶️ YouTube</div>
+
+            <h2 id="youtube-title">YouTube Video</h2>
+
+            <div class="meta">
+              <span id="youtube-duration"> ⏱ — </span>
+
+              <span id="youtube-uploader"> 👤 — </span>
+
+              <span id="youtube-views"> 👁 — </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Quality -->
+        <div class="download-card">
+          <h2>Choose Video Quality</h2>
+
+          <p>
+            Select one of the available video qualities provided for this
+            YouTube video.
+          </p>
+
+          <div id="youtube-formats" class="format-grid"></div>
+
+          <button id="youtube-download" type="button" disabled>
+            ⬇️ Download Video
+          </button>
+
+          <div
+            id="youtube-video-status"
+            class="download-status"
+            aria-live="polite"
+          ></div>
+        </div>
+
+        <!-- MP3 -->
+        <div class="download-card audio-card">
+          <h2>YouTube MP3 Downloader</h2>
+
+          <p>
+            Download supported YouTube audio as an MP3 file when the audio
+            option is available.
+          </p>
+
+          <button id="youtube-mp3" type="button">🎵 Download MP3</button>
+
+          <div
+            id="youtube-mp3-status"
+            class="download-status"
+            aria-live="polite"
+          ></div>
+        </div>
+      </section>
+
+      <!-- SEO Content -->
+      <section class="landing-content">
+        <h2>Free YouTube Video Downloader</h2>
+
+        <p>
+          VidSnatch is a free online YouTube video downloader that lets you
+          process public YouTube video URLs directly from your browser. Paste a
+          supported YouTube URL, fetch the available formats, select a video
+          quality, and start your download.
+        </p>
+
+        <h2>Download YouTube Videos Online</h2>
+
+        <p>
+          With VidSnatch, you can download public YouTube videos without
+          installing a separate application. Available video qualities depend on
+          the source video and the formats provided by YouTube.
+        </p>
+
+        <h2>YouTube Video Quality</h2>
+
+        <p>
+          VidSnatch supports available video quality options up to 1440p. The
+          exact resolutions shown depend on the individual YouTube video.
+        </p>
+
+        <h2>YouTube MP3 Downloader</h2>
+
+        <p>
+          VidSnatch also provides an audio-only option for supported YouTube
+          videos. When available, you can choose the MP3 option to save the
+          audio separately from the video.
+        </p>
+
+        <h2>How to Download a YouTube Video</h2>
+
+        <ol>
+          <li>Copy the URL of a public YouTube video.</li>
+
+          <li>Paste the URL into the VidSnatch YouTube downloader.</li>
+
+          <li>Click <strong>Fetch Video</strong>.</li>
+
+          <li>Select an available video quality.</li>
+
+          <li>Click <strong>Download Video</strong>.</li>
+        </ol>
+
+        <h2>How to Download YouTube Audio as MP3</h2>
+
+        <ol>
+          <li>Paste a supported YouTube video URL.</li>
+
+          <li>Fetch the video information.</li>
+
+          <li>Use the <strong>Download MP3</strong> option.</li>
+
+          <li>Wait for the audio file to be prepared.</li>
+        </ol>
+
+        <h2>Do I Need an Account?</h2>
+
+        <p>
+          No. VidSnatch does not require an account or subscription to use the
+          downloader.
+        </p>
+
+        <h2>Is the YouTube Downloader Free?</h2>
+
+        <p>
+          Yes. VidSnatch provides the downloader interface without requiring a
+          paid subscription.
+        </p>
+
+        <h2>Important Copyright Notice</h2>
+
+        <p>
+          Only download videos and audio that you own, have permission to use,
+          or are legally permitted to download. Respect copyright laws,
+          creators' rights, and the applicable terms of the platform.
+        </p>
+      </section>
+
+      <!-- Footer -->
+      <footer class="landing-footer">
+        <p>⚡ VidSnatch</p>
+
+        <nav aria-label="Footer navigation">
+          <a href="/"> Home </a>
+
+          <a href="/instagram-reel-downloader/"> Instagram Reel Downloader </a>
+
+          <a href="/privacy"> Privacy Policy </a>
+
+          <a href="/terms"> Terms of Service </a>
+
+          <a href="/copyright"> Copyright </a>
+        </nav>
+
+        <p>© 2026 VidSnatch. All rights reserved.</p>
+      </footer>
+    </main>
+
+    <script>
+      const API = window.location.origin;
+
+      const input = document.getElementById("youtube-url");
+
+      const fetchButton = document.getElementById("youtube-fetch");
+
+      const message = document.getElementById("youtube-message");
+
+      const result = document.getElementById("youtube-result");
+
+      const thumbnail = document.getElementById("youtube-thumbnail");
+
+      const title = document.getElementById("youtube-title");
+
+      const duration = document.getElementById("youtube-duration");
+
+      const uploader = document.getElementById("youtube-uploader");
+
+      const views = document.getElementById("youtube-views");
+
+      const formats = document.getElementById("youtube-formats");
+
+      const videoDownload = document.getElementById("youtube-download");
+
+      const mp3Download = document.getElementById("youtube-mp3");
+
+      const videoStatus = document.getElementById("youtube-video-status");
+
+      const mp3Status = document.getElementById("youtube-mp3-status");
+
+      let currentUrl = "";
+      let currentTitle = "YouTube_Video";
+      let selectedFormat = null;
+      let selectedIsMuxed = false;
+      let audioFormatId = "bestaudio";
+      let activeDownload = false;
+
+      function showMessage(text) {
+        message.textContent = text;
+      }
+
+      function formatDuration(seconds) {
+        const value = Number(seconds);
+
+        if (!Number.isFinite(value)) {
+          return "—";
+        }
+
+        const total = Math.max(0, Math.floor(value));
+
+        const hours = Math.floor(total / 3600);
+
+        const minutes = Math.floor((total % 3600) / 60);
+
+        const secondsLeft = total % 60;
+
+        if (hours > 0) {
+          return `${hours}:${String(minutes).padStart(2, "0")}:${String(
+            secondsLeft,
+          ).padStart(2, "0")}`;
+        }
+
+        return `${minutes}:${String(secondsLeft).padStart(2, "0")}`;
+      }
+
+      function formatViews(value) {
+        const number = Number(value);
+
+        if (!Number.isFinite(number)) {
+          return "—";
+        }
+
+        if (number >= 1000000000) {
+          return `${(number / 1000000000).toFixed(1)}B`;
+        }
+
+        if (number >= 1000000) {
+          return `${(number / 1000000).toFixed(1)}M`;
+        }
+
+        if (number >= 1000) {
+          return `${(number / 1000).toFixed(1)}K`;
+        }
+
+        return String(number);
+      }
+
+      async function readJson(response) {
+        const text = await response.text();
+
+        try {
+          return text ? JSON.parse(text) : {};
+        } catch {
+          return {
+            error: text || `Request failed (${response.status})`,
+          };
+        }
+      }
+
+      async function fetchYouTube() {
+        const url = input.value.trim();
+
+        if (!url) {
+          showMessage("Please paste a YouTube video URL.");
+          return;
+        }
+
+        if (!url.includes("youtube.com/") && !url.includes("youtu.be/")) {
+          showMessage("Please enter a valid YouTube URL.");
+          return;
+        }
+
+        currentUrl = url;
+        selectedFormat = null;
+        selectedIsMuxed = false;
+
+        fetchButton.disabled = true;
+        videoDownload.disabled = true;
+
+        result.classList.add("hidden");
+
+        showMessage("Fetching YouTube video information...");
+
+        try {
+          const response = await fetch(`${API}/api/info`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              url,
+              type: "youtube",
+            }),
+          });
+
+          const data = await readJson(response);
+
+          if (!response.ok || data.error) {
+            throw new Error(
+              data.error || "Unable to fetch this YouTube video.",
+            );
+          }
+
+          currentTitle = data.title || "YouTube_Video";
+
+          audioFormatId = data.audioFormatId || "bestaudio";
+
+          thumbnail.src = data.thumbnail || "";
+
+          thumbnail.alt = data.title || "YouTube video thumbnail";
+
+          title.textContent = data.title || "YouTube Video";
+
+          duration.textContent = `⏱ ${formatDuration(data.duration)}`;
+
+          uploader.textContent = `👤 ${data.uploader || "—"}`;
+
+          views.textContent = `👁 ${formatViews(data.viewCount)}`;
+
+          formats.innerHTML = "";
+
+          const availableFormats = Array.isArray(data.formats)
+            ? data.formats
+            : [];
+
+          availableFormats.forEach((format, index) => {
+            const button = document.createElement("button");
+
+            button.type = "button";
+
+            button.className = "format-button";
+
+            button.textContent =
+              format.label || format.resolution || `Format ${index + 1}`;
+
+            button.addEventListener("click", () => {
+              document
+                .querySelectorAll(".format-button")
+                .forEach((item) => item.classList.remove("active"));
+
+              button.classList.add("active");
+
+              selectedFormat = format.formatId;
+
+              selectedIsMuxed = !!format.isMuxed;
+
+              videoDownload.disabled = false;
+
+              videoDownload.textContent = `⬇️ Download ${
+                format.resolution || "Video"
+              }`;
+            });
+
+            formats.appendChild(button);
+          });
+
+          const firstFormat = formats.querySelector(".format-button");
+
+          if (firstFormat) {
+            firstFormat.click();
+          }
+
+          result.classList.remove("hidden");
+
+          showMessage("Video ready. Choose a quality or download MP3.");
+        } catch (error) {
+          console.error("[youtube]", error);
+
+          showMessage(`❌ ${error.message || "Something went wrong."}`);
+        } finally {
+          fetchButton.disabled = false;
+        }
+      }
+
+      async function startDownload(mediaType, formatId, statusElement) {
+        if (activeDownload) {
+          showMessage("⚠️ Another download is already preparing.");
+          return;
+        }
+
+        if (!currentUrl) {
+          showMessage("Please fetch a YouTube video first.");
+          return;
+        }
+
+        activeDownload = true;
+
+        try {
+          statusElement.textContent = "Preparing download...";
+
+          const response = await fetch(`${API}/api/download/start`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              url: currentUrl,
+              type: "youtube",
+              mediaType,
+              formatId,
+              isMuxed: mediaType === "video" ? selectedIsMuxed : undefined,
+              videoTitle: currentTitle,
+            }),
+          });
+
+          const data = await readJson(response);
+
+          if (!response.ok || !data.jobId) {
+            throw new Error(data.error || "Could not start download.");
+          }
+
+          const jobId = data.jobId;
+
+          while (true) {
+            await new Promise((resolve) => setTimeout(resolve, 700));
+
+            const statusResponse = await fetch(
+              `${API}/api/download/status/${encodeURIComponent(jobId)}`,
+              {
+                cache: "no-store",
+              },
+            );
+
+            const status = await readJson(statusResponse);
+
+            if (!statusResponse.ok) {
+              throw new Error(
+                status.error || "Could not read download status.",
+              );
+            }
+
+            if (status.status === "error") {
+              throw new Error(status.error || "Download failed.");
+            }
+
+            statusElement.textContent = status.stage || "Preparing download...";
+
+            if (status.status === "ready") {
+              const link = document.createElement("a");
+
+              link.href = `${API}/api/download/file/${encodeURIComponent(
+                jobId,
+              )}`;
+
+              link.style.display = "none";
+
+              document.body.appendChild(link);
+
+              link.click();
+
+              setTimeout(() => link.remove(), 1500);
+
+              statusElement.textContent = "✅ Download started.";
+
+              break;
+            }
+          }
+        } catch (error) {
+          console.error("[youtube-download]", error);
+
+          statusElement.textContent = `❌ ${
+            error.message || "Download failed."
+          }`;
+        } finally {
+          activeDownload = false;
+        }
+      }
+
+      videoDownload.addEventListener("click", () => {
+        if (!selectedFormat) {
+          showMessage("Please select a video quality first.");
+          return;
+        }
+
+        startDownload("video", selectedFormat, videoStatus);
+      });
+
+      mp3Download.addEventListener("click", () => {
+        startDownload("audio", audioFormatId, mp3Status);
+      });
+
+      fetchButton.addEventListener("click", fetchYouTube);
+
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          fetchYouTube();
+        }
+      });
+    </script>
+
+    <style>
+      :root {
+        font-family: "Outfit", system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #f5eecc;
+        color: #252525;
+      }
+
+      .landing-page {
+        width: min(calc(100% - 32px), 1050px);
+        margin: 0 auto;
+      }
+
+      .landing-header {
+        padding: 28px 0;
+      }
+
+      .landing-logo {
+        color: inherit;
+        text-decoration: none;
+        font-size: 1.35rem;
+        font-weight: 800;
+      }
+
+      .landing-hero {
+        text-align: center;
+        padding: 55px 0 35px;
+      }
+
+      .landing-eyebrow {
+        font-weight: 700;
+        margin-bottom: 14px;
+      }
+
+      .landing-hero h1 {
+        margin: 0;
+        font-size: clamp(2.2rem, 6vw, 4.5rem);
+        line-height: 1.05;
+      }
+
+      .landing-subtitle {
+        max-width: 750px;
+        margin: 20px auto 28px;
+        font-size: 1.08rem;
+        line-height: 1.7;
+      }
+
+      .landing-action {
+        display: flex;
+        gap: 12px;
+        max-width: 760px;
+        margin: 0 auto;
+      }
+
+      .landing-action input {
+        flex: 1;
+        min-width: 0;
+        border: 0;
+        border-radius: 16px;
+        padding: 17px 18px;
+        font: inherit;
+        outline: none;
+        background: #f5eecc;
+        box-shadow:
+          inset 6px 6px 12px rgba(0, 0, 0, 0.12),
+          inset -6px -6px 12px rgba(255, 255, 255, 0.7);
+      }
+
+      .landing-action button,
+      #youtube-download,
+      #youtube-mp3 {
+        border: 0;
+        border-radius: 16px;
+        padding: 16px 22px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        background: #252525;
+        color: #fff;
+      }
+
+      .landing-action button:disabled,
+      #youtube-download:disabled {
+        opacity: 0.55;
+        cursor: wait;
+      }
+
+      .landing-message {
+        min-height: 28px;
+        margin: 18px 0;
+        font-weight: 600;
+      }
+
+      .youtube-result {
+        margin: 20px auto 50px;
+      }
+
+      .youtube-result.hidden {
+        display: none;
+      }
+
+      .result-card,
+      .download-card,
+      .landing-content {
+        border-radius: 24px;
+        background: #f5eecc;
+        box-shadow:
+          12px 12px 24px rgba(0, 0, 0, 0.1),
+          -12px -12px 24px rgba(255, 255, 255, 0.7);
+      }
+
+      .result-card {
+        display: grid;
+        grid-template-columns:
+          minmax(280px, 1fr)
+          minmax(280px, 1fr);
+        gap: 28px;
+        padding: 25px;
+      }
+
+      .thumbnail-wrapper {
+        overflow: hidden;
+        border-radius: 18px;
+        background: #111;
+      }
+
+      .thumbnail-wrapper img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 240px;
+        object-fit: cover;
+      }
+
+      .video-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .badge {
+        display: inline-flex;
+        width: fit-content;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: #252525;
+        color: #fff;
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+
+      .video-info h2 {
+        margin: 16px 0;
+        font-size: 1.55rem;
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .meta span {
+        padding: 8px 11px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.06);
+        font-size: 0.85rem;
+      }
+
+      .download-card {
+        margin-top: 22px;
+        padding: 28px;
+      }
+
+      .download-card h2 {
+        margin-top: 0;
+      }
+
+      .download-card p {
+        line-height: 1.7;
+      }
+
+      .format-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 10px;
+        margin: 20px 0;
+      }
+
+      .format-button {
+        border: 0;
+        border-radius: 14px;
+        padding: 13px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        background: #f5eecc;
+        box-shadow:
+          5px 5px 10px rgba(0, 0, 0, 0.1),
+          -5px -5px 10px rgba(255, 255, 255, 0.7);
+      }
+
+      .format-button.active {
+        background: #252525;
+        color: #fff;
+      }
+
+      .audio-card {
+        margin-bottom: 45px;
+      }
+
+      #youtube-mp3 {
+        background: #252525;
+      }
+
+      .download-status {
+        min-height: 24px;
+        margin-top: 14px;
+        font-weight: 600;
+      }
+
+      .landing-content {
+        max-width: 850px;
+        margin: 45px auto;
+        padding: 35px;
+      }
+
+      .landing-content h2 {
+        margin-top: 32px;
+      }
+
+      .landing-content h2:first-child {
+        margin-top: 0;
+      }
+
+      .landing-content p,
+      .landing-content li {
+        line-height: 1.8;
+      }
+
+      .landing-content li {
+        margin: 8px 0;
+      }
+
+      .landing-footer {
+        padding: 35px 0 50px;
+        text-align: center;
+      }
+
+      .landing-footer nav {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin: 18px 0;
+      }
+
+      .landing-footer a {
+        color: inherit;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      @media (max-width: 700px) {
+        .landing-action {
+          flex-direction: column;
+        }
+
+        .landing-action button {
+          width: 100%;
+        }
+
+        .result-card {
+          grid-template-columns: 1fr;
+        }
+
+        .landing-content {
+          padding: 24px;
+        }
+      }
+    </style>
+  </body>
+</html>
