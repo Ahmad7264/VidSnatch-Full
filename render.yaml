@@ -18,7 +18,7 @@ services:
         value: ""
 
       - key: CORS_ORIGIN
-        value: https://vidsnatch.in,https://www.vidsnatch.in
+        value: https://vidsnatch.fun,https://www.vidsnatch.fun
 
       - key: MAX_ACTIVE_JOBS
         value: "2"
