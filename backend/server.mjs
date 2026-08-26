@@ -10,6 +10,7 @@ import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 
 const execFileAsync = promisify(execFile);
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -19,17 +20,14 @@ const PORT = Number(process.env.PORT || 10000);
 const HOST = "0.0.0.0";
 
 const MAX_ACTIVE_JOBS = Number(process.env.MAX_ACTIVE_JOBS || 2);
+
 const JOB_TTL_MS = 15 * 60 * 1000;
-const INFO_TIMEOUT_MS = 120 * 1000;
+const INFO_TIMEOUT_MS = 60 * 1000;
+const INFO_CACHE_TTL_MS = 5 * 60 * 1000;
 const DOWNLOAD_TIMEOUT_MS = 15 * 60 * 1000;
 
 const DOWNLOAD_DIR = path.join(os.tmpdir(), "vidsnatch-jobs");
 
-/*
- * yt-dlp executable:
- * Windows -> yt-dlp.exe
- * Linux/Render -> yt-dlp
- */
 const BUNDLED_YTDLP = path.resolve(
   __dirname,
   "bin",
@@ -47,7 +45,24 @@ const jobs = new Map();
 const activeJobs = new Set();
 const requestLog = new Map();
 
+/*
+ * Metadata cache.
+ * This avoids running yt-dlp again for the same URL
+ * for a short period.
+ */
+const infoCache = new Map();
+
+/*
+ * Prevent multiple yt-dlp processes for the same URL
+ * when several users request the same video together.
+ */
+const infoInFlight = new Map();
+
 await fsp.mkdir(DOWNLOAD_DIR, { recursive: true });
+
+/* =========================================================
+   CORS
+   ========================================================= */
 
 function allowedOrigins() {
   const configured = (process.env.CORS_ORIGIN || "")
@@ -56,6 +71,8 @@ function allowedOrigins() {
     .filter(Boolean);
 
   return new Set([
+    "https://vidsnatch.fun",
+    "https://www.vidsnatch.fun",
     "https://vidsnatch.in",
     "https://www.vidsnatch.in",
     "http://localhost:5173",
@@ -78,17 +95,24 @@ app.use(
 
       return callback(null, false);
     },
-
     methods: ["GET", "POST", "OPTIONS"],
-
     allowedHeaders: ["Content-Type"],
-
-    exposedHeaders: ["Content-Disposition", "Content-Length"],
+    exposedHeaders: [
+      "Content-Disposition",
+      "Content-Length",
+      "Content-Range",
+      "Accept-Ranges",
+    ],
   }),
 );
 
 app.use(express.json({ limit: "32kb" }));
-app.use(express.urlencoded({ extended: true, limit: "32kb" }));
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: "32kb",
+  }),
+);
 
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -112,7 +136,6 @@ app.use((req, res, next) => {
 function rateLimit(maxRequests = 20) {
   return (req, res, next) => {
     const now = Date.now();
-
     const key = req.ip || "unknown";
 
     const recent = (requestLog.get(key) || []).filter(
@@ -126,7 +149,6 @@ function rateLimit(maxRequests = 20) {
     }
 
     recent.push(now);
-
     requestLog.set(key, recent);
 
     next();
@@ -234,7 +256,7 @@ async function commandExists(command, args = ["--version"]) {
 }
 
 /* =========================================================
-   YT-DLP DOWNLOAD
+   YT-DLP
    ========================================================= */
 
 async function downloadBinary(url, target) {
@@ -249,27 +271,19 @@ async function downloadBinary(url, target) {
   const reader = response.body.getReader();
 
   const chunks = [];
-
   let total = 0;
 
   while (true) {
     const { done, value } = await reader.read();
 
-    if (done) {
-      break;
-    }
+    if (done) break;
 
     chunks.push(Buffer.from(value));
-
     total += value.byteLength;
   }
 
   await fsp.writeFile(target, Buffer.concat(chunks, total), { mode: 0o755 });
 }
-
-/* =========================================================
-   ENSURE YT-DLP
-   ========================================================= */
 
 async function ensureYtDlp() {
   const configured = process.env.YTDLP_PATH;
@@ -286,11 +300,6 @@ async function ensureYtDlp() {
     return;
   }
 
-  /*
-   * Windows -> official yt-dlp.exe
-   * Linux x64 -> official yt-dlp_linux
-   * Linux arm64 -> official yt-dlp_linux_aarch64
-   */
   const asset =
     process.platform === "win32"
       ? "yt-dlp.exe"
@@ -318,22 +327,25 @@ async function ensureYtDlp() {
   console.log("yt-dlp download complete");
 }
 
-/* =========================================================
-   YT-DLP EXECUTABLE
-   ========================================================= */
-
 function ytDlpExecutable() {
   return (
     process.env.YTDLP_PATH ||
     (fs.existsSync(BUNDLED_YTDLP) ? BUNDLED_YTDLP : YTDLP_PATH)
   );
 }
+
+/* =========================================================
+   YOUTUBE COOKIES
+   ========================================================= */
+
 let youtubeCookiesPath = null;
+
 async function prepareYouTubeCookies() {
   const cookieData = process.env.YOUTUBE_COOKIES;
 
   if (!cookieData || !cookieData.trim()) {
     console.log("YouTube cookies not configured.");
+
     return null;
   }
 
@@ -348,36 +360,39 @@ async function prepareYouTubeCookies() {
 
   return cookiePath;
 }
+
 /* =========================================================
-   BASE YT-DLP ARGUMENTS
+   TYPE-SPECIFIC YT-DLP ARGUMENTS
    ========================================================= */
 
-function baseYtArgs() {
-  const args = [
-    "--no-warnings",
+function baseYtArgs(type = "youtube") {
+  const args = ["--no-warnings", "--no-playlist", "--socket-timeout", "10"];
 
-    "--no-playlist",
+  /*
+   * IMPORTANT:
+   * Instagram does NOT use YouTube JS runtime,
+   * POT provider or YouTube cookies.
+   *
+   * This removes unnecessary processing from Instagram.
+   */
+  if (type === "youtube") {
+    args.push(
+      "--js-runtimes",
+      "node",
+      "--extractor-args",
+      `youtubepot-bgutilhttp:base_url=${
+        process.env.BGUTIL_POT_BASE_URL || "http://127.0.0.1:4416"
+      }`,
+    );
 
-    "--js-runtimes",
-    "node",
-
-    "--socket-timeout",
-    "10",
-
-    "--extractor-args",
-    `youtubepot-bgutilhttp:base_url=${
-      process.env.BGUTIL_POT_BASE_URL || "http://127.0.0.1:4416"
-    }`,
-  ];
-
-  if (youtubeCookiesPath && fs.existsSync(youtubeCookiesPath)) {
-    args.push("--cookies", youtubeCookiesPath);
-
-    console.log("YouTube cookies enabled.");
+    if (youtubeCookiesPath && fs.existsSync(youtubeCookiesPath)) {
+      args.push("--cookies", youtubeCookiesPath);
+    }
   }
 
   return args;
 }
+
 /* =========================================================
    FORMAT HELPERS
    ========================================================= */
@@ -398,9 +413,21 @@ function buildFormatLabel(fmt) {
   return [resolution, fps, note, ext, size].filter(Boolean).join(" · ");
 }
 
+/* =========================================================
+   NORMALIZE INFO
+   ========================================================= */
+
 function normalizeInfo(info, type) {
+  /*
+   * INSTAGRAM
+   *
+   * Only return video information.
+   * Thumbnail is returned for frontend preview.
+   */
   if (type === "instagram") {
-    const videoFmt = (info.formats || [])
+    const formats = info.formats || [];
+
+    const videoFmt = formats
       .filter(
         (f) =>
           f.vcodec && f.vcodec !== "none" && f.acodec && f.acodec !== "none",
@@ -420,16 +447,25 @@ function normalizeInfo(info, type) {
 
       videoUrl: videoFmt?.url || info.url || "",
 
-      audioUrl: videoFmt?.url || info.url || "",
+      audioUrl: "",
     };
   }
 
+  /*
+   * YOUTUBE
+   *
+   * Only formats <= 1440p.
+   */
   const allFormats = info.formats || [];
 
   const byHeight = new Map();
 
   for (const fmt of allFormats) {
     if (!fmt.vcodec || fmt.vcodec === "none" || !fmt.height) {
+      continue;
+    }
+
+    if (Number(fmt.height) > 1440) {
       continue;
     }
 
@@ -501,20 +537,24 @@ function normalizeInfo(info, type) {
 
 async function getInfo(url, type) {
   const args = [
-    ...baseYtArgs(),
-
-    "-v",
+    ...baseYtArgs(type),
 
     "--dump-single-json",
 
     "--skip-download",
 
     "--no-check-certificates",
-
-    "--",
-
-    url,
   ];
+
+  /*
+   * Instagram:
+   * best ready-to-play video.
+   */
+  if (type === "instagram") {
+    args.push("-f", "best");
+  }
+
+  args.push("--", url);
 
   const { stdout, stderr } = await execFileAsync(ytDlpExecutable(), args, {
     maxBuffer: 50 * 1024 * 1024,
@@ -635,8 +675,23 @@ function startYtDlpJob(job, params) {
 
   const isAudio = params.mediaType === "audio";
 
+  /*
+   * Instagram = video only.
+   */
+  if (params.type === "instagram" && isAudio) {
+    setJob(job, {
+      status: "error",
+
+      error: "Instagram downloads are video-only.",
+    });
+
+    activeJobs.delete(job.id);
+
+    return;
+  }
+
   const args = [
-    ...baseYtArgs(),
+    ...baseYtArgs(params.type),
 
     "--newline",
 
@@ -664,6 +719,9 @@ function startYtDlpJob(job, params) {
     outputTemplate,
   ];
 
+  /*
+   * AUDIO
+   */
   if (isAudio) {
     args.push(
       "-f",
@@ -677,20 +735,47 @@ function startYtDlpJob(job, params) {
       "--audio-quality",
       "0",
     );
+  } else if (params.type === "instagram") {
+
+  /*
+   * INSTAGRAM VIDEO
+   *
+   * Do not force separate
+   * video + audio streams.
+   */
+    args.push(
+      "-f",
+      "best",
+
+      "--merge-output-format",
+      "mp4",
+    );
   } else if (params.formatId) {
+
+  /*
+   * YOUTUBE SELECTED FORMAT
+   *
+   * Never allow >1440p.
+   */
     const formatId = String(params.formatId).replace(/[^\w.+-]/g, "");
 
     args.push(
       "-f",
-      `${formatId}+bestaudio/best`,
+      `${formatId}[height<=1440]+bestaudio/best[height<=1440]`,
 
       "--merge-output-format",
       "mp4",
     );
   } else {
+
+  /*
+   * YOUTUBE DEFAULT
+   *
+   * Maximum 1440p.
+   */
     args.push(
       "-f",
-      "bestvideo+bestaudio/best",
+      "bestvideo[height<=1440]+bestaudio/best[height<=1440]",
 
       "--merge-output-format",
       "mp4",
@@ -866,7 +951,16 @@ function startYtDlpJob(job, params) {
         throw new Error("Downloaded file is empty.");
       }
 
-      const extension = isAudio ? "mp3" : "mp4";
+      /*
+       * Preserve actual file extension.
+       * Do NOT blindly rename WebM/MOV to MP4.
+       */
+      const actualExtension = path
+        .extname(outFile)
+        .replace(".", "")
+        .toLowerCase();
+
+      const extension = isAudio ? "mp3" : actualExtension || "mp4";
 
       const filename = `VidSnatch_${safeTitle(params.videoTitle)}.${extension}`;
 
@@ -960,20 +1054,46 @@ app.post("/api/info", rateLimit(20), async (req, res) => {
 
   const requestStart = Date.now();
 
+  const cacheKey = `${type}:${String(url).trim()}`;
+
+  /*
+   * CACHE HIT
+   */
+  const cached = infoCache.get(cacheKey);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    console.log(`[api/info] CACHE HIT ${Date.now() - requestStart}ms`);
+
+    return res.json(cached.data);
+  }
+
+  if (cached) {
+    infoCache.delete(cacheKey);
+  }
+
   console.log(`[api/info] START type=${type} url=${url}`);
 
   try {
-    const ytDlpStart = Date.now();
-
     await ensureYtDlp();
 
-    console.log(`[api/info] ensureYtDlp: ${Date.now() - ytDlpStart}ms`);
+    /*
+     * Reuse an existing extraction
+     * for the same URL.
+     */
+    let infoPromise = infoInFlight.get(cacheKey);
 
-    const infoStart = Date.now();
+    if (!infoPromise) {
+      infoPromise = getInfo(url, type);
 
-    const data = await getInfo(url, type);
+      infoInFlight.set(cacheKey, infoPromise);
+    }
 
-    console.log(`[api/info] getInfo: ${Date.now() - infoStart}ms`);
+    const data = await infoPromise;
+
+    infoCache.set(cacheKey, {
+      data,
+      expiresAt: Date.now() + INFO_CACHE_TTL_MS,
+    });
 
     console.log(`[api/info] TOTAL: ${Date.now() - requestStart}ms`);
 
@@ -987,6 +1107,8 @@ app.post("/api/info", rateLimit(20), async (req, res) => {
     return res.status(500).json({
       error: sanitizeError(err.stderr || err.message),
     });
+  } finally {
+    infoInFlight.delete(cacheKey);
   }
 });
 
@@ -1006,6 +1128,15 @@ app.post("/api/download/start", rateLimit(5), async (req, res) => {
   if (!["video", "audio"].includes(mediaType)) {
     return res.status(400).json({
       error: "Invalid media type.",
+    });
+  }
+
+  /*
+   * Instagram is VIDEO ONLY.
+   */
+  if (type === "instagram" && mediaType !== "video") {
+    return res.status(400).json({
+      error: "Instagram downloads are video-only.",
     });
   }
 
@@ -1033,6 +1164,15 @@ app.post("/api/download/start", rateLimit(5), async (req, res) => {
     return res.status(503).json({
       error: sanitizeError(err.message),
     });
+  }
+
+  /*
+   * Never allow a format above 1440p.
+   */
+  let safeFormatId = formatId;
+
+  if (type === "youtube" && formatId) {
+    safeFormatId = String(formatId).replace(/[^\w.+-]/g, "");
   }
 
   const id = crypto.randomUUID().replaceAll("-", "");
@@ -1069,7 +1209,7 @@ app.post("/api/download/start", rateLimit(5), async (req, res) => {
     url,
     type,
     mediaType,
-    formatId,
+    formatId: safeFormatId,
     videoTitle,
   });
 
@@ -1094,9 +1234,7 @@ app.get("/api/download/status/:jobId", rateLimit(60), (req, res) => {
 
   if (
     job.expiresAt < Date.now() &&
-    job.status !== "downloading" &&
-    job.status !== "processing" &&
-    job.status !== "merging"
+    !["downloading", "processing", "merging"].includes(job.status)
   ) {
     return res.status(404).json({
       error: "Download job expired.",
@@ -1126,46 +1264,130 @@ app.get("/api/download/file/:jobId", async (req, res) => {
       throw new Error("File is missing or empty.");
     }
 
-    res.setHeader(
-      "Content-Type",
-      job.filename.endsWith(".mp3") ? "audio/mpeg" : "video/mp4",
-    );
+    const filename = job.filename || "VidSnatch.mp4";
 
-    res.setHeader("Content-Length", stat.size);
+    const lower = filename.toLowerCase();
+
+    let contentType = "video/mp4";
+
+    if (lower.endsWith(".mp3")) {
+      contentType = "audio/mpeg";
+    } else if (lower.endsWith(".webm")) {
+      contentType = "video/webm";
+    } else if (lower.endsWith(".mov")) {
+      contentType = "video/quicktime";
+    } else if (lower.endsWith(".m4v")) {
+      contentType = "video/x-m4v";
+    }
+
+    res.setHeader("Content-Type", contentType);
+
+    res.setHeader("Accept-Ranges", "bytes");
 
     res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
 
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${job.filename.replace(/"/g, "_")}"; filename*=UTF-8''${encodeURIComponent(job.filename)}`,
-    );
-
     res.setHeader("X-Content-Type-Options", "nosniff");
 
-    const stream = fs.createReadStream(job.filePath);
+    const range = req.headers.range;
+
+    /*
+     * NORMAL DOWNLOAD
+     */
+    if (!range) {
+      res.setHeader("Content-Length", stat.size);
+
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${filename.replace(
+          /"/g,
+          "_",
+        )}"; filename*=UTF-8''${encodeURIComponent(filename)}`,
+      );
+
+      const stream = fs.createReadStream(job.filePath);
+
+      stream.on("error", (err) => {
+        console.error("[api/download/file]", err);
+
+        if (!res.headersSent) {
+          res.status(500).json({
+            error: "Could not read the download file.",
+          });
+        } else {
+          res.destroy(err);
+        }
+      });
+
+      stream.pipe(res);
+
+      return;
+    }
+
+    /*
+     * VIDEO/AUDIO RANGE REQUEST
+     */
+    const match = /^bytes=(\d*)-(\d*)$/i.exec(range);
+
+    if (!match) {
+      res.status(416).setHeader("Content-Range", `bytes */${stat.size}`).end();
+
+      return;
+    }
+
+    let start = match[1] ? Number(match[1]) : 0;
+
+    let end = match[2] ? Number(match[2]) : stat.size - 1;
+
+    /*
+     * bytes=-500000
+     */
+    if (!match[1] && match[2]) {
+      const suffixLength = Number(match[2]);
+
+      if (!Number.isFinite(suffixLength) || suffixLength <= 0) {
+        return res
+          .status(416)
+          .setHeader("Content-Range", `bytes */${stat.size}`)
+          .end();
+      }
+
+      start = Math.max(stat.size - suffixLength, 0);
+
+      end = stat.size - 1;
+    }
+
+    if (
+      !Number.isFinite(start) ||
+      !Number.isFinite(end) ||
+      start < 0 ||
+      start >= stat.size ||
+      end < start
+    ) {
+      return res
+        .status(416)
+        .setHeader("Content-Range", `bytes */${stat.size}`)
+        .end();
+    }
+
+    end = Math.min(end, stat.size - 1);
+
+    const chunkSize = end - start + 1;
+
+    res.status(206);
+
+    res.setHeader("Content-Range", `bytes ${start}-${end}/${stat.size}`);
+
+    res.setHeader("Content-Length", chunkSize);
+
+    const stream = fs.createReadStream(job.filePath, {
+      start,
+      end,
+    });
 
     stream.on("error", (err) => {
       console.error("[api/download/file]", err);
 
-      if (!res.headersSent) {
-        res.status(500).json({
-          error: "Could not read the download file.",
-        });
-      } else {
-        res.destroy(err);
-      }
-    });
-
-    stream.on("close", () => {
-      if (job.filePath) {
-        fsp
-          .rm(job.filePath, {
-            force: true,
-          })
-          .catch(() => {});
-      }
-
-      jobs.delete(job.id);
+      res.destroy(err);
     });
 
     stream.pipe(res);
@@ -1184,8 +1406,6 @@ app.get("/api/download/file/:jobId", async (req, res) => {
    SERVE FRONTEND
    ========================================================= */
 
-// Serve the Vite build when this repository
-// is deployed as a single Render web service.
 if (fs.existsSync(FRONTEND_DIST)) {
   app.use(
     express.static(FRONTEND_DIST, {
@@ -1215,14 +1435,15 @@ app.use((err, req, res, next) => {
 });
 
 /* =========================================================
-   CLEANUP EXPIRED JOBS
+   CLEANUP
    ========================================================= */
 
-// Remove expired files/jobs so Render's
-// ephemeral disk cannot fill up.
 setInterval(async () => {
   const now = Date.now();
 
+  /*
+   * Remove expired jobs.
+   */
   for (const [id, job] of jobs) {
     const running = ["queued", "downloading", "merging", "processing"].includes(
       job.status,
@@ -1235,6 +1456,9 @@ setInterval(async () => {
     }
   }
 
+  /*
+   * Remove expired request logs.
+   */
   for (const [ip, timestamps] of requestLog) {
     const fresh = timestamps.filter((ts) => now - ts < 60_000);
 
@@ -1244,12 +1468,23 @@ setInterval(async () => {
       requestLog.delete(ip);
     }
   }
+
+  /*
+   * Remove expired metadata cache.
+   */
+  for (const [key, entry] of infoCache) {
+    if (entry.expiresAt <= now) {
+      infoCache.delete(key);
+    }
+  }
 }, 60_000).unref();
 
 /* =========================================================
    START SERVER
    ========================================================= */
+
 youtubeCookiesPath = await prepareYouTubeCookies();
+
 const server = app.listen(PORT, HOST, () => {
   console.log(`VidSnatch backend listening on http://${HOST}:${PORT}`);
 
