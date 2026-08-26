@@ -22,12 +22,28 @@ const HOST = "0.0.0.0";
 const MAX_ACTIVE_JOBS = Number(process.env.MAX_ACTIVE_JOBS || 2);
 
 const JOB_TTL_MS = 15 * 60 * 1000;
+
+/*
+ * Metadata extraction timeout.
+ * 60 seconds is enough while avoiding very long hanging requests.
+ */
 const INFO_TIMEOUT_MS = 60 * 1000;
+
+/*
+ * Cache metadata for 5 minutes.
+ * Repeating the same URL will not call yt-dlp again.
+ */
 const INFO_CACHE_TTL_MS = 5 * 60 * 1000;
+
 const DOWNLOAD_TIMEOUT_MS = 15 * 60 * 1000;
 
 const DOWNLOAD_DIR = path.join(os.tmpdir(), "vidsnatch-jobs");
 
+/*
+ * yt-dlp executable:
+ * Windows -> yt-dlp.exe
+ * Linux/Render -> yt-dlp
+ */
 const BUNDLED_YTDLP = path.resolve(
   __dirname,
   "bin",
@@ -47,18 +63,29 @@ const requestLog = new Map();
 
 /*
  * Metadata cache.
- * This avoids running yt-dlp again for the same URL
- * for a short period.
+ *
+ * key:
+ * type:url
+ *
+ * value:
+ * {
+ *   data,
+ *   expiresAt
+ * }
  */
 const infoCache = new Map();
 
 /*
- * Prevent multiple yt-dlp processes for the same URL
- * when several users request the same video together.
+ * Prevent duplicate yt-dlp processes.
+ *
+ * If 2 requests for the same URL arrive together,
+ * only ONE yt-dlp process is started.
  */
 const infoInFlight = new Map();
 
-await fsp.mkdir(DOWNLOAD_DIR, { recursive: true });
+await fsp.mkdir(DOWNLOAD_DIR, {
+  recursive: true,
+});
 
 /* =========================================================
    CORS
@@ -73,10 +100,13 @@ function allowedOrigins() {
   return new Set([
     "https://vidsnatch.fun",
     "https://www.vidsnatch.fun",
+
     "https://vidsnatch.in",
     "https://www.vidsnatch.in",
+
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+
     ...configured,
   ]);
 }
@@ -84,6 +114,7 @@ function allowedOrigins() {
 const origins = allowedOrigins();
 
 app.disable("x-powered-by");
+
 app.set("trust proxy", 1);
 
 app.use(
@@ -95,8 +126,11 @@ app.use(
 
       return callback(null, false);
     },
+
     methods: ["GET", "POST", "OPTIONS"],
+
     allowedHeaders: ["Content-Type"],
+
     exposedHeaders: [
       "Content-Disposition",
       "Content-Length",
@@ -106,7 +140,12 @@ app.use(
   }),
 );
 
-app.use(express.json({ limit: "32kb" }));
+app.use(
+  express.json({
+    limit: "32kb",
+  }),
+);
+
 app.use(
   express.urlencoded({
     extended: true,
@@ -136,6 +175,7 @@ app.use((req, res, next) => {
 function rateLimit(maxRequests = 20) {
   return (req, res, next) => {
     const now = Date.now();
+
     const key = req.ip || "unknown";
 
     const recent = (requestLog.get(key) || []).filter(
@@ -149,6 +189,7 @@ function rateLimit(maxRequests = 20) {
     }
 
     recent.push(now);
+
     requestLog.set(key, recent);
 
     next();
@@ -256,7 +297,7 @@ async function commandExists(command, args = ["--version"]) {
 }
 
 /* =========================================================
-   YT-DLP
+   YT-DLP DOWNLOAD
    ========================================================= */
 
 async function downloadBinary(url, target) {
@@ -271,19 +312,29 @@ async function downloadBinary(url, target) {
   const reader = response.body.getReader();
 
   const chunks = [];
+
   let total = 0;
 
   while (true) {
     const { done, value } = await reader.read();
 
-    if (done) break;
+    if (done) {
+      break;
+    }
 
     chunks.push(Buffer.from(value));
+
     total += value.byteLength;
   }
 
-  await fsp.writeFile(target, Buffer.concat(chunks, total), { mode: 0o755 });
+  await fsp.writeFile(target, Buffer.concat(chunks, total), {
+    mode: 0o755,
+  });
 }
+
+/* =========================================================
+   ENSURE YT-DLP
+   ========================================================= */
 
 async function ensureYtDlp() {
   const configured = process.env.YTDLP_PATH;
@@ -327,6 +378,10 @@ async function ensureYtDlp() {
   console.log("yt-dlp download complete");
 }
 
+/* =========================================================
+   YT-DLP EXECUTABLE
+   ========================================================= */
+
 function ytDlpExecutable() {
   return (
     process.env.YTDLP_PATH ||
@@ -353,6 +408,7 @@ async function prepareYouTubeCookies() {
 
   await fsp.writeFile(cookiePath, cookieData, {
     encoding: "utf8",
+
     mode: 0o600,
   });
 
@@ -366,20 +422,27 @@ async function prepareYouTubeCookies() {
    ========================================================= */
 
 function baseYtArgs(type = "youtube") {
+  /*
+   * Common lightweight arguments.
+   */
   const args = ["--no-warnings", "--no-playlist", "--socket-timeout", "10"];
 
   /*
-   * IMPORTANT:
-   * Instagram does NOT use YouTube JS runtime,
-   * POT provider or YouTube cookies.
+   * ONLY YOUTUBE:
    *
-   * This removes unnecessary processing from Instagram.
+   * JS runtime
+   * POT provider
+   * cookies
+   *
+   * Instagram does NOT receive these.
    */
   if (type === "youtube") {
     args.push(
       "--js-runtimes",
       "node",
+
       "--extractor-args",
+
       `youtubepot-bgutilhttp:base_url=${
         process.env.BGUTIL_POT_BASE_URL || "http://127.0.0.1:4416"
       }`,
@@ -419,10 +482,15 @@ function buildFormatLabel(fmt) {
 
 function normalizeInfo(info, type) {
   /*
+   * =======================================================
    * INSTAGRAM
+   * =======================================================
    *
-   * Only return video information.
-   * Thumbnail is returned for frontend preview.
+   * Only video.
+   *
+   * No audio download.
+   *
+   * Thumbnail returned to frontend.
    */
   if (type === "instagram") {
     const formats = info.formats || [];
@@ -445,17 +513,27 @@ function normalizeInfo(info, type) {
 
       thumbnail: info.thumbnail || "",
 
+      /*
+       * Used by frontend if it wants
+       * to show a preview.
+       */
       videoUrl: videoFmt?.url || info.url || "",
 
+      /*
+       * Instagram is video-only.
+       */
       audioUrl: "",
     };
   }
 
   /*
+   * =======================================================
    * YOUTUBE
+   * =======================================================
    *
-   * Only formats <= 1440p.
+   * Maximum 1440p / 2K.
    */
+
   const allFormats = info.formats || [];
 
   const byHeight = new Map();
@@ -465,6 +543,11 @@ function normalizeInfo(info, type) {
       continue;
     }
 
+    /*
+     * HARD 2K LIMIT.
+     *
+     * 2160p / 4K and above are ignored.
+     */
     if (Number(fmt.height) > 1440) {
       continue;
     }
@@ -536,9 +619,28 @@ function normalizeInfo(info, type) {
    ========================================================= */
 
 async function getInfo(url, type) {
+  const startedAt = Date.now();
+
+  /*
+   * IMPORTANT:
+   *
+   * Instagram:
+   *   no YouTube JS
+   *   no POT
+   *   no cookies
+   *
+   * YouTube:
+   *   JS + POT + cookies
+   */
   const args = [
     ...baseYtArgs(type),
 
+    /*
+     * No -v here.
+     *
+     * It was only useful for debugging
+     * and makes the subprocess output larger.
+     */
     "--dump-single-json",
 
     "--skip-download",
@@ -548,7 +650,9 @@ async function getInfo(url, type) {
 
   /*
    * Instagram:
-   * best ready-to-play video.
+   *
+   * Ask yt-dlp for a ready-to-play
+   * video rather than separate streams.
    */
   if (type === "instagram") {
     args.push("-f", "best");
@@ -564,11 +668,19 @@ async function getInfo(url, type) {
     windowsHide: true,
   });
 
+  console.log(
+    `[getInfo] yt-dlp finished type=${type} time=${Date.now() - startedAt}ms`,
+  );
+
   if (!stdout.trim()) {
     throw new Error(stderr || "No media information returned");
   }
 
-  return normalizeInfo(JSON.parse(stdout.trim()), type);
+  const parsed = JSON.parse(stdout.trim());
+
+  const normalized = normalizeInfo(parsed, type);
+
+  return normalized;
 }
 
 /* =========================================================
@@ -676,7 +788,8 @@ function startYtDlpJob(job, params) {
   const isAudio = params.mediaType === "audio";
 
   /*
-   * Instagram = video only.
+   * Instagram:
+   * video only.
    */
   if (params.type === "instagram" && isAudio) {
     setJob(job, {
@@ -721,6 +834,8 @@ function startYtDlpJob(job, params) {
 
   /*
    * AUDIO
+   *
+   * YouTube audio only.
    */
   if (isAudio) {
     args.push(
@@ -740,28 +855,22 @@ function startYtDlpJob(job, params) {
   /*
    * INSTAGRAM VIDEO
    *
-   * Do not force separate
-   * video + audio streams.
+   * Best ready-to-play video.
    */
-    args.push(
-      "-f",
-      "best",
-
-      "--merge-output-format",
-      "mp4",
-    );
+    args.push("-f", "best");
   } else if (params.formatId) {
 
   /*
    * YOUTUBE SELECTED FORMAT
    *
-   * Never allow >1440p.
+   * Frontend should only provide
+   * formats <= 1440p.
    */
     const formatId = String(params.formatId).replace(/[^\w.+-]/g, "");
 
     args.push(
       "-f",
-      `${formatId}[height<=1440]+bestaudio/best[height<=1440]`,
+      `${formatId}+bestaudio/best`,
 
       "--merge-output-format",
       "mp4",
@@ -771,11 +880,11 @@ function startYtDlpJob(job, params) {
   /*
    * YOUTUBE DEFAULT
    *
-   * Maximum 1440p.
+   * HARD 1440p / 2K LIMIT.
    */
     args.push(
       "-f",
-      "bestvideo[height<=1440]+bestaudio/best[height<=1440]",
+      "bestvideo[height<=1440]+bestaudio/best[height<=1440]/best[height<=1440]",
 
       "--merge-output-format",
       "mp4",
@@ -952,8 +1061,10 @@ function startYtDlpJob(job, params) {
       }
 
       /*
-       * Preserve actual file extension.
-       * Do NOT blindly rename WebM/MOV to MP4.
+       * Preserve the actual extension.
+       *
+       * Audio is always MP3.
+       * Video keeps its real extension.
        */
       const actualExtension = path
         .extname(outFile)
@@ -1056,32 +1167,57 @@ app.post("/api/info", rateLimit(20), async (req, res) => {
 
   const cacheKey = `${type}:${String(url).trim()}`;
 
+  console.log(`[api/info] START type=${type} url=${url}`);
+
   /*
+   * =====================================================
    * CACHE HIT
+   * =====================================================
    */
   const cached = infoCache.get(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
-    console.log(`[api/info] CACHE HIT ${Date.now() - requestStart}ms`);
+    console.log(`[api/info] CACHE HIT: ${Date.now() - requestStart}ms`);
 
     return res.json(cached.data);
   }
 
+  /*
+   * Delete expired cache entry.
+   */
   if (cached) {
     infoCache.delete(cacheKey);
   }
 
-  console.log(`[api/info] START type=${type} url=${url}`);
+  /*
+   * =====================================================
+   * IN-FLIGHT REQUEST
+   * =====================================================
+   *
+   * If another request for the same URL is already
+   * extracting, wait for that exact promise.
+   */
+  let infoPromise = infoInFlight.get(cacheKey);
+
+  if (infoPromise) {
+    console.log("[api/info] Waiting for existing extraction");
+  }
 
   try {
+    /*
+     * yt-dlp itself should already be prepared by
+     * Render startup. This check is effectively instant.
+     */
+    const ytDlpStart = Date.now();
+
     await ensureYtDlp();
 
-    /*
-     * Reuse an existing extraction
-     * for the same URL.
-     */
-    let infoPromise = infoInFlight.get(cacheKey);
+    console.log(`[api/info] ensureYtDlp: ${Date.now() - ytDlpStart}ms`);
 
+    /*
+     * Start extraction only if there isn't already
+     * one running for this URL.
+     */
     if (!infoPromise) {
       infoPromise = getInfo(url, type);
 
@@ -1090,8 +1226,12 @@ app.post("/api/info", rateLimit(20), async (req, res) => {
 
     const data = await infoPromise;
 
+    /*
+     * Save successful metadata.
+     */
     infoCache.set(cacheKey, {
       data,
+
       expiresAt: Date.now() + INFO_CACHE_TTL_MS,
     });
 
@@ -1108,7 +1248,13 @@ app.post("/api/info", rateLimit(20), async (req, res) => {
       error: sanitizeError(err.stderr || err.message),
     });
   } finally {
-    infoInFlight.delete(cacheKey);
+    /*
+     * Only delete if this request owns
+     * the current in-flight promise.
+     */
+    if (infoInFlight.get(cacheKey) === infoPromise) {
+      infoInFlight.delete(cacheKey);
+    }
   }
 });
 
@@ -1132,7 +1278,7 @@ app.post("/api/download/start", rateLimit(5), async (req, res) => {
   }
 
   /*
-   * Instagram is VIDEO ONLY.
+   * Instagram = video only.
    */
   if (type === "instagram" && mediaType !== "video") {
     return res.status(400).json({
@@ -1167,7 +1313,7 @@ app.post("/api/download/start", rateLimit(5), async (req, res) => {
   }
 
   /*
-   * Never allow a format above 1440p.
+   * Format ID is cleaned before being passed to yt-dlp.
    */
   let safeFormatId = formatId;
 
@@ -1207,14 +1353,19 @@ app.post("/api/download/start", rateLimit(5), async (req, res) => {
 
   startYtDlpJob(job, {
     url,
+
     type,
+
     mediaType,
+
     formatId: safeFormatId,
+
     videoTitle,
   });
 
   return res.status(202).json({
     jobId: id,
+
     status: "queued",
   });
 });
@@ -1234,7 +1385,9 @@ app.get("/api/download/status/:jobId", rateLimit(60), (req, res) => {
 
   if (
     job.expiresAt < Date.now() &&
-    !["downloading", "processing", "merging"].includes(job.status)
+    job.status !== "downloading" &&
+    job.status !== "processing" &&
+    job.status !== "merging"
   ) {
     return res.status(404).json({
       error: "Download job expired.",
@@ -1282,6 +1435,9 @@ app.get("/api/download/file/:jobId", async (req, res) => {
 
     res.setHeader("Content-Type", contentType);
 
+    /*
+     * Required for browser video seeking/preview.
+     */
     res.setHeader("Accept-Ranges", "bytes");
 
     res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
@@ -1291,7 +1447,9 @@ app.get("/api/download/file/:jobId", async (req, res) => {
     const range = req.headers.range;
 
     /*
+     * ===================================================
      * NORMAL DOWNLOAD
+     * ===================================================
      */
     if (!range) {
       res.setHeader("Content-Length", stat.size);
@@ -1324,14 +1482,24 @@ app.get("/api/download/file/:jobId", async (req, res) => {
     }
 
     /*
-     * VIDEO/AUDIO RANGE REQUEST
+     * ===================================================
+     * RANGE REQUEST
+     * ===================================================
+     *
+     * Allows:
+     *
+     * <video>
+     * browser preview
+     * seeking
+     * partial loading
      */
     const match = /^bytes=(\d*)-(\d*)$/i.exec(range);
 
     if (!match) {
-      res.status(416).setHeader("Content-Range", `bytes */${stat.size}`).end();
-
-      return;
+      return res
+        .status(416)
+        .setHeader("Content-Range", `bytes */${stat.size}`)
+        .end();
     }
 
     let start = match[1] ? Number(match[1]) : 0;
@@ -1339,6 +1507,8 @@ app.get("/api/download/file/:jobId", async (req, res) => {
     let end = match[2] ? Number(match[2]) : stat.size - 1;
 
     /*
+     * Suffix request:
+     *
      * bytes=-500000
      */
     if (!match[1] && match[2]) {
@@ -1379,6 +1549,14 @@ app.get("/api/download/file/:jobId", async (req, res) => {
 
     res.setHeader("Content-Length", chunkSize);
 
+    /*
+     * IMPORTANT:
+     *
+     * Do NOT delete the file here.
+     *
+     * Browser can make multiple Range requests.
+     * Cleanup is handled by the normal job TTL.
+     */
     const stream = fs.createReadStream(job.filePath, {
       start,
       end,
@@ -1435,14 +1613,14 @@ app.use((err, req, res, next) => {
 });
 
 /* =========================================================
-   CLEANUP
+   CLEANUP EXPIRED JOBS + CACHE
    ========================================================= */
 
 setInterval(async () => {
   const now = Date.now();
 
   /*
-   * Remove expired jobs.
+   * Remove expired jobs/files.
    */
   for (const [id, job] of jobs) {
     const running = ["queued", "downloading", "merging", "processing"].includes(
@@ -1457,7 +1635,7 @@ setInterval(async () => {
   }
 
   /*
-   * Remove expired request logs.
+   * Clean rate-limit records.
    */
   for (const [ip, timestamps] of requestLog) {
     const fresh = timestamps.filter((ts) => now - ts < 60_000);
@@ -1470,7 +1648,7 @@ setInterval(async () => {
   }
 
   /*
-   * Remove expired metadata cache.
+   * Clean metadata cache.
    */
   for (const [key, entry] of infoCache) {
     if (entry.expiresAt <= now) {
