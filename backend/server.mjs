@@ -27,7 +27,7 @@ const JOB_TTL_MS = 15 * 60 * 1000;
  * Metadata extraction timeout.
  * 60 seconds is enough while avoiding very long hanging requests.
  */
-const INFO_TIMEOUT_MS = 60 * 1000;
+const INFO_TIMEOUT_MS = 7 * 1000;
 
 /*
  * Cache metadata for 5 minutes.
@@ -425,7 +425,7 @@ function baseYtArgs(type = "youtube") {
   /*
    * Common lightweight arguments.
    */
-  const args = ["--no-warnings", "--no-playlist", "--socket-timeout", "10"];
+  const args = ["--no-warnings", "--no-playlist", "--socket-timeout", "6"];
 
   /*
    * ONLY YOUTUBE:
@@ -622,65 +622,99 @@ async function getInfo(url, type) {
   const startedAt = Date.now();
 
   /*
-   * IMPORTANT:
-   *
-   * Instagram:
-   *   no YouTube JS
-   *   no POT
-   *   no cookies
+   * Keep Instagram lightweight:
+   * - no YouTube JS runtime
+   * - no POT
+   * - no cookies
    *
    * YouTube:
-   *   JS + POT + cookies
+   * - JS runtime
+   * - POT
+   * - cookies
+   *
+   * IMPORTANT:
+   * This timeout only limits metadata fetching.
+   * It does NOT limit the actual download job.
    */
+
   const args = [
     ...baseYtArgs(type),
 
-    /*
-     * No -v here.
-     *
-     * It was only useful for debugging
-     * and makes the subprocess output larger.
-     */
     "--dump-single-json",
-
     "--skip-download",
-
     "--no-check-certificates",
   ];
 
   /*
    * Instagram:
    *
-   * Ask yt-dlp for a ready-to-play
-   * video rather than separate streams.
+   * We only need one playable video format.
+   * Do not ask yt-dlp to process unnecessary
+   * separate video/audio combinations.
    */
   if (type === "instagram") {
     args.push("-f", "best");
   }
 
+  /*
+   * YouTube:
+   *
+   * We only need formats up to 1440p.
+   * This prevents 4K/8K formats from being
+   * considered by our normalization code.
+   *
+   * yt-dlp still returns metadata, but our
+   * normalized response exposes only <= 1440p.
+   */
   args.push("--", url);
 
-  const { stdout, stderr } = await execFileAsync(ytDlpExecutable(), args, {
-    maxBuffer: 50 * 1024 * 1024,
+  console.log(`[getInfo] START type=${type}`);
 
-    timeout: INFO_TIMEOUT_MS,
+  try {
+    const { stdout, stderr } = await execFileAsync(ytDlpExecutable(), args, {
+      maxBuffer: 50 * 1024 * 1024,
 
-    windowsHide: true,
-  });
+      /*
+       * HARD 7 SECOND FETCH LIMIT.
+       */
+      timeout: INFO_TIMEOUT_MS,
 
-  console.log(
-    `[getInfo] yt-dlp finished type=${type} time=${Date.now() - startedAt}ms`,
-  );
+      windowsHide: true,
+    });
 
-  if (!stdout.trim()) {
-    throw new Error(stderr || "No media information returned");
+    const elapsed = Date.now() - startedAt;
+
+    console.log(`[getInfo] yt-dlp finished type=${type} time=${elapsed}ms`);
+
+    if (!stdout.trim()) {
+      throw new Error(stderr || "No media information returned");
+    }
+
+    const parsed = JSON.parse(stdout.trim());
+
+    const normalized = normalizeInfo(parsed, type);
+
+    return normalized;
+  } catch (err) {
+    const elapsed = Date.now() - startedAt;
+
+    /*
+     * Abort/timeout gets a clean message instead
+     * of exposing a huge yt-dlp stack trace.
+     */
+    if (
+      err?.code === "ETIMEDOUT" ||
+      /timed out/i.test(String(err?.message || ""))
+    ) {
+      throw new Error(
+        `Fetching ${type === "instagram" ? "Instagram" : "YouTube"} information timed out after 7 seconds. Please try again.`,
+      );
+    }
+
+    console.error(`[getInfo] FAILED type=${type} time=${elapsed}ms`, err);
+
+    throw err;
   }
-
-  const parsed = JSON.parse(stdout.trim());
-
-  const normalized = normalizeInfo(parsed, type);
-
-  return normalized;
 }
 
 /* =========================================================
@@ -851,21 +885,19 @@ function startYtDlpJob(job, params) {
       "0",
     );
   } else if (params.type === "instagram") {
-
-  /*
-   * INSTAGRAM VIDEO
-   *
-   * Best ready-to-play video.
-   */
+    /*
+     * INSTAGRAM VIDEO
+     *
+     * Best ready-to-play video.
+     */
     args.push("-f", "best");
   } else if (params.formatId) {
-
-  /*
-   * YOUTUBE SELECTED FORMAT
-   *
-   * Frontend should only provide
-   * formats <= 1440p.
-   */
+    /*
+     * YOUTUBE SELECTED FORMAT
+     *
+     * Frontend should only provide
+     * formats <= 1440p.
+     */
     const formatId = String(params.formatId).replace(/[^\w.+-]/g, "");
 
     args.push(
@@ -876,12 +908,11 @@ function startYtDlpJob(job, params) {
       "mp4",
     );
   } else {
-
-  /*
-   * YOUTUBE DEFAULT
-   *
-   * HARD 1440p / 2K LIMIT.
-   */
+    /*
+     * YOUTUBE DEFAULT
+     *
+     * HARD 1440p / 2K LIMIT.
+     */
     args.push(
       "-f",
       "bestvideo[height<=1440]+bestaudio/best[height<=1440]/best[height<=1440]",
@@ -1244,8 +1275,12 @@ app.post("/api/info", rateLimit(20), async (req, res) => {
       err,
     );
 
-    return res.status(500).json({
-      error: sanitizeError(err.stderr || err.message),
+    const message = sanitizeError(err.stderr || err.message);
+
+    const isTimeout = /timed out after 7 seconds/i.test(message);
+
+    return res.status(isTimeout ? 504 : 500).json({
+      error: message,
     });
   } finally {
     /*
