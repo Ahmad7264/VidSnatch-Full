@@ -26,9 +26,12 @@
      CONFIG
      ========================================================== */
 
-  const API = (window.VIDSNATCH_API || window.location.origin).replace(/\/$/, "");
+  const API = (window.VIDSNATCH_API || window.location.origin).replace(
+    /\/$/,
+    "",
+  );
 
-  const INFO_TIMEOUT = 45000;
+  const INFO_TIMEOUT = 90000;
   const DOWNLOAD_TIMEOUT = 120000;
 
   const STATUS_INTERVAL = 700;
