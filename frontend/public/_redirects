@@ -1,0 +1,17 @@
+# ============================================================
+# VidSnatch — SPA / Static Page Routing
+# ============================================================
+
+# Main application
+/    /index.html    200
+
+# Dedicated downloader pages
+/youtube-video-downloader    /youtube-video-downloader/index.html    200
+/instagram-reel-downloader   /instagram-reel-downloader/index.html   200
+/facebook-video-downloader   /facebook-video-downloader/index.html   200
+/tiktok-video-downloader     /tiktok-video-downloader/index.html     200
+/twitter-video-downloader    /twitter-video-downloader/index.html    200
+/reddit-video-downloader     /reddit-video-downloader/index.html     200
+/threads-video-downloader    /threads-video-downloader/index.html    200
+/pinterest-video-downloader  /pinterest-video-downloader/index.html  200
+/snapchat-video-downloader   /snapchat-video-downloader/index.html   200

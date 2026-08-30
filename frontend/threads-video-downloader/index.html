@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <link rel="stylesheet" href="/src/style.css" />
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="theme-color" content="#f7f3df" />
+
+    <title>Threads Video Downloader | VidSnatch</title>
+
+    <meta name="description" content="Download supported Threads videos quickly and easily with VidSnatch. Paste a public Threads video URL and choose an available download option." />
+
+    <meta name="keywords" content="Threads Video Downloader, VidSnatch, video downloader, online video downloader, MP4 downloader, free video downloader" />
+
+    <meta name="author" content="VidSnatch" />
+
+    <meta name="theme-color" content="#0d0d0b" />
+
+    <meta property="og:image" content="https://vidsnatch.fun/og-image.png" />
+    <meta property="og:image:alt" content="VidSnatch Threads Video Downloader" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:image" content="https://vidsnatch.fun/og-image.png" />
+
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
+    <link
+      rel="canonical"
+      href="https://vidsnatch.fun/threads-video-downloader/"
+    />
+
+    <!-- ========================================================
+       OPEN GRAPH
+       ======================================================== -->
+
+    <meta property="og:type" content="website" />
+
+    <meta property="og:title" content="Threads Video Downloader | VidSnatch" />
+
+    <meta property="og:description" content="Download supported Threads videos quickly and easily with VidSnatch. Paste a public Threads video URL and choose an available download option." />
+
+    <meta property="og:url" content="https://vidsnatch.fun/threads-video-downloader/" />
+
+    <meta property="og:site_name" content="VidSnatch" />
+
+    <!-- ========================================================
+       X / TWITTER
+       ======================================================== -->
+
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="twitter:title" content="Threads Video Downloader | VidSnatch" />
+
+    <meta name="twitter:description" content="Download supported Threads videos quickly and easily with VidSnatch. Paste a public Threads video URL and choose an available download option." />
+
+    <!-- ========================================================
+       FONTS
+       ======================================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- ========================================================
+       SHARED CSS
+       ======================================================== -->
+<link rel="icon" href="/favicon.ico" />
+
+    <!-- ========================================================
+       WEB APPLICATION SCHEMA
+       ======================================================== -->
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "VidSnatch Threads Video Downloader",
+        "url": "https://vidsnatch.fun/threads-video-downloader/",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Web Browser",
+        "description": "A web-based tool for processing supported Threads video URLs.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "VidSnatch",
+          "url": "https://vidsnatch.fun/"
+        }
+      }
+    </script>
+
+    <!-- ========================================================
+       FAQ SCHEMA
+       ======================================================== -->
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How do I download a Threads video?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Copy a supported Threads video URL, paste it into VidSnatch, select Fetch Video, and choose an available download option."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is the Threads video downloader free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "VidSnatch provides the downloader interface free of charge."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do I need to install software?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No installation is required. The downloader works through a modern web browser."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why can't some Threads videos be processed?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Private posts, restricted content, unavailable media, deleted posts, source changes, and platform limitations can affect whether a particular Threads video can be processed."
+            }
+          }
+        ]
+      }
+    </script>
+  
+    <!-- Shared site UI + downloader scripts. Keep this order. -->
+    <script src="/translations.js"></script>
+    <script src="/site-ui.js"></script>
+    <script src="/downloader.js"></script>
+  
+    <script type="application/ld+json">
+{
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+            {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "VidSnatch",
+                  "item": "https://vidsnatch.fun/"
+            },
+            {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Threads Video Downloader",
+                  "item": "https://vidsnatch.fun/threads-video-downloader/"
+            }
+      ]
+}
+    </script>
+  </head>
+
+  <body data-platform="threads" data-page="threads-video-downloader">
+    <!-- ========================================================
+       NAVBAR
+       ======================================================== -->
+
+    <!-- ========================================================
+       MAIN
+       ======================================================== -->
+
+    <main class="downloader-page">
+      <div class="downloader-container">
+        <!-- ====================================================
+           HERO
+           ==================================================== -->
+
+        <section class="downloader-hero">
+          <div class="downloader-badge" data-i18n="hero.badge">
+            Fast & Free Video Downloader
+          </div>
+
+          <h1>
+            <span data-i18n="hero.threads.title">
+              Threads Video Downloader
+            </span>
+          </h1>
+
+          <p data-i18n="hero.description">
+            Download videos quickly and easily in high quality. Paste your video
+            link below to get started.
+          </p>
+        </section>
+
+        <!-- ====================================================
+           DOWNLOADER CARD
+           ==================================================== -->
+
+        <section class="downloader-card" aria-label="Threads video downloader">
+          <form class="downloader-form" id="downloader-form" autocomplete="off">
+            <div class="downloader-input-wrap">
+<input
+                id="video-url"
+                class="downloader-input"
+                type="url"
+                inputmode="url"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="Paste your Threads video URL here..."
+                data-i18n-placeholder="input.placeholder"
+                aria-label="Threads video URL"
+                required
+              />
+
+              <button
+                type="button"
+                class="downloader-clear"
+                id="clear-url"
+                data-i18n-title="button.clear"
+                title="Clear"
+                aria-label="Clear URL"
+              >
+                ×
+              </button>
+            </div>
+
+            <button
+              type="submit"
+              class="downloader-fetch"
+              id="fetch-video"
+              data-i18n="button.fetch"
+            >
+              Fetch Video
+            </button>
+          </form>
+
+          <!-- ==================================================
+             DETECTED PLATFORM
+             ================================================== -->
+
+          <div
+            class="downloader-detected"
+            id="detected-platform"
+            aria-live="polite"
+          ></div>
+
+          <!-- ==================================================
+             LOADING
+             ================================================== -->
+
+          <div
+            class="downloader-loader hidden"
+            id="downloader-loader"
+            aria-live="polite"
+          >
+            <span class="downloader-spinner" aria-hidden="true"></span>
+
+            <span id="loader-text" data-i18n="loading.fetching">
+              Fetching video information...
+            </span>
+          </div>
+
+          <!-- ==================================================
+             ERROR
+             ================================================== -->
+
+          <div
+            class="downloader-error hidden"
+            id="downloader-error"
+            role="alert"
+            aria-live="assertive"
+          ></div>
+
+          <!-- ==================================================
+             RESULT
+             ================================================== -->
+
+          <div class="universal-result hidden" id="downloader-result">
+            <div class="result-header">
+              <span class="result-platform" id="result-platform">
+                Threads
+              </span>
+
+              <span class="result-header-title" data-i18n="status.ready">
+                Download ready.
+              </span>
+            </div>
+
+            <div class="result-grid">
+              <!-- ==============================================
+                 THUMBNAIL
+                 ============================================== -->
+
+              <div class="result-media">
+                <img
+                  id="universal-thumbnail"
+                  src=""
+                  alt="Threads video thumbnail"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+
+              <!-- ==============================================
+                 DETAILS
+                 ============================================== -->
+
+              <div class="result-details">
+                <h2 id="universal-title">Threads Video</h2>
+
+                <!-- Metadata -->
+
+                <div class="result-meta" id="result-meta">
+                  <span id="result-author" class="hidden"></span>
+
+                  <span id="result-duration" class="hidden"></span>
+
+                  <span id="result-views" class="hidden"></span>
+                </div>
+
+                <!-- Quality -->
+
+                <div class="quality-section">
+                  <span
+                    class="quality-title"
+                    id="universal-quality-label"
+                    data-i18n="quality.title"
+                  >
+                    Available Quality
+                  </span>
+
+                  <div class="formats-grid" id="formats-grid"></div>
+                </div>
+
+                <!-- Download Actions -->
+
+                <div class="download-actions">
+                  <button
+                    type="button"
+                    class="download-btn"
+                    id="download-video"
+                    data-i18n="button.download"
+                  >
+                    Download Video
+                  </button>
+
+                  <button
+                    type="button"
+                    class="audio-btn"
+                    id="download-audio"
+                    data-i18n="button.audio"
+                  >
+                    Download MP3
+                  </button>
+                </div>
+
+                <!-- Progress -->
+
+                <div class="download-progress hidden" id="download-progress">
+                  <div class="progress-track" aria-hidden="true">
+                    <div class="progress-fill" id="progress-fill"></div>
+                  </div>
+
+                  <div class="progress-label" id="progress-label">0%</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ==================================================
+               VIDEO PREVIEW
+               ================================================== -->
+
+            <div class="universal-video-wrap hidden" id="video-preview-wrap">
+              <video
+                class="universal-video"
+                id="universal-video"
+                controls
+                playsinline
+                preload="metadata"
+              ></video>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================
+           SEO CONTENT
+           ==================================================== -->
+
+        <section class="downloader-content">
+          <h2>Threads Video Downloader</h2>
+
+          <p>
+            VidSnatch provides a simple web-based interface for processing
+            supported Threads video links. Paste a Threads video URL into the
+            downloader above and, when available, select the format or quality
+            you prefer.
+          </p>
+
+          <h3>How to download a Threads video</h3>
+
+          <ol>
+            <li>
+              Open Threads and copy the URL of the post containing the video you
+              want to process.
+            </li>
+
+            <li>Paste the Threads video URL into the VidSnatch input box.</li>
+
+            <li>Select <strong>Fetch Video</strong>.</li>
+
+            <li>
+              Wait for the available video information and formats to appear.
+            </li>
+
+            <li>Select an available download option.</li>
+          </ol>
+
+          <h3>Fast and simple Threads video downloading</h3>
+
+          <p>
+            VidSnatch is designed to keep the video processing experience
+            straightforward. You can use the downloader directly from a modern
+            web browser without installing a separate desktop application.
+          </p>
+
+          <h3>Threads video availability</h3>
+
+          <p>
+            Only URLs that can be processed by the VidSnatch backend are
+            supported. Private posts, restricted content, deleted posts,
+            unavailable media, or source changes may prevent a video from being
+            processed.
+          </p>
+        </section>
+</div>
+    </main>
+
+    <!-- ========================================================
+       TRANSLATION ENGINE
+       ======================================================== -->
+<!-- ========================================================
+       SHARED DOWNLOADER ENGINE
+       ======================================================== -->
+<!-- ========================================================
+       PAGE INITIALIZATION
+       ======================================================== -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const year = document.getElementById("current-year");
+
+        if (year) {
+          year.textContent = new Date().getFullYear();
+        }
+
+        /*
+         * Keep this page Threads-specific.
+         * Shared downloader.js handles the
+         * fetching and download process.
+         */
+
+        document.body.dataset.platform = "threads";
+      });
+    </script>
+  </body>
+</html>

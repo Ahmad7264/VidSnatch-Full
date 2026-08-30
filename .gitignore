@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Build output
+frontend/dist/
+
+# Local runtime / temporary files
+backend/.tmp/
+backend/bgutil-plugin.zip
+backend/*.download
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local yt-dlp downloads
+backend/bin/yt-dlp.local
+# Local YouTube/browser cookies — NEVER commit
+cookies.txt
+youtube-cookies.txt
+*.cookies
+*.cookie
+backend/*.cookies
+backend/*.cookie

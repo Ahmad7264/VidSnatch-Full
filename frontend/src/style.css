@@ -1,0 +1,6793 @@
+/* ============================================================
+   VIDSNATCH — COMMON GLOBAL STYLES
+   ------------------------------------------------------------
+   ONE CSS FOR:
+   - Home
+   - YouTube
+   - Instagram
+   - Facebook
+   - TikTok
+   - X / Twitter
+   - Reddit
+   - Threads
+   - Pinterest
+   - Snapchat
+
+   Navbar / language / theme UI:
+   controlled by site-ui.js
+
+   Do NOT create another navbar or theme system per page.
+   ============================================================ */
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+
+:root {
+  --bg: #f5eecc;
+  --bg-soft: #fffdf0;
+  --bg-card: rgba(255, 253, 240, 0.72);
+  --bg-card-strong: rgba(255, 253, 240, 0.9);
+
+  --yellow-1: #fce150;
+  --yellow-2: #f9cc00;
+  --yellow-3: #e6a500;
+  --yellow-4: #c99e00;
+
+  --text: #3a2e00;
+  --text-soft: #6f5c20;
+  --text-muted: #9a8547;
+
+  --border: rgba(170, 135, 20, 0.14);
+
+  --shadow-dark: rgba(180, 155, 60, 0.3);
+  --shadow-light: rgba(255, 255, 255, 0.88);
+
+  --danger: #c0392b;
+  --success: #477b28;
+
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --radius-xl: 36px;
+  --radius-pill: 999px;
+
+  --container: 1180px;
+  --nav-height: 74px;
+
+  --transition: 0.25s ease;
+  --spring: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --focus-ring: 0 0 0 3px rgba(249, 204, 0, 0.2);
+}
+
+/* ============================================================
+   DARK MODE
+   ------------------------------------------------------------
+   site-ui.js should add either:
+   html[data-theme="dark"]
+   OR
+   body.dark-mode
+
+   Both are supported so the common CSS works with either setup.
+   ============================================================ */
+
+html[data-theme="dark"],
+body.dark-mode,
+body[data-theme="dark"] {
+  --bg: #171508;
+  --bg-soft: #211e0c;
+  --bg-card: rgba(35, 32, 12, 0.82);
+  --bg-card-strong: rgba(39, 35, 12, 0.96);
+
+  --text: #fff4b8;
+  --text-soft: #d8c778;
+  --text-muted: #a99b5b;
+
+  --border: rgba(249, 204, 0, 0.18);
+
+  --shadow-dark: rgba(0, 0, 0, 0.48);
+  --shadow-light: rgba(255, 239, 125, 0.035);
+
+  --danger: #ff8075;
+  --success: #91c76c;
+
+  color-scheme: dark;
+}
+
+html[data-theme="dark"] body,
+body.dark-mode,
+body[data-theme="dark"] {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(249, 204, 0, 0.1), transparent 30%),
+    radial-gradient(
+      circle at 100% 45%,
+      rgba(230, 165, 0, 0.07),
+      transparent 32%
+    ),
+    var(--bg);
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  font-family:
+    "Outfit",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: var(--text);
+
+  background:
+    radial-gradient(circle at 0% 0%, rgba(252, 225, 80, 0.32), transparent 28%),
+    radial-gradient(
+      circle at 100% 45%,
+      rgba(249, 204, 0, 0.2),
+      transparent 30%
+    ),
+    var(--bg);
+
+  line-height: 1.5;
+
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+
+  width: 420px;
+  height: 420px;
+
+  border-radius: 50%;
+
+  pointer-events: none;
+
+  filter: blur(90px);
+
+  z-index: -1;
+}
+
+body::before {
+  top: -220px;
+  left: -180px;
+  background: rgba(252, 225, 80, 0.25);
+}
+
+body::after {
+  right: -180px;
+  bottom: 5%;
+  background: rgba(230, 165, 0, 0.13);
+}
+
+html[data-theme="dark"] body::before,
+body.dark-mode::before {
+  background: rgba(249, 204, 0, 0.07);
+}
+
+html[data-theme="dark"] body::after,
+body.dark-mode::after {
+  background: rgba(230, 165, 0, 0.04);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ============================================================
+   SHARED NAVBAR
+   ============================================================ */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  width: 100%;
+
+  background: rgba(245, 238, 204, 0.88);
+
+  border-bottom: 1px solid var(--border);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow: 0 5px 20px rgba(180, 155, 60, 0.1);
+
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+html[data-theme="dark"] .site-header,
+body.dark-mode .site-header {
+  background: rgba(23, 21, 8, 0.9);
+
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+}
+
+.navbar {
+  width: min(1380px, calc(100% - 48px));
+  min-height: var(--nav-height);
+
+  margin: auto;
+
+  display: flex;
+  align-items: center;
+
+  gap: 24px;
+}
+
+/* ============================================================
+   NAVBAR LOGO
+   ============================================================ */
+
+.brand {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 9px;
+
+  color: var(--text);
+
+  font-size: 1.45rem;
+  font-weight: 850;
+
+  letter-spacing: -0.8px;
+
+  transition:
+    transform var(--transition),
+    opacity var(--transition);
+}
+
+.brand:hover {
+  transform: translateY(-1px);
+  opacity: 0.86;
+}
+
+.brand span:first-child,
+.brand .logo-icon {
+  color: var(--yellow-3);
+
+  font-size: 1.35rem;
+
+  filter: drop-shadow(0 2px 5px rgba(230, 165, 0, 0.28));
+}
+
+/* ============================================================
+   PLATFORM NAVIGATION
+   ============================================================ */
+
+.nav-platforms {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 3px;
+
+  overflow-x: auto;
+
+  scrollbar-width: none;
+}
+
+.nav-platforms::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-platform {
+  position: relative;
+
+  flex-shrink: 0;
+
+  min-height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 8px 13px;
+
+  border-radius: var(--radius-sm);
+
+  color: var(--text-soft);
+
+  background: transparent;
+
+  font-size: 0.82rem;
+  font-weight: 650;
+
+  white-space: nowrap;
+
+  transition:
+    background var(--transition),
+    color var(--transition),
+    transform var(--transition);
+}
+
+.nav-platform span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1rem;
+
+  color: var(--text-muted);
+}
+
+.nav-platform:hover {
+  color: var(--text);
+
+  background: rgba(255, 255, 255, 0.45);
+
+  transform: translateY(-1px);
+}
+
+html[data-theme="dark"] .nav-platform:hover,
+body.dark-mode .nav-platform:hover {
+  background: rgba(249, 204, 0, 0.07);
+}
+
+.nav-platform.active {
+  color: var(--text);
+
+  background: rgba(249, 204, 0, 0.18);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 3px 10px rgba(180, 155, 60, 0.1);
+}
+
+.nav-platform.active span {
+  color: var(--yellow-3);
+}
+
+.nav-platform.active::after {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  bottom: 3px;
+
+  width: 16px;
+  height: 2px;
+
+  border-radius: var(--radius-pill);
+
+  background: var(--yellow-3);
+
+  transform: translateX(-50%);
+}
+
+/* ============================================================
+   LANGUAGE SELECTOR
+   ============================================================ */
+
+.language-selector {
+  position: relative;
+
+  flex-shrink: 0;
+}
+
+.language-btn {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 8px;
+
+  min-height: 42px;
+
+  padding: 9px 15px;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-pill);
+
+  color: var(--text);
+
+  background: var(--bg);
+
+  font-size: 0.83rem;
+  font-weight: 750;
+
+  box-shadow:
+    5px 5px 12px var(--shadow-dark),
+    -5px -5px 12px var(--shadow-light);
+
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
+}
+
+.language-btn:hover {
+  transform: translateY(-2px);
+}
+
+.language-btn:active {
+  transform: translateY(0);
+
+  box-shadow:
+    inset 3px 3px 8px var(--shadow-dark),
+    inset -3px -3px 8px var(--shadow-light);
+}
+
+.language-menu {
+  position: absolute;
+
+  top: calc(100% + 12px);
+  right: 0;
+
+  width: 260px;
+  max-height: 430px;
+
+  padding: 12px;
+
+  overflow-y: auto;
+
+  border: 1px solid var(--border);
+  border-radius: 22px;
+
+  background: var(--bg-card-strong);
+
+  box-shadow:
+    12px 12px 30px var(--shadow-dark),
+    -10px -10px 30px var(--shadow-light);
+
+  backdrop-filter: blur(18px);
+
+  animation: menuIn 0.2s ease;
+}
+
+.language-menu.hidden {
+  display: none;
+}
+
+.language-menu button {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  padding: 10px 12px;
+
+  border-radius: var(--radius-sm);
+
+  color: var(--text-soft);
+
+  background: transparent;
+
+  text-align: left;
+
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  transition: var(--transition);
+}
+
+.language-menu button:hover,
+.language-menu button.active {
+  color: var(--text);
+
+  background: rgba(249, 204, 0, 0.18);
+
+  transform: translateX(3px);
+}
+
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ============================================================
+   SHARED THEME TOGGLE
+   ------------------------------------------------------------
+   Supports selectors used by site-ui.js.
+   ============================================================ */
+
+.vs-theme-toggle,
+.theme-toggle,
+#theme-toggle,
+#dark-mode-toggle {
+  flex-shrink: 0;
+
+  width: 44px;
+  height: 44px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--border);
+  border-radius: 50%;
+
+  color: var(--text);
+
+  background: var(--bg);
+
+  box-shadow:
+    5px 5px 12px var(--shadow-dark),
+    -5px -5px 12px var(--shadow-light);
+
+  transition:
+    transform var(--spring),
+    background var(--transition),
+    color var(--transition);
+}
+
+.vs-theme-toggle:hover,
+.theme-toggle:hover,
+#theme-toggle:hover,
+#dark-mode-toggle:hover {
+  transform: translateY(-2px) rotate(6deg);
+}
+
+.vs-theme-toggle:active,
+.theme-toggle:active,
+#theme-toggle:active,
+#dark-mode-toggle:active {
+  transform: scale(0.94);
+}
+
+html[data-theme="dark"] .vs-theme-toggle,
+body.dark-mode .vs-theme-toggle,
+html[data-theme="dark"] .theme-toggle,
+body.dark-mode .theme-toggle {
+  color: var(--yellow-1);
+
+  background: #242108;
+
+  box-shadow:
+    5px 5px 12px rgba(0, 0, 0, 0.5),
+    -5px -5px 12px rgba(255, 240, 130, 0.025);
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.hero-section {
+  position: relative;
+
+  padding: 92px 20px 70px;
+
+  overflow: hidden;
+}
+
+.hero-content {
+  width: min(1120px, 100%);
+
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  margin-bottom: 22px;
+  padding: 8px 15px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+
+  color: var(--yellow-4);
+
+  background: var(--bg-card);
+
+  font-size: 0.78rem;
+  font-weight: 700;
+
+  box-shadow:
+    4px 4px 10px var(--shadow-dark),
+    -4px -4px 10px var(--shadow-light);
+
+  backdrop-filter: blur(10px);
+}
+
+.hero-section h1 {
+  width: min(920px, 100%);
+
+  margin: 0 auto 22px;
+
+  color: var(--text);
+
+  font-size: clamp(2.7rem, 6vw, 5rem);
+
+  line-height: 1.02;
+
+  font-weight: 850;
+
+  letter-spacing: -3px;
+}
+
+.hero-section h1 span {
+  display: block;
+
+  margin-top: 5px;
+
+  background: linear-gradient(100deg, #c28d00 0%, #e3aa00 45%, #f2c400 100%);
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  width: min(680px, 100%);
+
+  margin: 0 auto 38px;
+
+  color: var(--text-soft);
+
+  font-size: 1.03rem;
+
+  line-height: 1.75;
+}
+
+/* ============================================================
+   UNIVERSAL DOWNLOADER
+   ============================================================ */
+
+.universal-downloader {
+  position: relative;
+
+  width: min(1000px, 100%);
+
+  margin: 0 auto;
+
+  padding: 10px;
+
+  border: 1px solid var(--border);
+  border-radius: 24px;
+
+  background: var(--bg-card);
+
+  box-shadow:
+    14px 14px 32px var(--shadow-dark),
+    -14px -14px 32px var(--shadow-light);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.universal-input-row {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: stretch;
+
+  gap: 10px;
+}
+
+.universal-input-wrap {
+  position: relative;
+
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+
+  left: 20px;
+
+  z-index: 2;
+
+  color: var(--yellow-4);
+
+  font-size: 1.05rem;
+
+  pointer-events: none;
+}
+
+.universal-input-wrap input {
+  width: 100%;
+  height: 62px;
+
+  padding: 0 52px;
+
+  border: 1px solid var(--border);
+  border-radius: 17px;
+
+  outline: none;
+
+  color: var(--text);
+
+  background: var(--bg-soft);
+
+  font-size: 0.95rem;
+  font-weight: 500;
+
+  box-shadow:
+    inset 4px 4px 10px var(--shadow-dark),
+    inset -4px -4px 10px var(--shadow-light);
+
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
+}
+
+.universal-input-wrap input:hover {
+  background: var(--bg-card-strong);
+}
+
+.universal-input-wrap input:focus {
+  border-color: rgba(214, 166, 0, 0.45);
+
+  box-shadow:
+    inset 3px 3px 8px var(--shadow-dark),
+    inset -3px -3px 8px var(--shadow-light),
+    var(--focus-ring);
+}
+
+.universal-input-wrap input::placeholder {
+  color: var(--text-muted);
+}
+
+.clear-input-btn {
+  position: absolute;
+
+  right: 14px;
+
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: var(--text-soft);
+
+  background: rgba(201, 158, 0, 0.08);
+
+  font-size: 1rem;
+
+  opacity: 0.6;
+
+  transition: var(--transition);
+}
+
+.clear-input-btn:hover {
+  opacity: 1;
+
+  background: rgba(201, 158, 0, 0.15);
+
+  transform: scale(1.08);
+}
+
+.fetch-btn {
+  position: relative;
+
+  min-width: 150px;
+  height: 62px;
+
+  padding: 0 25px;
+
+  border-radius: 17px;
+
+  color: #382d00;
+
+  background: linear-gradient(135deg, #f8d43c 0%, #f2c000 52%, #dda500 100%);
+
+  font-size: 0.92rem;
+  font-weight: 800;
+
+  box-shadow:
+    7px 7px 15px var(--shadow-dark),
+    -6px -6px 14px var(--shadow-light);
+
+  transition:
+    transform var(--spring),
+    box-shadow var(--transition),
+    filter var(--transition);
+}
+
+.fetch-btn:hover {
+  transform: translateY(-3px);
+
+  filter: brightness(1.04);
+
+  box-shadow:
+    9px 10px 20px var(--shadow-dark),
+    -7px -7px 16px var(--shadow-light);
+}
+
+.fetch-btn:active {
+  transform: translateY(0);
+
+  box-shadow:
+    inset 4px 4px 9px rgba(180, 155, 60, 0.25),
+    inset -4px -4px 9px rgba(255, 255, 255, 0.45);
+}
+
+/* ============================================================
+   DETECTED PLATFORM
+   ============================================================ */
+
+.detected-platform {
+  position: relative;
+  z-index: 1;
+
+  min-height: 20px;
+
+  margin: 12px 8px 0;
+
+  color: var(--yellow-4);
+
+  font-size: 0.8rem;
+  font-weight: 700;
+
+  text-align: left;
+}
+
+/* ============================================================
+   LOADER
+   ============================================================ */
+
+.loader-box {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 13px;
+
+  margin-top: 14px;
+
+  padding: 17px;
+
+  border-radius: var(--radius-md);
+
+  color: var(--text-soft);
+
+  background: var(--bg-card);
+
+  box-shadow:
+    inset 2px 2px 6px var(--shadow-dark),
+    inset -2px -2px 6px var(--shadow-light);
+}
+
+.loader-box.hidden {
+  display: none;
+}
+
+.loader-box small {
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--text-muted);
+
+  font-size: 0.73rem;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+
+  flex-shrink: 0;
+
+  border: 3px solid rgba(230, 165, 0, 0.18);
+
+  border-top-color: var(--yellow-3);
+
+  border-radius: 50%;
+
+  animation: vsSpin 0.7s linear infinite;
+}
+
+@keyframes vsSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================
+   ERROR
+   ============================================================ */
+
+.error-box {
+  position: relative;
+  z-index: 1;
+
+  margin-top: 14px;
+
+  padding: 13px 16px;
+
+  border: 1px solid rgba(192, 57, 43, 0.16);
+
+  border-radius: 14px;
+
+  color: var(--danger);
+
+  background: rgba(255, 80, 80, 0.055);
+
+  font-size: 0.82rem;
+  font-weight: 600;
+
+  text-align: left;
+}
+
+.error-box.hidden {
+  display: none;
+}
+
+/* ============================================================
+   RESULT
+   ============================================================ */
+
+.universal-result {
+  position: relative;
+
+  overflow: hidden;
+
+  margin-top: 28px;
+
+  padding: 26px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 28px;
+
+  background: var(--bg-card);
+
+  box-shadow:
+    14px 14px 32px var(--shadow-dark),
+    -12px -12px 30px var(--shadow-light);
+
+  backdrop-filter: blur(18px);
+
+  animation: resultIn 0.35s ease both;
+}
+
+.universal-result.hidden {
+  display: none;
+}
+
+@keyframes resultIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-header {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 22px;
+}
+
+.result-platform {
+  display: inline-flex;
+
+  padding: 8px 15px;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-pill);
+
+  color: var(--text);
+
+  background: linear-gradient(
+    135deg,
+    rgba(249, 204, 0, 0.24),
+    rgba(230, 165, 0, 0.12)
+  );
+
+  font-size: 0.74rem;
+  font-weight: 800;
+
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+}
+
+.result-grid {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(280px, 0.92fr)
+    minmax(320px, 1.08fr);
+
+  gap: 30px;
+
+  align-items: start;
+}
+
+.result-media {
+  position: relative;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.35);
+
+  border-radius: 20px;
+
+  background: #171717;
+
+  box-shadow:
+    8px 8px 20px var(--shadow-dark),
+    -5px -5px 14px var(--shadow-light);
+
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.result-media:hover {
+  transform: translateY(-3px);
+}
+
+#universal-thumbnail {
+  width: 100%;
+
+  aspect-ratio: 16 / 9;
+
+  object-fit: cover;
+}
+
+.universal-video-wrap {
+  overflow: hidden;
+
+  border-radius: 20px;
+}
+
+.universal-video-wrap.hidden {
+  display: none;
+}
+
+.universal-video-wrap video {
+  width: 100%;
+
+  max-height: 520px;
+
+  background: #000;
+}
+
+.result-details {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.result-details h2 {
+  margin-bottom: 17px;
+
+  color: var(--text);
+
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+
+  line-height: 1.35;
+
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+}
+
+/* ============================================================
+   RESULT META
+   ============================================================ */
+
+.result-meta {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 9px;
+
+  margin-bottom: 24px;
+}
+
+.result-meta span {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 7px 11px;
+
+  border-radius: var(--radius-pill);
+
+  color: var(--text-soft);
+
+  background: var(--bg);
+
+  font-size: 0.76rem;
+  font-weight: 600;
+
+  box-shadow:
+    3px 3px 8px var(--shadow-dark),
+    -3px -3px 8px var(--shadow-light);
+}
+
+/* ============================================================
+   QUALITY / FORMATS
+   ============================================================ */
+
+.quality-section {
+  margin-bottom: 20px;
+}
+
+.quality-title {
+  margin-bottom: 11px;
+
+  color: var(--text-soft);
+
+  font-size: 0.82rem;
+  font-weight: 800;
+
+  letter-spacing: 0.5px;
+
+  text-transform: uppercase;
+}
+
+.formats-grid {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 9px;
+}
+
+.format-btn {
+  min-height: 40px;
+
+  padding: 9px 14px;
+
+  border: none;
+
+  border-radius: var(--radius-sm);
+
+  color: var(--text-soft);
+
+  background: var(--bg);
+
+  font-size: 0.82rem;
+  font-weight: 700;
+
+  box-shadow:
+    4px 4px 9px var(--shadow-dark),
+    -4px -4px 9px var(--shadow-light);
+
+  transition: var(--spring);
+}
+
+.format-btn:hover {
+  color: var(--text);
+
+  transform: translateY(-2px);
+}
+
+.format-btn.active,
+.format-btn.selected {
+  color: #3a2e00;
+
+  background: linear-gradient(135deg, var(--yellow-2), var(--yellow-3));
+
+  box-shadow:
+    4px 4px 9px var(--shadow-dark),
+    -4px -4px 9px var(--shadow-light),
+    0 0 12px rgba(249, 204, 0, 0.35);
+}
+
+/* ============================================================
+   DOWNLOAD ACTIONS
+   ============================================================ */
+
+.download-actions {
+  display: flex;
+  flex-direction: column;
+
+  gap: 11px;
+
+  margin-top: auto;
+}
+
+.download-actions.hidden {
+  display: none;
+}
+
+.download-btn,
+.audio-btn {
+  width: 100%;
+
+  min-height: 52px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border-radius: var(--radius-md);
+
+  font-weight: 800;
+
+  transition: var(--spring);
+}
+
+.download-btn {
+  color: #3a2e00;
+
+  background: linear-gradient(135deg, var(--yellow-1), var(--yellow-2));
+
+  box-shadow:
+    6px 6px 15px var(--shadow-dark),
+    -6px -6px 15px var(--shadow-light);
+}
+
+.download-btn:hover,
+.audio-btn:hover {
+  transform: translateY(-3px);
+}
+
+.download-btn:active,
+.audio-btn:active {
+  transform: translateY(0);
+}
+
+.audio-btn {
+  border: 2px solid rgba(230, 165, 0, 0.28);
+
+  color: var(--yellow-4);
+
+  background: var(--bg);
+
+  box-shadow:
+    4px 4px 10px var(--shadow-dark),
+    -4px -4px 10px var(--shadow-light);
+}
+
+/* ============================================================
+   DOWNLOAD PROGRESS
+   ============================================================ */
+
+.download-progress {
+  margin-top: 20px;
+}
+
+.download-progress.hidden {
+  display: none;
+}
+
+.progress-track {
+  width: 100%;
+  height: 9px;
+
+  overflow: hidden;
+
+  border-radius: var(--radius-pill);
+
+  background: var(--bg);
+
+  box-shadow:
+    inset 3px 3px 7px var(--shadow-dark),
+    inset -3px -3px 7px var(--shadow-light);
+}
+
+.progress-fill {
+  width: 0%;
+  height: 100%;
+
+  border-radius: var(--radius-pill);
+
+  background: linear-gradient(
+    90deg,
+    var(--yellow-2),
+    var(--yellow-3),
+    var(--yellow-1)
+  );
+
+  transition: width 0.3s ease;
+
+  box-shadow: 0 0 10px rgba(249, 204, 0, 0.55);
+}
+
+.progress-label {
+  margin-top: 8px;
+
+  color: var(--text-muted);
+
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* ============================================================
+   SUPPORTED PLATFORMS
+   ============================================================ */
+
+.supported-platforms {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  gap: 8px;
+
+  margin-top: 24px;
+
+  color: var(--text-muted);
+
+  font-size: 0.8rem;
+}
+
+.supported-platforms span {
+  padding: 5px 10px;
+
+  border: 1px solid rgba(201, 158, 0, 0.08);
+
+  border-radius: var(--radius-pill);
+
+  color: var(--text-soft);
+
+  background: rgba(255, 255, 255, 0.22);
+
+  transition:
+    background var(--transition),
+    transform var(--transition);
+}
+
+.supported-platforms span:hover {
+  background: rgba(249, 204, 0, 0.13);
+
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   COMMON SECTIONS
+   ============================================================ */
+
+.features-section,
+.content-section,
+.how-section,
+.faq-section {
+  width: min(var(--container), calc(100% - 40px));
+
+  margin: 0 auto 85px;
+}
+
+.section-heading {
+  margin-bottom: 35px;
+
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-block;
+
+  margin-bottom: 10px;
+
+  color: var(--yellow-4);
+
+  font-size: 0.76rem;
+
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+}
+
+.section-heading h2 {
+  margin-bottom: 12px;
+
+  color: var(--text);
+
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+
+  line-height: 1.15;
+
+  letter-spacing: -1px;
+}
+
+.section-heading p {
+  color: var(--text-soft);
+
+  line-height: 1.65;
+}
+
+/* ============================================================
+   FEATURES
+   ============================================================ */
+
+.feature-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+.feature-card {
+  padding: 28px 22px;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  text-align: center;
+
+  background: var(--bg-card);
+
+  box-shadow:
+    8px 8px 20px var(--shadow-dark),
+    -8px -8px 20px var(--shadow-light);
+
+  transition: var(--spring);
+}
+
+.feature-card:hover {
+  transform: translateY(-7px);
+}
+
+.feature-icon {
+  margin-bottom: 15px;
+
+  font-size: 2.1rem;
+
+  filter: drop-shadow(0 3px 7px rgba(230, 165, 0, 0.35));
+}
+
+.feature-card h3 {
+  margin-bottom: 9px;
+
+  color: var(--text);
+
+  font-size: 1rem;
+}
+
+.feature-card p {
+  color: var(--text-muted);
+
+  font-size: 0.86rem;
+
+  line-height: 1.6;
+}
+
+/* ============================================================
+   SEO / CONTENT
+   ============================================================ */
+
+.content-section {
+  padding: 38px;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  background: var(--bg-card);
+
+  box-shadow:
+    8px 8px 22px var(--shadow-dark),
+    -8px -8px 22px var(--shadow-light);
+}
+
+.content-container h2 {
+  margin-bottom: 18px;
+
+  color: var(--text);
+
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+}
+
+.content-container h3 {
+  margin-top: 30px;
+  margin-bottom: 8px;
+
+  color: var(--text);
+
+  font-size: 1.2rem;
+}
+
+.content-container p {
+  margin-bottom: 13px;
+
+  color: var(--text-soft);
+
+  line-height: 1.75;
+}
+
+.content-link {
+  display: inline-flex;
+
+  margin-top: 3px;
+
+  color: var(--yellow-4);
+
+  font-weight: 700;
+
+  transition: var(--transition);
+}
+
+.content-link:hover {
+  color: var(--text);
+
+  transform: translateX(4px);
+}
+
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
+
+.steps-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+.step-card {
+  position: relative;
+
+  padding: 30px;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  background: var(--bg-card);
+
+  box-shadow:
+    8px 8px 20px var(--shadow-dark),
+    -8px -8px 20px var(--shadow-light);
+
+  transition: var(--spring);
+}
+
+.step-card:hover {
+  transform: translateY(-4px);
+}
+
+.step-number {
+  display: inline-flex;
+
+  margin-bottom: 18px;
+
+  padding: 6px 11px;
+
+  border-radius: var(--radius-pill);
+
+  color: #3a2e00;
+
+  background: linear-gradient(135deg, var(--yellow-2), var(--yellow-3));
+
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.step-card h3 {
+  margin-bottom: 8px;
+
+  color: var(--text);
+}
+
+.step-card p {
+  color: var(--text-muted);
+
+  font-size: 0.9rem;
+
+  line-height: 1.65;
+}
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+
+.faq-list {
+  display: grid;
+
+  gap: 12px;
+}
+
+.faq-item {
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-md);
+
+  background: var(--bg-card);
+
+  box-shadow:
+    5px 5px 13px var(--shadow-dark),
+    -5px -5px 13px var(--shadow-light);
+}
+
+.faq-item summary {
+  position: relative;
+
+  padding: 19px 50px 19px 20px;
+
+  cursor: pointer;
+
+  color: var(--text);
+
+  font-weight: 700;
+
+  list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: "+";
+
+  position: absolute;
+
+  right: 20px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: var(--yellow-4);
+
+  font-size: 1.4rem;
+}
+
+.faq-item[open] summary::after {
+  content: "−";
+}
+
+.faq-item p {
+  padding: 0 20px 20px;
+
+  color: var(--text-soft);
+
+  line-height: 1.7;
+}
+
+/* ============================================================
+   DOWNLOADER PAGE COMMON LAYOUT
+   ------------------------------------------------------------
+   These classes allow the same CSS to be used by every SEO
+   downloader page without another stylesheet.
+   ============================================================ */
+
+.downloader-page,
+.seo-downloader-page {
+  min-height: 100vh;
+}
+
+.downloader-main,
+.seo-downloader-main {
+  width: min(var(--container), calc(100% - 40px));
+
+  margin: 0 auto;
+
+  padding: 70px 0;
+}
+
+.downloader-hero,
+.seo-downloader-hero {
+  text-align: center;
+
+  padding: 45px 0 35px;
+}
+
+.downloader-hero h1,
+.seo-downloader-hero h1 {
+  max-width: 900px;
+
+  margin: 0 auto 16px;
+
+  color: var(--text);
+
+  font-size: clamp(2.2rem, 5vw, 4.2rem);
+
+  line-height: 1.08;
+
+  letter-spacing: -2px;
+}
+
+.downloader-hero p,
+.seo-downloader-hero p {
+  max-width: 720px;
+
+  margin: 0 auto;
+
+  color: var(--text-soft);
+
+  font-size: 1rem;
+
+  line-height: 1.7;
+}
+
+.downloader-card,
+.seo-downloader-card {
+  width: min(900px, 100%);
+
+  margin: 30px auto;
+
+  padding: 26px;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  background: var(--bg-card);
+
+  box-shadow:
+    12px 12px 30px var(--shadow-dark),
+    -10px -10px 30px var(--shadow-light);
+
+  backdrop-filter: blur(16px);
+}
+
+.downloader-form,
+.seo-downloader-form {
+  display: flex;
+
+  gap: 10px;
+}
+
+.downloader-form input,
+.seo-downloader-form input,
+.downloader-input,
+.seo-downloader-input {
+  flex: 1;
+
+  min-width: 0;
+
+  min-height: 54px;
+
+  padding: 0 17px;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-md);
+
+  outline: none;
+
+  color: var(--text);
+
+  background: var(--bg);
+
+  box-shadow:
+    inset 3px 3px 8px var(--shadow-dark),
+    inset -3px -3px 8px var(--shadow-light);
+}
+
+.downloader-form button,
+.seo-downloader-form button,
+.downloader-submit,
+.seo-downloader-submit {
+  min-width: 130px;
+
+  padding: 0 22px;
+
+  border-radius: var(--radius-md);
+
+  color: #3a2e00;
+
+  background: linear-gradient(135deg, var(--yellow-1), var(--yellow-2));
+
+  font-weight: 800;
+
+  box-shadow:
+    5px 5px 13px var(--shadow-dark),
+    -5px -5px 13px var(--shadow-light);
+
+  transition: var(--spring);
+}
+
+.downloader-form button:hover,
+.seo-downloader-form button:hover,
+.downloader-submit:hover,
+.seo-downloader-submit:hover {
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   DOWNLOADER RESULT
+   ============================================================ */
+
+.downloader-result,
+.seo-downloader-result {
+  margin-top: 24px;
+
+  padding: 22px;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  background: var(--bg);
+
+  box-shadow:
+    inset 4px 4px 12px var(--shadow-dark),
+    inset -4px -4px 12px var(--shadow-light);
+}
+
+.downloader-result.hidden,
+.seo-downloader-result.hidden {
+  display: none;
+}
+
+.downloader-thumbnail,
+.seo-downloader-thumbnail {
+  width: 100%;
+
+  aspect-ratio: 16 / 9;
+
+  object-fit: cover;
+
+  overflow: hidden;
+
+  border-radius: var(--radius-md);
+
+  background: #111;
+}
+
+.downloader-quality-grid,
+.seo-quality-grid,
+.quality-grid {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 9px;
+
+  margin-top: 16px;
+}
+
+.quality-option,
+.download-quality {
+  min-height: 40px;
+
+  padding: 8px 13px;
+
+  border-radius: var(--radius-sm);
+
+  color: var(--text-soft);
+
+  background: var(--bg);
+
+  box-shadow:
+    4px 4px 9px var(--shadow-dark),
+    -4px -4px 9px var(--shadow-light);
+
+  font-size: 0.8rem;
+
+  font-weight: 700;
+
+  transition: var(--spring);
+}
+
+.quality-option:hover,
+.download-quality:hover,
+.quality-option.active,
+.download-quality.active {
+  color: #3a2e00;
+
+  background: linear-gradient(135deg, var(--yellow-2), var(--yellow-3));
+
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   DOWNLOADER SEO CONTENT
+   ============================================================ */
+
+.downloader-content,
+.seo-content {
+  width: min(900px, 100%);
+
+  margin: 55px auto;
+}
+
+.downloader-content section,
+.seo-content section {
+  margin-bottom: 38px;
+}
+
+.downloader-content h2,
+.seo-content h2 {
+  margin-bottom: 14px;
+
+  color: var(--text);
+
+  font-size: 1.8rem;
+}
+
+.downloader-content h3,
+.seo-content h3 {
+  margin: 25px 0 9px;
+
+  color: var(--text);
+
+  font-size: 1.2rem;
+}
+
+.downloader-content p,
+.seo-content p {
+  margin-bottom: 13px;
+
+  color: var(--text-soft);
+
+  line-height: 1.75;
+}
+
+.downloader-content ul,
+.seo-content ul {
+  padding-left: 22px;
+
+  color: var(--text-soft);
+
+  line-height: 1.8;
+}
+
+.downloader-content li,
+.seo-content li {
+  margin-bottom: 5px;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.site-footer {
+  margin-top: 40px;
+
+  padding: 45px 20px;
+
+  border-top: 1px solid var(--border);
+
+  text-align: center;
+}
+
+.footer-inner {
+  width: min(var(--container), 100%);
+
+  margin: auto;
+}
+
+.footer-brand {
+  margin-bottom: 10px;
+}
+
+.footer-logo {
+  margin-bottom: 8px;
+
+  color: var(--yellow-4);
+
+  font-size: 1.25rem;
+
+  font-weight: 800;
+}
+
+.footer-note {
+  max-width: 600px;
+
+  margin: auto;
+
+  color: var(--text-muted);
+
+  font-size: 0.82rem;
+
+  line-height: 1.6;
+}
+
+.footer-links {
+  display: flex;
+
+  justify-content: center;
+
+  flex-wrap: wrap;
+
+  gap: 18px;
+
+  margin: 22px 0;
+}
+
+.footer-links button,
+.footer-links a {
+  padding: 5px;
+
+  color: var(--text-soft);
+
+  background: transparent;
+
+  font-weight: 600;
+
+  transition: var(--transition);
+}
+
+.footer-links button:hover,
+.footer-links a:hover {
+  color: var(--yellow-4);
+
+  text-decoration: underline;
+}
+
+.footer-copy {
+  color: var(--text-muted);
+
+  font-size: 0.8rem;
+}
+
+/* ============================================================
+   LEGAL MODAL
+   ============================================================ */
+
+.legal-modal {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 9999;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+}
+
+.legal-modal.hidden {
+  display: none;
+}
+
+.legal-modal::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background: rgba(35, 30, 10, 0.58);
+
+  backdrop-filter: blur(7px);
+}
+
+.legal-modal-card {
+  position: relative;
+
+  z-index: 1;
+
+  width: min(720px, 100%);
+
+  max-height: 85vh;
+
+  overflow-y: auto;
+
+  padding: 30px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 26px;
+
+  color: var(--text);
+
+  background: var(--bg);
+
+  box-shadow:
+    15px 15px 40px rgba(0, 0, 0, 0.25),
+    -8px -8px 25px var(--shadow-light);
+}
+
+.legal-modal-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 20px;
+}
+
+.legal-modal-header h2 {
+  color: var(--text);
+
+  font-size: 1.7rem;
+}
+
+.legal-modal-close {
+  width: 38px;
+  height: 38px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: var(--text);
+
+  background: rgba(0, 0, 0, 0.07);
+
+  font-size: 1.5rem;
+
+  transition: var(--transition);
+}
+
+.legal-modal-close:hover {
+  background: rgba(0, 0, 0, 0.14);
+
+  transform: rotate(90deg);
+}
+
+.legal-modal-content h3 {
+  margin: 22px 0 8px;
+
+  color: var(--text);
+}
+
+.legal-modal-content p {
+  margin-bottom: 12px;
+
+  color: var(--text-soft);
+
+  line-height: 1.7;
+}
+
+.legal-modal-content a {
+  color: var(--yellow-4);
+
+  font-weight: 700;
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+
+.toast {
+  position: fixed;
+
+  right: 25px;
+  bottom: 25px;
+
+  z-index: 10000;
+
+  max-width: 340px;
+
+  padding: 14px 20px;
+
+  border-radius: var(--radius-md);
+
+  color: var(--yellow-1);
+
+  background: #3a2e00;
+
+  font-size: 0.88rem;
+
+  font-weight: 600;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+  opacity: 0;
+
+  transform: translateY(20px);
+
+  pointer-events: none;
+
+  transition: 0.3s ease;
+}
+
+.toast.show {
+  opacity: 1;
+
+  transform: translateY(0);
+}
+
+/* ============================================================
+   STATUS / EMPTY STATES
+   ============================================================ */
+
+.status-message,
+.empty-state {
+  padding: 24px;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-md);
+
+  color: var(--text-soft);
+
+  background: var(--bg-card);
+
+  text-align: center;
+}
+
+.status-success {
+  color: var(--success);
+}
+
+.status-error {
+  color: var(--danger);
+}
+
+/* ============================================================
+   SCROLLBARS
+   ============================================================ */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 158, 0, 0.45) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+
+  background: rgba(201, 158, 0, 0.4);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 158, 0, 0.65);
+}
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width: 1100px) {
+  .navbar {
+    width: calc(100% - 30px);
+
+    gap: 15px;
+  }
+
+  .nav-platform {
+    padding: 8px 10px;
+
+    font-size: 0.78rem;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .result-grid {
+    gap: 22px;
+  }
+}
+
+/* ============================================================
+   900px
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .navbar {
+    flex-wrap: wrap;
+
+    padding: 10px 0;
+  }
+
+  .brand {
+    font-size: 1.3rem;
+  }
+
+  .nav-platforms {
+    order: 3;
+
+    width: 100%;
+
+    justify-content: flex-start;
+
+    padding: 2px 0 6px;
+  }
+
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .downloader-form,
+  .seo-downloader-form {
+    flex-direction: column;
+  }
+
+  .downloader-form button,
+  .seo-downloader-form button,
+  .downloader-submit,
+  .seo-downloader-submit {
+    width: 100%;
+
+    min-height: 52px;
+  }
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 700px) {
+  .site-header {
+    position: relative;
+  }
+
+  .navbar {
+    width: calc(100% - 24px);
+
+    min-height: auto;
+
+    padding: 13px 0;
+  }
+
+  .language-selector {
+    margin-left: auto;
+  }
+
+  .hero-section {
+    padding: 65px 14px 50px;
+  }
+
+  .hero-section h1 {
+    font-size: clamp(2.25rem, 12vw, 3.6rem);
+
+    letter-spacing: -1.8px;
+  }
+
+  .hero-subtitle {
+    margin-bottom: 28px;
+
+    font-size: 0.92rem;
+
+    line-height: 1.65;
+  }
+
+  .universal-downloader {
+    padding: 8px;
+
+    border-radius: 20px;
+  }
+
+  .universal-input-row {
+    flex-direction: column;
+
+    gap: 9px;
+  }
+
+  .universal-input-wrap input {
+    height: 57px;
+
+    font-size: 0.88rem;
+  }
+
+  .fetch-btn {
+    width: 100%;
+
+    height: 55px;
+  }
+
+  .detected-platform {
+    text-align: center;
+  }
+
+  .supported-platforms {
+    justify-content: center;
+
+    line-height: 1.7;
+  }
+
+  .features-section,
+  .content-section,
+  .how-section,
+  .faq-section {
+    width: calc(100% - 28px);
+
+    margin-bottom: 60px;
+  }
+
+  .content-section {
+    padding: 25px 20px;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .universal-result {
+    padding: 18px;
+
+    border-radius: 22px;
+  }
+
+  .result-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-meta {
+    gap: 6px;
+  }
+
+  .downloader-main,
+  .seo-downloader-main {
+    width: calc(100% - 28px);
+
+    padding: 45px 0;
+  }
+
+  .downloader-card,
+  .seo-downloader-card {
+    padding: 18px;
+  }
+}
+
+/* ============================================================
+   SMALL MOBILE
+   ============================================================ */
+
+@media (max-width: 500px) {
+  .language-menu {
+    position: fixed;
+
+    top: 75px;
+    left: 12px;
+    right: 12px;
+
+    width: auto;
+
+    max-height: 70vh;
+  }
+
+  .hero-badge {
+    font-size: 0.72rem;
+  }
+
+  .hero-section h1 {
+    font-size: 2.2rem;
+
+    letter-spacing: -1.4px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.86rem;
+  }
+
+  .universal-input-wrap input {
+    padding-left: 45px;
+
+    font-size: 0.86rem;
+  }
+
+  .supported-platforms {
+    gap: 6px;
+  }
+
+  .supported-platforms span {
+    padding: 4px 7px;
+
+    font-size: 0.68rem;
+  }
+
+  .result-meta span {
+    font-size: 0.7rem;
+  }
+
+  .toast {
+    right: 12px;
+    left: 12px;
+    bottom: 12px;
+
+    max-width: none;
+  }
+
+  .legal-modal {
+    padding: 12px;
+  }
+
+  .legal-modal-card {
+    padding: 22px;
+
+    max-height: 90vh;
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   CANONICAL SHARED DOWNLOADER COMPONENTS
+   Merged from the legacy downloader stylesheet so every page uses
+   frontend/src/style.css as its only stylesheet.
+   ============================================================ */
+
+/* ============================================================
+   PAGE CONTAINER
+   ============================================================ */
+
+.downloader-page {
+  width: min(1180px, calc(100% - 32px));
+
+  margin: 0 auto;
+
+  padding: 30px 0 70px;
+}
+
+.downloader-container {
+  width: 100%;
+  max-width: 1080px;
+
+  margin: 0 auto;
+}
+
+/* ============================================================
+   VIDSNATCH SHARED NAVBAR
+   Used by Home + ALL downloader pages
+   ============================================================ */
+
+.vs-shared-header {
+  position: sticky;
+  top: 12px;
+  z-index: 1000;
+
+  width: min(1180px, calc(100% - 32px));
+  margin: 12px auto 0;
+
+  border: 1px solid var(--vs-border);
+  border-radius: 20px;
+
+  background: rgba(255, 253, 240, 0.78);
+
+  box-shadow:
+    8px 8px 22px var(--vs-shadow-dark),
+    -8px -8px 22px var(--vs-shadow-light);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.vs-shared-header .navbar {
+  min-height: 66px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 16px;
+
+  padding: 10px 14px;
+}
+
+/* ============================================================
+   BRAND
+   ============================================================ */
+
+.vs-shared-header .brand {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 8px;
+
+  color: var(--vs-text);
+
+  text-decoration: none;
+
+  font-size: 1.05rem;
+  font-weight: 900;
+
+  white-space: nowrap;
+}
+
+.vs-shared-header .brand:hover {
+  color: var(--vs-text);
+}
+
+.vs-shared-header .logo-icon {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: #3a2d00;
+
+  background: linear-gradient(135deg, var(--vs-gold-light), var(--vs-gold));
+
+  box-shadow:
+    4px 4px 10px var(--vs-shadow-dark),
+    -4px -4px 10px var(--vs-shadow-light);
+}
+
+/* ============================================================
+   PLATFORM LINKS
+   ============================================================ */
+
+.vs-shared-header .nav-platforms {
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+
+  min-width: 0;
+
+  overflow-x: auto;
+
+  scrollbar-width: none;
+}
+
+.vs-shared-header .nav-platforms::-webkit-scrollbar {
+  display: none;
+}
+
+.vs-shared-header .nav-platform {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  padding: 8px 10px;
+
+  border-radius: 10px;
+
+  color: var(--vs-text-soft);
+
+  text-decoration: none;
+
+  font-size: 0.76rem;
+  font-weight: 750;
+
+  white-space: nowrap;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.vs-shared-header .nav-platform:hover {
+  color: var(--vs-text);
+
+  background: rgba(231, 181, 0, 0.09);
+
+  transform: translateY(-1px);
+}
+
+.vs-shared-header .nav-platform.active {
+  color: #4b3900;
+
+  background: rgba(231, 181, 0, 0.13);
+
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.vs-shared-header .nav-platform > span:first-child {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+/* ============================================================
+   SHARED LANGUAGE SELECTOR
+   ============================================================ */
+
+.vs-shared-header .vs-language-selector {
+  position: relative;
+
+  flex-shrink: 0;
+}
+
+.vs-shared-header .language-btn {
+  min-height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 8px 11px;
+
+  border: 1px solid var(--vs-border);
+  border-radius: 11px;
+
+  outline: none;
+
+  color: var(--vs-text-soft);
+
+  background: rgba(255, 253, 240, 0.72);
+
+  font-size: 0.75rem;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  box-shadow:
+    inset 2px 2px 5px rgba(180, 155, 60, 0.08),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.7);
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.vs-shared-header .language-btn:hover {
+  background: rgba(255, 253, 240, 0.95);
+
+  transform: translateY(-1px);
+}
+
+.vs-shared-header .vs-language-globe {
+  font-size: 14px;
+}
+
+.vs-shared-header .vs-language-arrow {
+  font-size: 13px;
+}
+
+/* ============================================================
+   LANGUAGE MENU
+   ============================================================ */
+
+.vs-shared-header .language-menu {
+  position: absolute;
+
+  top: calc(100% + 9px);
+  right: 0;
+
+  z-index: 2000;
+
+  width: 190px;
+  max-height: 360px;
+
+  overflow-y: auto;
+
+  padding: 7px;
+
+  border: 1px solid var(--vs-border);
+  border-radius: 14px;
+
+  background: rgba(255, 253, 240, 0.97);
+
+  box-shadow:
+    8px 12px 30px rgba(120, 95, 20, 0.16),
+    -5px -5px 18px rgba(255, 255, 255, 0.65);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.vs-shared-header .language-menu.hidden {
+  display: none !important;
+}
+
+.vs-shared-header .vs-language-option {
+  width: 100%;
+
+  display: block;
+
+  padding: 9px 11px;
+
+  border: 0;
+  border-radius: 9px;
+
+  color: var(--vs-text-soft);
+
+  background: transparent;
+
+  text-align: left;
+
+  font-size: 0.78rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.vs-shared-header .vs-language-option:hover,
+.vs-shared-header .vs-language-option.active {
+  color: #5b4500;
+
+  background: rgba(231, 181, 0, 0.11);
+}
+
+/* ============================================================
+   NIGHT MODE BUTTON
+   ============================================================ */
+
+.vs-theme-row {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 12px 20px 8px;
+
+  position: relative;
+  z-index: 50;
+
+  pointer-events: none;
+}
+
+.vs-theme-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  pointer-events: none;
+}
+
+.vs-theme-toggle {
+  pointer-events: auto;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  min-height: 42px;
+
+  padding: 7px 13px 7px 11px;
+
+  border: 1px solid rgba(190, 145, 0, 0.18);
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.52);
+
+  color: #5c4b12;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 22px rgba(92, 75, 18, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.vs-theme-toggle:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 11px 28px rgba(92, 75, 18, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.vs-theme-toggle:active {
+  transform: scale(0.98);
+}
+
+.vs-theme-icon {
+  width: 27px;
+  height: 27px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: rgba(255, 210, 50, 0.22);
+
+  font-size: 15px;
+}
+
+.vs-theme-label {
+  white-space: nowrap;
+}
+
+.vs-theme-track {
+  position: relative;
+
+  width: 34px;
+  height: 19px;
+
+  margin-left: 2px;
+
+  border-radius: 999px;
+
+  background: rgba(120, 100, 35, 0.16);
+}
+
+.vs-theme-knob {
+  position: absolute;
+
+  width: 15px;
+  height: 15px;
+
+  top: 2px;
+  left: 2px;
+
+  border-radius: 50%;
+
+  background: #fff;
+
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.18);
+
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease;
+}
+
+
+/* ============================================================
+   MOBILE NAV MENU BUTTON
+   ============================================================ */
+
+.vs-mobile-menu-btn {
+  display: none;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--vs-border);
+  border-radius: 11px;
+  color: var(--vs-text-soft);
+  background: rgba(255, 253, 240, 0.72);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: inset 2px 2px 5px rgba(180, 155, 60, 0.08), inset -2px -2px 5px rgba(255, 255, 255, 0.7);
+}
+
+.vs-mobile-menu {
+  display: none;
+}
+
+/* ============================================================
+   DARK MODE — SHARED NAVBAR
+   ============================================================ */
+
+html[data-theme="dark"],
+body[data-theme="dark"],
+html.vs-dark-mode,
+body.vs-dark-mode {
+  --vs-bg: #11110f;
+  --vs-bg-soft: #191916;
+
+  --vs-text: #f5f1df;
+  --vs-text-soft: #d5cda9;
+  --vs-text-muted: #a69d78;
+
+  --vs-border: rgba(255, 215, 75, 0.12);
+
+  --vs-shadow-dark: rgba(0, 0, 0, 0.32);
+
+  --vs-shadow-light: rgba(255, 255, 255, 0.025);
+}
+
+body[data-theme="dark"],
+body.vs-dark-mode {
+  background:
+    radial-gradient(
+      circle at 20% 10%,
+      rgba(255, 193, 7, 0.08),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(255, 193, 7, 0.05),
+      transparent 30%
+    ),
+    #11110f !important;
+
+  color: #f5f1df !important;
+}
+
+body[data-theme="dark"] .vs-shared-header,
+body.vs-dark-mode .vs-shared-header {
+  background: rgba(20, 20, 18, 0.92) !important;
+
+  border-color: rgba(255, 210, 60, 0.12) !important;
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28) !important;
+}
+
+body[data-theme="dark"] .vs-shared-header .brand,
+body.vs-dark-mode .vs-shared-header .brand {
+  color: #fff7d0 !important;
+}
+
+body[data-theme="dark"] .vs-shared-header .nav-platform,
+body.vs-dark-mode .vs-shared-header .nav-platform {
+  color: #ddd4a8 !important;
+}
+
+body[data-theme="dark"] .vs-shared-header .nav-platform:hover,
+body[data-theme="dark"] .vs-shared-header .nav-platform.active,
+body.vs-dark-mode .vs-shared-header .nav-platform:hover,
+body.vs-dark-mode .vs-shared-header .nav-platform.active {
+  color: #ffd21c !important;
+
+  background: rgba(255, 205, 35, 0.1);
+}
+
+body[data-theme="dark"] .vs-shared-header .language-btn,
+body.vs-dark-mode .vs-shared-header .language-btn {
+  background: rgba(42, 42, 37, 0.92) !important;
+
+  color: #f8efc5 !important;
+
+  border-color: rgba(255, 214, 70, 0.14) !important;
+}
+
+body[data-theme="dark"] .vs-shared-header .language-menu,
+body.vs-dark-mode .vs-shared-header .language-menu {
+  background: rgba(28, 28, 25, 0.98) !important;
+
+  border-color: rgba(255, 214, 70, 0.12) !important;
+
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45) !important;
+}
+
+body[data-theme="dark"] .vs-shared-header .vs-language-option,
+body.vs-dark-mode .vs-shared-header .vs-language-option {
+  color: #eee6c3 !important;
+}
+
+body[data-theme="dark"] .vs-shared-header .vs-language-option:hover,
+body[data-theme="dark"] .vs-shared-header .vs-language-option.active,
+body.vs-dark-mode .vs-shared-header .vs-language-option:hover,
+body.vs-dark-mode .vs-shared-header .vs-language-option.active {
+  color: #ffd21c !important;
+
+  background: rgba(255, 205, 35, 0.12) !important;
+}
+
+body[data-theme="dark"] .vs-theme-toggle,
+body.vs-dark-mode .vs-theme-toggle {
+  background: rgba(38, 38, 34, 0.9);
+
+  color: #eee6c3;
+
+  border-color: rgba(255, 210, 60, 0.15);
+}
+
+body[data-theme="dark"] .vs-theme-track,
+body.vs-dark-mode .vs-theme-track {
+  background: rgba(255, 205, 35, 0.3);
+}
+
+body[data-theme="dark"] .vs-theme-knob,
+body.vs-dark-mode .vs-theme-knob {
+  transform: translateX(15px);
+
+  background: #ffd21c;
+}
+
+body[data-theme="dark"] .vs-mobile-menu-btn,
+body.vs-dark-mode .vs-mobile-menu-btn {
+  color: #eee6c3;
+  background: rgba(38, 38, 34, 0.9);
+  border-color: rgba(255, 210, 60, 0.15);
+  box-shadow: none;
+}
+
+/* ============================================================
+   MOBILE SHARED NAVBAR
+   ============================================================ */
+
+@media (max-width: 900px) {
+  /* Mobile/tablet: keep platform links inside the hamburger menu only. */
+  .vs-shared-header .navbar {
+    flex-wrap: nowrap;
+  }
+
+  .vs-shared-header .nav-platforms {
+    display: none !important;
+  }
+
+  .vs-shared-header .nav-actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .vs-shared-header .vs-mobile-menu-btn {
+    display: inline-flex;
+  }
+
+  .vs-shared-header .vs-mobile-menu {
+    display: none;
+  }
+
+  .vs-shared-header .vs-mobile-menu:not(.hidden) {
+    display: block;
+  }
+}
+
+@media (max-width: 650px) {
+  .vs-shared-header {
+    width: calc(100% - 18px);
+    top: 7px;
+    margin-top: 7px;
+    border-radius: 17px;
+  }
+
+  .vs-shared-header .navbar {
+    min-height: 58px;
+    flex-wrap: nowrap;
+    padding: 8px 9px;
+    gap: 7px;
+  }
+
+  .vs-shared-header .brand {
+    min-width: 0;
+    margin-right: auto;
+    font-size: 0.9rem;
+    gap: 7px;
+  }
+
+  .vs-shared-header .logo-icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+  }
+
+  .vs-shared-header .nav-platforms {
+    display: none;
+  }
+
+  .vs-shared-header .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .vs-shared-header .vs-theme-toggle {
+    width: 48px;
+    min-height: 38px;
+    height: 38px;
+    padding: 4px;
+    gap: 0;
+    border-radius: 11px;
+    box-shadow: none;
+  }
+
+  .vs-shared-header .vs-theme-icon {
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
+  }
+
+  .vs-shared-header .vs-theme-label {
+    display: none;
+  }
+
+  .vs-shared-header .vs-theme-track {
+    width: 30px;
+    height: 17px;
+    margin-left: -3px;
+  }
+
+  .vs-shared-header .vs-theme-knob {
+    width: 13px;
+    height: 13px;
+  }
+
+  .vs-shared-header .language-btn {
+    min-height: 38px;
+    height: 38px;
+    padding: 6px 8px;
+    gap: 4px;
+    border-radius: 11px;
+    font-size: 0.68rem;
+    box-shadow: none;
+  }
+
+  .vs-shared-header .language-btn span:nth-child(2) {
+    max-width: 58px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .vs-mobile-menu-btn {
+    display: inline-flex;
+  }
+
+  .vs-mobile-menu {
+    display: block;
+    padding: 0 9px 10px;
+    border-top: 1px solid var(--vs-border);
+  }
+
+  .vs-mobile-menu.hidden {
+    display: none !important;
+  }
+
+  .vs-mobile-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+    padding-top: 9px;
+  }
+
+  .vs-mobile-menu .nav-platform {
+    min-height: 39px;
+    padding: 8px 9px;
+    border: 1px solid var(--vs-border);
+    border-radius: 10px;
+    justify-content: flex-start;
+    font-size: 0.72rem;
+    background: rgba(255, 253, 240, 0.45);
+  }
+
+  .vs-mobile-menu .nav-platform.active {
+    background: rgba(231, 181, 0, 0.13);
+  }
+}
+
+@media (max-width: 650px) {
+  body[data-theme="dark"] .vs-mobile-menu,
+  body.vs-dark-mode .vs-mobile-menu {
+    border-top-color: rgba(255, 210, 60, 0.12);
+  }
+
+  body[data-theme="dark"] .vs-mobile-menu .nav-platform,
+  body.vs-dark-mode .vs-mobile-menu .nav-platform {
+    background: rgba(38, 38, 34, 0.7);
+    border-color: rgba(255, 210, 60, 0.1);
+  }
+}
+
+@media (max-width: 400px) {
+  .vs-shared-header .brand > span:last-child {
+    display: inline;
+  }
+
+  .vs-shared-header .language-btn {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.downloader-hero {
+  padding: 78px 0 38px;
+
+  text-align: center;
+}
+
+.downloader-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  margin-bottom: 20px;
+
+  padding: 8px 15px;
+
+  border: 1px solid var(--vs-border);
+
+  border-radius: 999px;
+
+  color: #7c6518;
+
+  background: rgba(255, 253, 240, 0.6);
+
+  font-size: 0.74rem;
+  font-weight: 800;
+
+  box-shadow:
+    4px 4px 10px var(--vs-shadow-dark),
+    -4px -4px 10px var(--vs-shadow-light);
+}
+
+.downloader-hero h1 {
+  width: min(880px, 100%);
+
+  margin: 0 auto 18px;
+
+  color: #3d3100;
+
+  font-size: clamp(2.25rem, 5vw, 4.4rem);
+
+  line-height: 1.04;
+
+  letter-spacing: -2.6px;
+
+  font-weight: 900;
+}
+
+.downloader-hero h1 span {
+  background: linear-gradient(100deg, #bf8a00, #e8b600, #f0c500);
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+}
+
+.downloader-hero p {
+  width: min(690px, 100%);
+
+  margin: 0 auto;
+
+  color: var(--vs-text-soft);
+
+  font-size: 0.98rem;
+
+  line-height: 1.75;
+}
+
+/* ============================================================
+   DOWNLOADER CARD
+   ============================================================ */
+
+.downloader-card {
+  position: relative;
+
+  overflow: hidden;
+
+  padding: 11px;
+
+  border: 1px solid var(--vs-border);
+
+  border-radius: var(--vs-radius-xl);
+
+  background: rgba(255, 253, 240, 0.46);
+
+  box-shadow:
+    15px 15px 34px var(--vs-shadow-dark),
+    -15px -15px 34px var(--vs-shadow-light);
+
+  backdrop-filter: blur(17px);
+  -webkit-backdrop-filter: blur(17px);
+}
+
+.downloader-card::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 1px;
+
+  pointer-events: none;
+
+  border-radius: calc(var(--vs-radius-xl) - 1px);
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.34),
+    transparent 35%,
+    transparent 72%,
+    rgba(249, 204, 0, 0.06)
+  );
+}
+
+/* ============================================================
+   URL FORM
+   ============================================================ */
+
+.downloader-form {
+  position: relative;
+
+  z-index: 1;
+
+  display: flex;
+
+  gap: 9px;
+}
+
+.downloader-input-wrap {
+  position: relative;
+
+  flex: 1;
+
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+}
+
+.downloader-input-icon {
+  position: absolute;
+
+  left: 18px;
+
+  z-index: 2;
+
+  color: #a08735;
+
+  pointer-events: none;
+}
+
+.downloader-input {
+  width: 100%;
+
+  height: 60px;
+
+  padding: 0 48px 0 48px;
+
+  border: 1px solid rgba(201, 158, 0, 0.1);
+
+  border-radius: 16px;
+
+  outline: none;
+
+  color: var(--vs-text);
+
+  background: rgba(255, 253, 240, 0.74);
+
+  box-shadow:
+    inset 4px 4px 10px rgba(180, 155, 60, 0.13),
+    inset -4px -4px 10px rgba(255, 255, 255, 0.82);
+
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.downloader-input:hover {
+  background: rgba(255, 253, 240, 0.88);
+}
+
+.downloader-input:focus {
+  border-color: rgba(201, 158, 0, 0.36);
+
+  background: rgba(255, 253, 240, 0.96);
+
+  box-shadow:
+    inset 3px 3px 8px rgba(180, 155, 60, 0.1),
+    inset -3px -3px 8px rgba(255, 255, 255, 0.82),
+    0 0 0 3px rgba(249, 204, 0, 0.09);
+}
+
+.downloader-input::placeholder {
+  color: #a2925e;
+}
+
+.downloader-clear {
+  position: absolute;
+
+  right: 12px;
+
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  color: #846e27;
+
+  background: rgba(201, 158, 0, 0.08);
+
+  opacity: 0.58;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.downloader-clear:hover {
+  opacity: 1;
+
+  transform: scale(1.06);
+
+  background: rgba(201, 158, 0, 0.14);
+}
+
+/* ============================================================
+   FETCH BUTTON
+   ============================================================ */
+
+.downloader-fetch {
+  flex-shrink: 0;
+
+  min-width: 148px;
+
+  height: 60px;
+
+  padding: 0 22px;
+
+  border: 0;
+
+  border-radius: 16px;
+
+  color: #382b00;
+
+  background: linear-gradient(135deg, #f9da45, #efbd00 55%, #dca200);
+
+  font-size: 0.88rem;
+  font-weight: 850;
+
+  box-shadow:
+    7px 8px 17px rgba(180, 155, 60, 0.25),
+    -6px -6px 14px rgba(255, 255, 255, 0.72),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+
+  transition:
+    transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.24s ease,
+    filter 0.24s ease;
+}
+
+.downloader-fetch:hover {
+  transform: translateY(-3px);
+
+  filter: brightness(1.035);
+
+  box-shadow:
+    9px 11px 22px rgba(180, 155, 60, 0.3),
+    -7px -7px 17px rgba(255, 255, 255, 0.76),
+    0 8px 22px rgba(230, 165, 0, 0.18);
+}
+
+.downloader-fetch:active {
+  transform: translateY(0);
+
+  box-shadow:
+    inset 4px 4px 9px rgba(180, 155, 60, 0.24),
+    inset -4px -4px 9px rgba(255, 255, 255, 0.5);
+}
+
+.downloader-fetch:disabled {
+  opacity: 0.62;
+
+  filter: grayscale(0.15);
+
+  transform: none;
+}
+
+/* ============================================================
+   DETECTED PLATFORM
+   ============================================================ */
+
+.downloader-detected {
+  position: relative;
+
+  z-index: 1;
+
+  min-height: 19px;
+
+  margin: 11px 7px 0;
+
+  color: var(--vs-text-muted);
+
+  font-size: 0.75rem;
+  font-weight: 750;
+
+  text-align: left;
+}
+
+/* ============================================================
+   LOADER
+   ============================================================ */
+
+.downloader-loader {
+  position: relative;
+
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  margin-top: 13px;
+
+  padding: 15px;
+
+  border-radius: 15px;
+
+  color: var(--vs-text-soft);
+
+  background: rgba(255, 253, 240, 0.5);
+
+  box-shadow:
+    inset 3px 3px 7px rgba(180, 155, 60, 0.1),
+    inset -3px -3px 7px rgba(255, 255, 255, 0.68);
+
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.downloader-spinner {
+  width: 24px;
+  height: 24px;
+
+  flex-shrink: 0;
+
+  border: 3px solid rgba(201, 158, 0, 0.16);
+
+  border-top-color: var(--vs-gold-dark);
+
+  border-radius: 50%;
+
+  animation: downloader-spin 0.7s linear infinite;
+}
+
+@keyframes downloader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================
+   ERROR
+   ============================================================ */
+
+.downloader-error {
+  position: relative;
+
+  z-index: 1;
+
+  margin-top: 13px;
+
+  padding: 13px 15px;
+
+  border: 1px solid rgba(180, 60, 45, 0.13);
+
+  border-radius: 14px;
+
+  color: #a64034;
+
+  background: rgba(200, 60, 50, 0.055);
+
+  font-size: 0.8rem;
+  font-weight: 650;
+
+  text-align: left;
+}
+
+/* ============================================================
+   RESULT
+   ============================================================ */
+
+.universal-result {
+  position: relative;
+
+  z-index: 1;
+
+  margin-top: 18px;
+
+  padding: 20px;
+
+  border: 1px solid var(--vs-border);
+
+  border-radius: 22px;
+
+  background: rgba(255, 253, 240, 0.48);
+
+  box-shadow:
+    inset 3px 3px 9px rgba(180, 155, 60, 0.07),
+    inset -3px -3px 9px rgba(255, 255, 255, 0.64);
+}
+
+/* ============================================================
+   RESULT HEADER
+   ============================================================ */
+
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 14px;
+
+  margin-bottom: 17px;
+}
+
+.result-platform {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 7px 12px;
+
+  border-radius: 999px;
+
+  color: #735b11;
+
+  background: rgba(231, 181, 0, 0.1);
+
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.result-header-title {
+  color: #806b2d;
+
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+/* ============================================================
+   RESULT GRID
+   ============================================================ */
+
+.result-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(300px, 0.95fr)
+    minmax(320px, 1.05fr);
+
+  gap: 24px;
+
+  /* Keep the thumbnail column at the image's natural height.
+     The details column can be taller without stretching the media box. */
+  align-items: start;
+}
+
+/* ============================================================
+   RESULT MEDIA
+   ============================================================ */
+
+.result-media {
+  position: relative;
+
+  overflow: hidden;
+
+  min-height: 0;
+
+  align-self: start;
+
+  border-radius: 18px;
+
+  background: #171717;
+
+  box-shadow:
+    8px 9px 20px rgba(180, 155, 60, 0.2),
+    -5px -5px 14px rgba(255, 255, 255, 0.58);
+}
+
+.result-media img,
+#universal-thumbnail {
+  display: block;
+
+  width: 100%;
+
+  aspect-ratio: 16 / 9;
+
+  object-fit: cover;
+}
+
+.result-media::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.13),
+    transparent 32%,
+    transparent 70%,
+    rgba(0, 0, 0, 0.08)
+  );
+}
+
+/* ============================================================
+   VIDEO PREVIEW
+   ============================================================ */
+
+.universal-video-wrap {
+  overflow: hidden;
+
+  margin-top: 15px;
+
+  border-radius: 18px;
+
+  background: #090909;
+}
+
+.universal-video {
+  display: block;
+
+  width: 100%;
+
+  max-height: 540px;
+
+  background: #000;
+}
+
+/* ============================================================
+   RESULT DETAILS
+   ============================================================ */
+
+.result-details {
+  min-width: 0;
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+.result-details h2,
+#universal-title {
+  margin: 0 0 15px;
+
+  color: #3b3000;
+
+  font-size: clamp(1.18rem, 2vw, 1.48rem);
+
+  line-height: 1.38;
+
+  letter-spacing: -0.45px;
+
+  font-weight: 850;
+
+  overflow-wrap: anywhere;
+}
+
+/* ============================================================
+   META
+   ============================================================ */
+
+.result-meta {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  margin-bottom: 20px;
+}
+
+.result-meta span {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 30px;
+
+  padding: 6px 10px;
+
+  border: 1px solid rgba(201, 158, 0, 0.08);
+
+  border-radius: 999px;
+
+  color: #756126;
+
+  background: rgba(255, 253, 240, 0.62);
+
+  box-shadow:
+    3px 3px 7px rgba(180, 155, 60, 0.12),
+    -3px -3px 7px rgba(255, 255, 255, 0.62);
+
+  font-size: 0.71rem;
+  font-weight: 700;
+}
+
+/* ============================================================
+   QUALITY
+   ============================================================ */
+
+.quality-section {
+  margin-bottom: 19px;
+}
+
+.quality-title,
+#universal-quality-label {
+  display: block;
+
+  margin-bottom: 10px;
+
+  color: #69551a;
+
+  font-size: 0.72rem;
+  font-weight: 850;
+
+  letter-spacing: 0.65px;
+
+  text-transform: uppercase;
+}
+
+.formats-grid {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.format-btn {
+  min-width: 68px;
+
+  padding: 9px 12px;
+
+  border: 1px solid rgba(201, 158, 0, 0.09);
+
+  border-radius: 12px;
+
+  color: #725c18;
+
+  background: rgba(245, 238, 204, 0.76);
+
+  box-shadow:
+    4px 4px 9px rgba(180, 155, 60, 0.15),
+    -4px -4px 9px rgba(255, 255, 255, 0.7);
+
+  font-size: 0.76rem;
+  font-weight: 800;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.format-btn:hover {
+  transform: translateY(-2px);
+
+  background: rgba(255, 253, 240, 0.9);
+
+  box-shadow:
+    5px 6px 12px rgba(180, 155, 60, 0.19),
+    -5px -5px 12px rgba(255, 255, 255, 0.74);
+}
+
+.format-btn.active {
+  color: #392c00;
+
+  border-color: rgba(210, 160, 0, 0.18);
+
+  background: linear-gradient(135deg, #f9d63d, #e9ad00);
+
+  box-shadow:
+    5px 5px 12px rgba(180, 155, 60, 0.23),
+    -4px -4px 10px rgba(255, 255, 255, 0.68),
+    0 0 14px rgba(249, 204, 0, 0.18);
+}
+
+/* ============================================================
+   DOWNLOAD ACTIONS
+   ============================================================ */
+
+.download-actions {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 9px;
+
+  margin-top: auto;
+}
+
+.download-btn,
+.audio-btn {
+  width: 100%;
+
+  min-height: 52px;
+
+  border-radius: 15px;
+
+  font-size: 0.84rem;
+  font-weight: 850;
+
+  transition:
+    transform 0.23s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.23s ease,
+    filter 0.23s ease;
+}
+
+.download-btn {
+  border: 0;
+
+  color: #342700;
+
+  background: linear-gradient(135deg, #fbe04d, #f2c000 52%, #dda300);
+
+  box-shadow:
+    7px 8px 17px rgba(180, 155, 60, 0.25),
+    -6px -6px 14px rgba(255, 255, 255, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38);
+}
+
+.download-btn:hover {
+  transform: translateY(-3px);
+
+  filter: brightness(1.04);
+
+  box-shadow:
+    9px 11px 22px rgba(180, 155, 60, 0.31),
+    -7px -7px 17px rgba(255, 255, 255, 0.76),
+    0 8px 23px rgba(230, 165, 0, 0.18);
+}
+
+.audio-btn {
+  border: 1px solid rgba(201, 158, 0, 0.18);
+
+  color: #725a12;
+
+  background: rgba(245, 238, 204, 0.78);
+
+  box-shadow:
+    5px 5px 12px rgba(180, 155, 60, 0.17),
+    -5px -5px 12px rgba(255, 255, 255, 0.72);
+}
+
+.audio-btn:hover {
+  transform: translateY(-3px);
+
+  color: #4c3a05;
+
+  background: rgba(255, 253, 240, 0.92);
+}
+
+/* ============================================================
+   DOWNLOAD PROGRESS
+   ============================================================ */
+
+.download-progress {
+  margin-top: 15px;
+}
+
+.progress-track {
+  width: 100%;
+
+  height: 7px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: rgba(245, 238, 204, 0.82);
+
+  box-shadow:
+    inset 3px 3px 7px rgba(180, 155, 60, 0.15),
+    inset -3px -3px 7px rgba(255, 255, 255, 0.7);
+}
+
+.progress-fill {
+  width: 0;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: linear-gradient(90deg, #f9cc00, #e6a500, #fce150);
+
+  box-shadow: 0 0 12px rgba(249, 204, 0, 0.48);
+
+  transition: width 0.35s ease;
+}
+
+.progress-label {
+  margin-top: 7px;
+
+  color: #9a8547;
+
+  font-size: 0.73rem;
+  font-weight: 650;
+}
+
+/* ============================================================
+   COPY BUTTON
+   ============================================================ */
+
+.downloader-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 7px 11px;
+
+  border: 1px solid rgba(201, 158, 0, 0.12);
+
+  border-radius: 10px;
+
+  color: #77621d;
+
+  background: rgba(255, 253, 240, 0.62);
+
+  font-size: 0.72rem;
+  font-weight: 750;
+
+  box-shadow:
+    3px 3px 7px rgba(180, 155, 60, 0.12),
+    -3px -3px 7px rgba(255, 255, 255, 0.62);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.downloader-copy:hover {
+  transform: translateY(-1px);
+
+  background: rgba(231, 181, 0, 0.1);
+}
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+
+.hidden {
+  display: none !important;
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+
+/* ============================================================
+   SEO CONTENT
+   ============================================================ */
+
+.downloader-content {
+  width: min(880px, 100%);
+
+  margin: 55px auto 0;
+
+  color: var(--vs-text-soft);
+}
+
+.downloader-content h2 {
+  margin: 0 0 14px;
+
+  color: #4a3a04;
+
+  font-size: clamp(1.45rem, 3vw, 2rem);
+
+  line-height: 1.25;
+
+  letter-spacing: -0.6px;
+}
+
+.downloader-content h3 {
+  margin: 28px 0 9px;
+
+  color: #55430b;
+
+  font-size: 1.05rem;
+}
+
+.downloader-content p {
+  margin: 0 0 13px;
+
+  font-size: 0.9rem;
+
+  line-height: 1.8;
+}
+
+.downloader-content ul,
+.downloader-content ol {
+  margin: 10px 0 18px;
+
+  padding-left: 21px;
+}
+
+.downloader-content li {
+  margin-bottom: 8px;
+
+  color: var(--vs-text-soft);
+
+  font-size: 0.88rem;
+
+  line-height: 1.7;
+}
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+
+.downloader-faq {
+  width: min(880px, 100%);
+
+  margin: 48px auto 0;
+}
+
+.downloader-faq h2 {
+  margin-bottom: 17px;
+
+  color: #4a3a04;
+
+  font-size: clamp(1.45rem, 3vw, 2rem);
+}
+
+.downloader-faq details {
+  margin-bottom: 9px;
+
+  padding: 15px 17px;
+
+  border: 1px solid rgba(201, 158, 0, 0.1);
+
+  border-radius: 14px;
+
+  background: rgba(255, 253, 240, 0.5);
+
+  box-shadow:
+    4px 4px 10px rgba(180, 155, 60, 0.11),
+    -4px -4px 10px rgba(255, 255, 255, 0.62);
+}
+
+.downloader-faq summary {
+  color: #5c4810;
+
+  font-size: 0.84rem;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  list-style: none;
+}
+
+.downloader-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.downloader-faq summary::after {
+  content: "+";
+
+  float: right;
+
+  color: #a27d17;
+
+  font-size: 1rem;
+}
+
+.downloader-faq details[open] summary::after {
+  content: "−";
+}
+
+.downloader-faq details p {
+  margin: 12px 0 2px;
+
+  color: #85743e;
+
+  font-size: 0.8rem;
+
+  line-height: 1.75;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.downloader-footer {
+  width: min(880px, 100%);
+
+  margin: 55px auto 0;
+
+  padding-top: 22px;
+
+  border-top: 1px solid rgba(201, 158, 0, 0.1);
+
+  color: #9a8950;
+
+  font-size: 0.72rem;
+
+  line-height: 1.7;
+
+  text-align: center;
+}
+
+.downloader-footer a {
+  color: #80691d;
+
+  text-decoration: none;
+
+  font-weight: 700;
+}
+
+.downloader-footer a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width: 850px) {
+  .downloader-nav {
+    flex-wrap: wrap;
+  }
+
+  .downloader-nav-links {
+    order: 3;
+
+    width: 100%;
+  }
+
+  .downloader-hero {
+    padding-top: 60px;
+  }
+
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 650px) {
+  .downloader-page {
+    width: min(100% - 22px, 560px);
+
+    padding-bottom: 45px;
+  }
+
+  .downloader-nav {
+    width: calc(100% - 22px);
+
+    top: 7px;
+
+    padding: 9px 10px;
+
+    border-radius: 15px;
+  }
+
+  .downloader-brand {
+    font-size: 0.88rem;
+  }
+
+  .downloader-brand-icon {
+    width: 31px;
+    height: 31px;
+  }
+
+  .downloader-language select {
+    min-width: 98px;
+
+    font-size: 0.7rem;
+  }
+
+  .downloader-nav-links {
+    overflow-x: auto;
+
+    justify-content: flex-start;
+
+    flex-wrap: nowrap;
+
+    width: 100%;
+
+    padding-bottom: 2px;
+
+    scrollbar-width: none;
+  }
+
+  .downloader-nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .downloader-nav-links a {
+    flex-shrink: 0;
+
+    padding: 7px 9px;
+
+    font-size: 0.7rem;
+  }
+
+  .downloader-hero {
+    padding: 48px 0 28px;
+  }
+
+  .downloader-hero h1 {
+    font-size: clamp(2rem, 11vw, 3.2rem);
+
+    letter-spacing: -1.7px;
+  }
+
+  .downloader-hero p {
+    font-size: 0.85rem;
+
+    line-height: 1.7;
+  }
+
+  .downloader-card {
+    padding: 8px;
+
+    border-radius: 21px;
+  }
+
+  .downloader-form {
+    flex-direction: column;
+
+    gap: 8px;
+  }
+
+  .downloader-input {
+    height: 56px;
+
+    font-size: 0.84rem;
+  }
+
+  .downloader-fetch {
+    width: 100%;
+
+    height: 54px;
+  }
+
+  .downloader-detected {
+    text-align: center;
+  }
+
+  .universal-result {
+    padding: 13px;
+
+    border-radius: 18px;
+  }
+
+  .result-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .result-media {
+    min-height: 0;
+
+    border-radius: 15px;
+  }
+
+  .result-details h2,
+  #universal-title {
+    font-size: 1.12rem;
+  }
+
+  .formats-grid {
+    gap: 7px;
+  }
+
+  .format-btn {
+    flex: 1 1 auto;
+
+    min-width: 62px;
+
+    padding: 8px 9px;
+
+    font-size: 0.72rem;
+  }
+
+  .download-btn,
+  .audio-btn {
+    min-height: 51px;
+  }
+
+  .downloader-content,
+  .downloader-faq {
+    margin-top: 38px;
+  }
+}
+
+/* ============================================================
+   SMALL MOBILE
+   ============================================================ */
+
+@media (max-width: 400px) {
+  .downloader-nav {
+    gap: 8px;
+  }
+
+  .downloader-brand span {
+    display: none;
+  }
+
+  .downloader-language {
+    margin-left: auto;
+  }
+
+  .downloader-hero h1 {
+    font-size: 2rem;
+  }
+
+  .downloader-badge {
+    font-size: 0.68rem;
+
+    padding: 7px 11px;
+  }
+
+  .result-meta span {
+    font-size: 0.67rem;
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   VIDSNATCH PREMIUM THEME TOGGLE
+   ============================================================ */
+
+.vs-theme-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 20px 8px;
+  position: relative;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.vs-theme-toggle {
+  pointer-events: auto;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  min-height: 42px;
+  padding: 7px 13px 7px 11px;
+
+  border: 1px solid rgba(190, 145, 0, 0.18);
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.48);
+
+  color: #5c4b12;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 22px rgba(92, 75, 18, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.vs-theme-toggle:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 11px 28px rgba(92, 75, 18, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.vs-theme-toggle:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.vs-theme-icon {
+  width: 27px;
+  height: 27px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: rgba(255, 210, 50, 0.22);
+
+  font-size: 15px;
+
+  transition:
+    transform 0.35s ease,
+    background 0.3s ease;
+}
+
+.vs-theme-toggle:hover .vs-theme-icon {
+  transform: rotate(12deg) scale(1.08);
+}
+
+.vs-theme-label {
+  white-space: nowrap;
+}
+
+.vs-theme-track {
+  position: relative;
+
+  width: 34px;
+  height: 19px;
+
+  margin-left: 2px;
+
+  border-radius: 999px;
+
+  background: rgba(120, 100, 35, 0.16);
+
+  box-shadow: inset 0 1px 3px rgba(70, 55, 10, 0.12);
+
+  transition: background 0.3s ease;
+}
+
+.vs-theme-knob {
+  position: absolute;
+
+  width: 15px;
+  height: 15px;
+
+  top: 2px;
+  left: 2px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.18);
+
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.3s ease;
+}
+/* ============================================================
+   VIDSNATCH DARK MODE
+   ============================================================ */
+
+html.vs-dark-mode,
+body.vs-dark-mode {
+  background:
+    radial-gradient(
+      circle at 20% 10%,
+      rgba(255, 193, 7, 0.08),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(255, 193, 7, 0.05),
+      transparent 30%
+    ),
+    #11110f !important;
+
+  color: #f5f1df !important;
+}
+
+/* Main page */
+
+body.vs-dark-mode {
+  transition:
+    background 0.35s ease,
+    color 0.35s ease;
+}
+
+/* Header */
+
+body.vs-dark-mode .vs-shared-header {
+  background: rgba(20, 20, 18, 0.92) !important;
+
+  border-color: rgba(255, 210, 60, 0.12) !important;
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Brand */
+
+body.vs-dark-mode .vs-shared-header .brand {
+  color: #fff7d0 !important;
+}
+
+/* Navbar links */
+
+body.vs-dark-mode .vs-shared-header .nav-platform {
+  color: #ddd4a8 !important;
+}
+
+body.vs-dark-mode .vs-shared-header .nav-platform:hover,
+body.vs-dark-mode .vs-shared-header .nav-platform.active {
+  color: #ffd21c !important;
+}
+
+/* Language button */
+
+body.vs-dark-mode .language-btn {
+  background: rgba(42, 42, 37, 0.9) !important;
+
+  color: #f8efc5 !important;
+
+  border-color: rgba(255, 214, 70, 0.14) !important;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Language menu */
+
+body.vs-dark-mode .language-menu {
+  background: rgba(28, 28, 25, 0.97) !important;
+
+  border-color: rgba(255, 214, 70, 0.12) !important;
+
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.vs-dark-mode .vs-language-option {
+  color: #eee6c3 !important;
+}
+
+body.vs-dark-mode .vs-language-option:hover,
+body.vs-dark-mode .vs-language-option.active {
+  background: rgba(255, 205, 35, 0.12) !important;
+
+  color: #ffd21c !important;
+}
+
+/* Theme button */
+
+body.vs-dark-mode .vs-theme-toggle {
+  background: rgba(38, 38, 34, 0.88);
+
+  color: #eee6c3;
+
+  border-color: rgba(255, 210, 60, 0.15);
+
+  box-shadow:
+    0 9px 28px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+body.vs-dark-mode .vs-theme-toggle:hover {
+  box-shadow:
+    0 13px 34px rgba(0, 0, 0, 0.38),
+    0 0 0 1px rgba(255, 211, 44, 0.08);
+}
+
+body.vs-dark-mode .vs-theme-icon {
+  background: rgba(255, 205, 35, 0.12);
+}
+
+body.vs-dark-mode .vs-theme-track {
+  background: rgba(255, 205, 35, 0.3);
+}
+
+body.vs-dark-mode .vs-theme-knob {
+  transform: translateX(15px);
+
+  background: #ffd21c;
+}
+
+/* Common page text */
+
+body.vs-dark-mode h1,
+body.vs-dark-mode h2,
+body.vs-dark-mode h3,
+body.vs-dark-mode h4 {
+  color: #fff6cf !important;
+}
+
+body.vs-dark-mode p {
+  color: #cfc7a7 !important;
+}
+
+/* Common cards / panels */
+
+body.vs-dark-mode .card,
+body.vs-dark-mode .download-card,
+body.vs-dark-mode .result-card,
+body.vs-dark-mode .media-card,
+body.vs-dark-mode .downloader-card,
+body.vs-dark-mode .download-box,
+body.vs-dark-mode .input-card,
+body.vs-dark-mode .feature-card,
+body.vs-dark-mode .faq-item,
+body.vs-dark-mode .supported-card {
+  background: rgba(30, 30, 27, 0.88) !important;
+
+  border-color: rgba(255, 215, 75, 0.1) !important;
+
+  color: #eee6c3 !important;
+
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* Inputs */
+
+body.vs-dark-mode input,
+body.vs-dark-mode textarea,
+body.vs-dark-mode select {
+  background: rgba(37, 37, 33, 0.95) !important;
+
+  color: #f5efcf !important;
+
+  border-color: rgba(255, 215, 75, 0.12) !important;
+}
+
+body.vs-dark-mode input::placeholder,
+body.vs-dark-mode textarea::placeholder {
+  color: #918b72 !important;
+}
+
+/* Buttons */
+
+body.vs-dark-mode button:not(.vs-theme-toggle):not(.language-btn) {
+  color: #f7efc9;
+}
+
+/* Footer */
+
+body.vs-dark-mode footer {
+  background: #0c0c0b !important;
+
+  color: #bdb69a !important;
+
+  border-color: rgba(255, 215, 75, 0.08) !important;
+}
+
+/* Smooth theme transition */
+
+body.vs-dark-mode *,
+html.vs-dark-mode * {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.2s ease,
+    box-shadow 0.25s ease;
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 700px) {
+  .vs-theme-row {
+    padding: 10px 14px 7px;
+  }
+
+  .vs-theme-toggle {
+    min-height: 40px;
+    padding: 6px 11px 6px 9px;
+  }
+
+  .vs-theme-label {
+    font-size: 12px;
+  }
+}
+
+
+/* Legacy shared-UI variable aliases (kept internal to the single stylesheet). */
+:root {
+  --vs-bg: var(--bg);
+  --vs-bg-soft: var(--bg-soft);
+  --vs-text: var(--text);
+  --vs-text-soft: var(--text-soft);
+  --vs-text-muted: var(--text-muted);
+  --vs-gold: var(--yellow-2);
+  --vs-gold-dark: var(--yellow-4);
+  --vs-gold-light: var(--yellow-1);
+  --vs-border: var(--border);
+  --vs-shadow-dark: var(--shadow-dark);
+  --vs-shadow-light: var(--shadow-light);
+}
+
+/* ============================================================
+   FINAL CANONICAL GLOBAL / SHARED UI RULES
+   ============================================================ */
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family:
+    "Outfit",
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(252, 225, 80, 0.32), transparent 28%),
+    radial-gradient(circle at 100% 45%, rgba(249, 204, 0, 0.2), transparent 30%),
+    var(--bg);
+}
+
+/* Exactly one generated navbar. */
+.vs-shared-header {
+  display: block !important;
+  position: sticky !important;
+  top: 12px !important;
+  z-index: 1000 !important;
+  width: min(1180px, calc(100% - 32px)) !important;
+  margin: 12px auto 0 !important;
+}
+
+.vs-shared-header .navbar {
+  width: 100% !important;
+  min-height: 66px !important;
+  margin: 0 !important;
+  padding: 10px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.vs-shared-header .nav-platforms {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.vs-shared-header .nav-platforms::-webkit-scrollbar {
+  display: none;
+}
+
+.vs-shared-header .nav-platform {
+  flex-shrink: 0;
+}
+
+.vs-theme-row {
+  width: 100%;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 12px 20px 8px !important;
+  position: relative;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.vs-theme-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.vs-theme-toggle {
+  pointer-events: auto;
+}
+
+@media (max-width: 900px) {
+  .vs-shared-header .navbar {
+    flex-wrap: wrap !important;
+  }
+
+  .vs-shared-header .nav-platforms {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 2px 0 6px;
+  }
+}
+
+@media (max-width: 700px) {
+  .vs-shared-header {
+    position: relative !important;
+    top: 0 !important;
+    width: calc(100% - 24px) !important;
+    margin-top: 10px !important;
+  }
+
+  .vs-shared-header .navbar {
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 11px 10px !important;
+  }
+
+  .vs-shared-header .language-selector {
+    margin-left: auto;
+  }
+
+  .vs-theme-row {
+    padding: 10px 14px 7px !important;
+  }
+}
+
+/* If an old page accidentally contains its legacy nav, hide it.
+   site-ui.js removes it from the DOM as well. */
+body > .downloader-nav {
+  display: none !important;
+}
+
+/* ============================================================
+   VIDSNATCH V3 FINAL UI OVERRIDES
+   One identical navbar/theme control on every page.
+   ============================================================ */
+
+:root {
+  --vs-nav-width: 1500px;
+  --vs-nav-height: 64px;
+}
+
+/* Shared navbar: fixed visual dimensions across every downloader page. */
+.site-header.vs-shared-header {
+  position: sticky !important;
+  top: 10px !important;
+  z-index: 1000 !important;
+  width: min(var(--vs-nav-width), calc(100% - 36px)) !important;
+  margin: 10px auto 0 !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 24px !important;
+  overflow: visible !important;
+  background: rgba(245, 238, 204, 0.90) !important;
+  box-shadow: 0 8px 24px rgba(112, 91, 20, 0.10) !important;
+}
+
+html[data-theme="dark"] .site-header.vs-shared-header,
+body.dark-mode .site-header.vs-shared-header,
+body.vs-dark-mode .site-header.vs-shared-header {
+  background: rgba(18, 17, 12, 0.94) !important;
+  border-color: rgba(249, 204, 0, 0.15) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42) !important;
+}
+
+.site-header.vs-shared-header .navbar {
+  width: 100% !important;
+  min-height: var(--vs-nav-height) !important;
+  height: var(--vs-nav-height) !important;
+  padding: 8px 12px !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  overflow: visible !important;
+}
+
+.site-header.vs-shared-header .brand {
+  flex: 0 0 auto !important;
+  gap: 7px !important;
+  font-size: 1.24rem !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.7px !important;
+  white-space: nowrap !important;
+}
+
+.site-header.vs-shared-header .brand .logo-icon {
+  width: 38px !important;
+  height: 38px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 12px !important;
+  font-size: 1.15rem !important;
+  color: #3a2e00 !important;
+  background: linear-gradient(135deg, #ffe34e, #f7c900) !important;
+  filter: none !important;
+  box-shadow: 0 4px 12px rgba(180, 140, 0, 0.22) !important;
+}
+
+.site-header.vs-shared-header .nav-platforms {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 2px !important;
+  overflow: hidden !important;
+}
+
+.site-header.vs-shared-header .nav-platform {
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  min-height: 38px !important;
+  height: 38px !important;
+  padding: 7px 8px !important;
+  gap: 5px !important;
+  border-radius: 11px !important;
+  font-size: clamp(0.70rem, 0.72vw, 0.80rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.1px !important;
+  white-space: nowrap !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.site-header.vs-shared-header .nav-platform .nav-platform-icon {
+  flex: 0 0 auto !important;
+  font-size: 0.88rem !important;
+}
+
+.site-header.vs-shared-header .nav-platform:hover {
+  background: rgba(249, 204, 0, 0.10) !important;
+  transform: none !important;
+}
+
+.site-header.vs-shared-header .nav-platform.active {
+  color: var(--text) !important;
+  background: rgba(249, 204, 0, 0.15) !important;
+  box-shadow: none !important;
+}
+
+.site-header.vs-shared-header .nav-platform.active::after {
+  bottom: 2px !important;
+  width: 18px !important;
+  height: 2px !important;
+}
+
+.site-header.vs-shared-header .language-selector {
+  flex: 0 0 auto !important;
+}
+
+.site-header.vs-shared-header .language-btn {
+  min-height: 40px !important;
+  height: 40px !important;
+  padding: 7px 11px !important;
+  gap: 6px !important;
+  font-size: 0.78rem !important;
+  border-radius: 13px !important;
+  box-shadow: none !important;
+  background: rgba(255, 253, 240, 0.56) !important;
+}
+
+.site-header.vs-shared-header .language-btn:hover,
+.site-header.vs-shared-header .language-btn:active {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="dark"] .site-header.vs-shared-header .language-btn,
+body.dark-mode .site-header.vs-shared-header .language-btn {
+  background: rgba(255, 215, 75, 0.06) !important;
+  color: #fff4b8 !important;
+  border-color: rgba(249, 204, 0, 0.14) !important;
+}
+
+.site-header.vs-shared-header .language-menu {
+  top: calc(100% + 8px) !important;
+  right: 0 !important;
+  width: 230px !important;
+  max-height: 390px !important;
+  padding: 8px !important;
+  border-radius: 16px !important;
+  box-shadow: 0 16px 35px rgba(75, 60, 12, 0.18) !important;
+}
+
+html[data-theme="dark"] .site-header.vs-shared-header .language-menu,
+body.dark-mode .site-header.vs-shared-header .language-menu {
+  background: #1d1b10 !important;
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.50) !important;
+}
+
+/* Compact, proper toggle directly below navbar. */
+.vs-theme-row {
+  width: 100% !important;
+  height: 58px !important;
+  min-height: 58px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 8px 16px !important;
+  margin: 0 !important;
+  position: relative !important;
+  z-index: 900 !important;
+  pointer-events: none !important;
+}
+
+.vs-theme-toggle {
+  pointer-events: auto !important;
+  width: auto !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 4px 8px 4px 7px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 999px !important;
+  color: var(--text) !important;
+  background: var(--bg-card) !important;
+  box-shadow: 0 5px 14px rgba(75, 60, 12, 0.12) !important;
+  transform: none !important;
+}
+
+.vs-theme-toggle:hover,
+.vs-theme-toggle:active {
+  transform: none !important;
+}
+
+.vs-theme-icon {
+  width: 27px !important;
+  height: 27px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  background: rgba(249, 204, 0, 0.15) !important;
+  color: var(--yellow-3) !important;
+  font-size: 15px !important;
+}
+
+.vs-theme-label {
+  min-width: 34px !important;
+  font-size: 0.78rem !important;
+  font-weight: 750 !important;
+  line-height: 1 !important;
+}
+
+.vs-theme-track {
+  position: relative !important;
+  width: 42px !important;
+  height: 24px !important;
+  flex: 0 0 42px !important;
+  border-radius: 999px !important;
+  background: rgba(150, 125, 30, 0.18) !important;
+  border: 1px solid rgba(150, 125, 30, 0.16) !important;
+}
+
+.vs-theme-knob {
+  position: absolute !important;
+  top: 3px !important;
+  left: 3px !important;
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18) !important;
+  transition: transform 0.22s ease, background 0.22s ease !important;
+}
+
+.vs-theme-knob[data-position="right"] {
+  transform: translateX(18px) !important;
+}
+
+html[data-theme="dark"] .vs-theme-toggle,
+body.dark-mode .vs-theme-toggle,
+body.vs-dark-mode .vs-theme-toggle {
+  background: #1c1a0e !important;
+  border-color: rgba(249, 204, 0, 0.16) !important;
+  color: #fff4b8 !important;
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.34) !important;
+}
+
+html[data-theme="dark"] .vs-theme-icon,
+body.dark-mode .vs-theme-icon {
+  background: rgba(249, 204, 0, 0.11) !important;
+  color: #ffd21c !important;
+}
+
+html[data-theme="dark"] .vs-theme-track,
+body.dark-mode .vs-theme-track {
+  background: rgba(249, 204, 0, 0.18) !important;
+  border-color: rgba(249, 204, 0, 0.15) !important;
+}
+
+html[data-theme="dark"] .vs-theme-knob,
+body.dark-mode .vs-theme-knob {
+  background: #ffd21c !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* ============================================================
+   DARK MODE: NO WHITE/BRIGHT NEUMORPHIC SHADOWS
+   Keep only controlled dark shadows.
+   ============================================================ */
+
+html[data-theme="dark"],
+body.dark-mode,
+body.vs-dark-mode {
+  --shadow-light: transparent !important;
+}
+
+html[data-theme="dark"] *,
+body.dark-mode *,
+body.vs-dark-mode * {
+  --shadow-light: transparent;
+}
+
+/* Remove explicit white highlight shadows left by old light-theme rules. */
+html[data-theme="dark"] .hero-badge,
+html[data-theme="dark"] .downloader-card,
+html[data-theme="dark"] .seo-downloader-card,
+html[data-theme="dark"] .downloader-form input,
+html[data-theme="dark"] .seo-downloader-form input,
+html[data-theme="dark"] .downloader-result,
+html[data-theme="dark"] .seo-downloader-result,
+html[data-theme="dark"] .feature-card,
+html[data-theme="dark"] .faq-item,
+html[data-theme="dark"] .content-card,
+html[data-theme="dark"] .step-card,
+body.dark-mode .hero-badge,
+body.dark-mode .downloader-card,
+body.dark-mode .seo-downloader-card,
+body.dark-mode .downloader-form input,
+body.dark-mode .seo-downloader-form input,
+body.dark-mode .downloader-result,
+body.dark-mode .seo-downloader-result,
+body.dark-mode .feature-card,
+body.dark-mode .faq-item,
+body.dark-mode .content-card,
+body.dark-mode .step-card,
+body.vs-dark-mode .hero-badge,
+body.vs-dark-mode .downloader-card,
+body.vs-dark-mode .seo-downloader-card,
+body.vs-dark-mode .downloader-form input,
+body.vs-dark-mode .seo-downloader-form input,
+body.vs-dark-mode .downloader-result,
+body.vs-dark-mode .seo-downloader-result,
+body.vs-dark-mode .feature-card,
+body.vs-dark-mode .faq-item,
+body.vs-dark-mode .content-card,
+body.vs-dark-mode .step-card {
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.34) !important;
+}
+
+html[data-theme="dark"] .nav-platform.active,
+body.dark-mode .nav-platform.active,
+body.vs-dark-mode .nav-platform.active {
+  box-shadow: none !important;
+}
+
+html[data-theme="dark"] button,
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+body.dark-mode button,
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea,
+body.vs-dark-mode button,
+body.vs-dark-mode input,
+body.vs-dark-mode select,
+body.vs-dark-mode textarea {
+  text-shadow: none !important;
+}
+
+/* ============================================================
+   RESPONSIVE NAVBAR
+   ============================================================ */
+
+@media (max-width: 1250px) {
+  .site-header.vs-shared-header .navbar {
+    gap: 7px !important;
+    padding-left: 9px !important;
+    padding-right: 9px !important;
+  }
+
+  .site-header.vs-shared-header .nav-platform {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    gap: 4px !important;
+    font-size: 0.68rem !important;
+  }
+
+  .site-header.vs-shared-header .brand {
+    font-size: 1.10rem !important;
+  }
+
+  .site-header.vs-shared-header .brand .logo-icon {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .site-header.vs-shared-header .language-btn {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    font-size: 0.72rem !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .site-header.vs-shared-header {
+    position: relative !important;
+    top: 0 !important;
+    width: calc(100% - 20px) !important;
+    margin-top: 8px !important;
+  }
+
+  .site-header.vs-shared-header .navbar {
+    height: auto !important;
+    min-height: 60px !important;
+    flex-wrap: wrap !important;
+    padding: 8px !important;
+  }
+
+  .site-header.vs-shared-header .nav-platforms {
+    order: 3 !important;
+    width: 100% !important;
+    flex-basis: 100% !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    padding-bottom: 2px !important;
+  }
+
+  .site-header.vs-shared-header .nav-platform {
+    flex: 0 0 auto !important;
+    font-size: 0.76rem !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .site-header.vs-shared-header {
+    width: calc(100% - 14px) !important;
+    border-radius: 18px !important;
+  }
+
+  .site-header.vs-shared-header .brand span:last-child {
+    display: none !important;
+  }
+
+  .site-header.vs-shared-header .language-btn #vs-current-language {
+    max-width: 70px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .vs-theme-row {
+    height: 52px !important;
+    min-height: 52px !important;
+  }
+}
+
+
+/* ============================================================
+   VIDSNATCH V4 — FINAL SHARED UI OVERRIDES
+   One stable navbar, one direction-safe language menu,
+   one compact day/night toggle, and clean downloader forms.
+   ============================================================ */
+
+/* Never let page RTL direction reverse the shared navigation. */
+.site-header.vs-shared-header,
+.site-header.vs-shared-header .navbar,
+.site-header.vs-shared-header .nav-platforms,
+.site-header.vs-shared-header .language-selector,
+.site-header.vs-shared-header .language-btn {
+  direction: ltr !important;
+}
+
+/* Stable navbar dimensions on every page. */
+.site-header.vs-shared-header {
+  position: sticky !important;
+  top: 10px !important;
+  width: min(1600px, calc(100% - 48px)) !important;
+  margin: 10px auto 0 !important;
+  border-radius: 22px !important;
+}
+
+.site-header.vs-shared-header .navbar {
+  min-height: 68px !important;
+  height: 68px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 8px 14px !important;
+  gap: 12px !important;
+  flex-wrap: nowrap !important;
+}
+
+.site-header.vs-shared-header .brand {
+  flex: 0 0 auto !important;
+  font-size: 1.18rem !important;
+  letter-spacing: -0.55px !important;
+  gap: 7px !important;
+}
+
+.site-header.vs-shared-header .brand .logo-icon,
+.site-header.vs-shared-header .brand span:first-child {
+  width: 38px !important;
+  height: 38px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 12px !important;
+  font-size: 1.15rem !important;
+}
+
+.site-header.vs-shared-header .nav-platforms {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  justify-content: center !important;
+  gap: 1px !important;
+}
+
+.site-header.vs-shared-header .nav-platform {
+  min-height: 38px !important;
+  padding: 7px 8px !important;
+  gap: 5px !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+}
+
+.site-header.vs-shared-header .nav-platform span {
+  font-size: 0.82rem !important;
+}
+
+.site-header.vs-shared-header .language-selector {
+  flex: 0 0 auto !important;
+  position: relative !important;
+}
+
+.site-header.vs-shared-header .language-btn {
+  min-height: 40px !important;
+  max-width: 145px !important;
+  padding: 8px 12px !important;
+  gap: 6px !important;
+  font-size: 0.76rem !important;
+  white-space: nowrap !important;
+}
+
+/* RTL languages affect the menu's text, not the navbar's layout. */
+html[dir="rtl"] .site-header.vs-shared-header .language-menu {
+  direction: rtl !important;
+  text-align: right !important;
+  right: 0 !important;
+  left: auto !important;
+}
+
+.site-header.vs-shared-header .language-menu {
+  z-index: 2000 !important;
+  width: 250px !important;
+  max-height: min(430px, calc(100vh - 95px)) !important;
+  overflow-y: auto !important;
+}
+
+.site-header.vs-shared-header .language-menu button {
+  min-height: 38px !important;
+  padding: 8px 11px !important;
+}
+
+/* ============================================================
+   V4 DAY / NIGHT TOGGLE
+   ============================================================ */
+
+.vs-theme-row {
+  padding: 10px 20px 6px !important;
+  min-height: 54px !important;
+}
+
+.vs-theme-toggle {
+  width: 126px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 4px 6px !important;
+  display: grid !important;
+  grid-template-columns: 25px 1fr 42px !important;
+  align-items: center !important;
+  gap: 7px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(180, 145, 20, 0.18) !important;
+  background: var(--bg-card) !important;
+  color: var(--text) !important;
+  box-shadow: 0 5px 16px rgba(80, 60, 10, 0.08) !important;
+  transform: none !important;
+}
+
+.vs-theme-toggle:hover,
+.vs-theme-toggle:active {
+  transform: none !important;
+}
+
+.vs-theme-icon {
+  width: 25px !important;
+  height: 25px !important;
+  font-size: 13px !important;
+  background: rgba(249, 204, 0, 0.14) !important;
+}
+
+.vs-theme-label {
+  font-size: 0.74rem !important;
+  font-weight: 800 !important;
+  text-align: left !important;
+}
+
+.vs-theme-track {
+  width: 42px !important;
+  height: 23px !important;
+  margin: 0 !important;
+  border: 1px solid rgba(170, 135, 20, 0.18) !important;
+  background: rgba(160, 135, 45, 0.12) !important;
+  box-shadow: none !important;
+}
+
+.vs-theme-knob {
+  width: 17px !important;
+  height: 17px !important;
+  top: 2px !important;
+  left: 2px !important;
+  background: #ffffff !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18) !important;
+}
+
+.vs-theme-knob[data-position="right"] {
+  transform: translateX(19px) !important;
+}
+
+body.vs-dark-mode .vs-theme-toggle,
+html[data-theme="dark"] .vs-theme-toggle {
+  background: #211f13 !important;
+  color: #f6e8a5 !important;
+  border-color: rgba(249, 204, 0, 0.18) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28) !important;
+}
+
+body.vs-dark-mode .vs-theme-icon,
+html[data-theme="dark"] .vs-theme-icon {
+  background: rgba(249, 204, 0, 0.10) !important;
+}
+
+body.vs-dark-mode .vs-theme-track,
+html[data-theme="dark"] .vs-theme-track {
+  background: #3a3518 !important;
+  border-color: rgba(249, 204, 0, 0.22) !important;
+}
+
+body.vs-dark-mode .vs-theme-knob,
+html[data-theme="dark"] .vs-theme-knob {
+  background: #f9cc00 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* ============================================================
+   DARK MODE — NO WHITE NEUMORPHIC SHADOWS
+   ============================================================ */
+
+html[data-theme="dark"],
+html.vs-dark-mode,
+body.dark-mode,
+body.vs-dark-mode {
+  --shadow-light: rgba(0, 0, 0, 0) !important;
+  --vs-shadow-light: rgba(0, 0, 0, 0) !important;
+}
+
+html[data-theme="dark"] .site-header.vs-shared-header,
+html.vs-dark-mode .site-header.vs-shared-header,
+body.dark-mode .site-header.vs-shared-header,
+body.vs-dark-mode .site-header.vs-shared-header {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.34) !important;
+}
+
+html[data-theme="dark"] .hero-badge,
+html[data-theme="dark"] .universal-downloader,
+html[data-theme="dark"] .feature-card,
+html[data-theme="dark"] .step-card,
+html[data-theme="dark"] .faq-item,
+html[data-theme="dark"] .downloader-card,
+html[data-theme="dark"] .seo-downloader-card,
+html.vs-dark-mode .hero-badge,
+html.vs-dark-mode .universal-downloader,
+html.vs-dark-mode .feature-card,
+html.vs-dark-mode .step-card,
+html.vs-dark-mode .faq-item,
+html.vs-dark-mode .downloader-card,
+html.vs-dark-mode .seo-downloader-card,
+body.vs-dark-mode .hero-badge,
+body.vs-dark-mode .universal-downloader,
+body.vs-dark-mode .feature-card,
+body.vs-dark-mode .step-card,
+body.vs-dark-mode .faq-item,
+body.vs-dark-mode .downloader-card,
+body.vs-dark-mode .seo-downloader-card {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32) !important;
+}
+
+html[data-theme="dark"] .universal-input-wrap input,
+html.vs-dark-mode .universal-input-wrap input,
+body.vs-dark-mode .universal-input-wrap input,
+html[data-theme="dark"] .downloader-input,
+html.vs-dark-mode .downloader-input,
+body.vs-dark-mode .downloader-input {
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.28) !important;
+}
+
+html[data-theme="dark"] .fetch-btn,
+html.vs-dark-mode .fetch-btn,
+body.vs-dark-mode .fetch-btn,
+html[data-theme="dark"] .downloader-fetch,
+html.vs-dark-mode .downloader-fetch,
+body.vs-dark-mode .downloader-fetch {
+  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.30) !important;
+}
+
+/* ============================================================
+   DOWNLOADER PAGES — CLEAN URL AREA
+   ============================================================ */
+
+.downloader-card,
+.seo-downloader-card {
+  width: min(1040px, 100%) !important;
+  margin: 24px auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.downloader-form,
+.seo-downloader-form {
+  width: 100% !important;
+  display: flex !important;
+  align-items: stretch !important;
+  gap: 10px !important;
+}
+
+.downloader-input {
+  height: 58px !important;
+  min-height: 58px !important;
+  border-radius: 16px !important;
+  background: rgba(255, 253, 240, 0.86) !important;
+  box-shadow: none !important;
+}
+
+.downloader-input:focus {
+  box-shadow: 0 0 0 3px rgba(249, 204, 0, 0.10) !important;
+}
+
+.downloader-fetch {
+  height: 58px !important;
+  min-height: 58px !important;
+  border-radius: 16px !important;
+}
+
+body.vs-dark-mode .downloader-input,
+html[data-theme="dark"] .downloader-input,
+html.vs-dark-mode .downloader-input {
+  background: #23221d !important;
+  border-color: rgba(249, 204, 0, 0.14) !important;
+  box-shadow: none !important;
+}
+
+body.vs-dark-mode .downloader-form,
+html[data-theme="dark"] .downloader-form,
+html.vs-dark-mode .downloader-form {
+  background: transparent !important;
+}
+
+/* Give the downloader hero a little more room for the page content below. */
+.downloader-hero {
+  padding: 42px 0 28px !important;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1250px) {
+  .site-header.vs-shared-header {
+    width: calc(100% - 28px) !important;
+  }
+
+  .site-header.vs-shared-header .navbar {
+    gap: 7px !important;
+  }
+
+  .site-header.vs-shared-header .nav-platform {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    font-size: 0.68rem !important;
+  }
+
+  .site-header.vs-shared-header .nav-platform span {
+    font-size: 0.76rem !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .site-header.vs-shared-header {
+    position: sticky !important;
+    top: 6px !important;
+    width: calc(100% - 16px) !important;
+  }
+
+  .site-header.vs-shared-header .navbar {
+    height: 60px !important;
+    min-height: 60px !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+  }
+
+  .site-header.vs-shared-header .nav-platforms {
+    overflow-x: auto !important;
+    justify-content: flex-start !important;
+  }
+
+  .site-header.vs-shared-header .nav-platform {
+    flex: 0 0 auto !important;
+  }
+
+  .site-header.vs-shared-header .brand span:last-child {
+    display: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .site-header.vs-shared-header {
+    width: calc(100% - 10px) !important;
+    border-radius: 17px !important;
+  }
+
+  .site-header.vs-shared-header .navbar {
+    padding: 7px 8px !important;
+  }
+
+  .site-header.vs-shared-header .language-btn {
+    max-width: 112px !important;
+  }
+
+  .downloader-form,
+  .seo-downloader-form {
+    flex-direction: column !important;
+  }
+
+  .downloader-fetch {
+    width: 100% !important;
+  }
+}
+
+
+/* V4 home hero: keep the first line independent from the accent line. */
+.hero-section h1 .hero-title-main {
+  display: block !important;
+  margin-top: 0 !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: var(--text) !important;
+  color: var(--text) !important;
+}
+
+.hero-section {
+  padding-top: 58px !important;
+  padding-bottom: 52px !important;
+}
+
+@media (max-width: 700px) {
+  .hero-section {
+    padding-top: 42px !important;
+    padding-bottom: 40px !important;
+  }
+}
+
+/* ============================================================
+   VIDSNATCH V5 — CLEAN PRODUCT UI
+   ============================================================ */
+:root{
+  --v5-nav-h:64px;
+  --v5-max:1600px;
+}
+
+html,body{max-width:100%;}
+body{overflow-x:hidden;}
+
+/* Shared navbar: identical footprint on every page. */
+.site-header.vs-shared-header{
+  position:sticky !important; top:10px !important; z-index:1000 !important;
+  width:min(var(--v5-max),calc(100% - 32px)) !important;
+  height:var(--v5-nav-h) !important; min-height:var(--v5-nav-h) !important;
+  margin:10px auto 0 !important; border:1px solid var(--border) !important;
+  border-radius:20px !important; background:color-mix(in srgb,var(--bg) 92%,transparent) !important;
+  box-shadow:0 8px 24px rgba(80,65,15,.08) !important;
+  overflow:visible !important;
+}
+.site-header.vs-shared-header .navbar{
+  height:100% !important; min-height:100% !important; width:100% !important;
+  display:flex !important; align-items:center !important; gap:10px !important;
+  padding:7px 10px !important; overflow:visible !important; direction:ltr !important;
+}
+.site-header.vs-shared-header .brand{
+  flex:0 0 auto !important; display:inline-flex !important; align-items:center !important;
+  gap:7px !important; font-size:1.12rem !important; font-weight:800 !important;
+  white-space:nowrap !important; letter-spacing:-.45px !important;
+}
+.site-header.vs-shared-header .brand .logo-icon{
+  width:40px !important;height:40px !important;border-radius:12px !important;
+  display:inline-flex !important;align-items:center !important;justify-content:center !important;
+  background:linear-gradient(135deg,#ffe54f,#f5c900) !important;color:#3a2e00 !important;
+  box-shadow:0 4px 10px rgba(180,140,0,.16) !important;
+}
+.site-header.vs-shared-header .nav-platforms{
+  flex:1 1 auto !important; min-width:0 !important; display:flex !important;
+  align-items:center !important; justify-content:space-between !important; gap:2px !important;
+  overflow:hidden !important; direction:ltr !important;
+}
+.site-header.vs-shared-header .nav-platform{
+  flex:0 1 auto !important; min-width:0 !important; height:38px !important; min-height:38px !important;
+  padding:6px 7px !important; gap:4px !important; border-radius:10px !important;
+  font-size:clamp(.66rem,.68vw,.78rem) !important; font-weight:700 !important;
+  white-space:nowrap !important; box-shadow:none !important; transform:none !important;
+}
+.site-header.vs-shared-header .nav-platform-icon{font-size:.82rem !important;}
+.site-header.vs-shared-header .nav-platform:hover{background:rgba(249,204,0,.08) !important;}
+.site-header.vs-shared-header .nav-platform.active{background:rgba(249,204,0,.12) !important;box-shadow:none !important;}
+.site-header.vs-shared-header .language-selector{position:relative !important;flex:0 0 auto !important;direction:ltr !important;}
+.site-header.vs-shared-header .language-btn{
+  height:40px !important; min-height:40px !important; max-width:170px !important;
+  padding:7px 11px !important; border-radius:12px !important; font-size:.76rem !important;
+  gap:6px !important; white-space:nowrap !important; box-shadow:none !important;
+}
+.site-header.vs-shared-header .language-menu{
+  position:absolute !important; top:calc(100% + 8px) !important; right:0 !important; left:auto !important;
+  width:230px !important; max-height:360px !important; overflow:auto !important; z-index:2000 !important;
+  padding:7px !important; border-radius:15px !important; box-shadow:0 18px 40px rgba(0,0,0,.16) !important;
+}
+.site-header.vs-shared-header .vs-language-option{width:100% !important;text-align:left !important;direction:ltr !important;}
+
+/* Theme toggle: compact real switch, centered directly under navbar. */
+.vs-theme-row{
+  height:56px !important; min-height:56px !important; width:100% !important;
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  margin:0 !important; padding:6px !important; pointer-events:none !important;
+}
+.vs-theme-toggle{
+  pointer-events:auto !important; height:38px !important; min-height:38px !important;
+  display:inline-flex !important; align-items:center !important; gap:7px !important;
+  padding:4px 7px !important; border:1px solid var(--border) !important; border-radius:999px !important;
+  background:var(--bg-card) !important; color:var(--text) !important; box-shadow:none !important;
+}
+.vs-theme-icon{width:25px !important;height:25px !important;border-radius:50% !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;background:rgba(249,204,0,.13) !important;font-size:14px !important;}
+.vs-theme-label{font-size:.76rem !important;font-weight:750 !important;min-width:28px !important;}
+.vs-theme-track{position:relative !important;width:42px !important;height:23px !important;flex:0 0 42px !important;border-radius:999px !important;background:rgba(120,100,25,.16) !important;border:1px solid rgba(120,100,25,.16) !important;box-shadow:none !important;}
+.vs-theme-knob{position:absolute !important;top:2px !important;left:2px !important;width:17px !important;height:17px !important;border-radius:50% !important;background:#fff !important;box-shadow:0 1px 3px rgba(0,0,0,.16) !important;transition:transform .22s ease,background .22s ease !important;}
+.vs-theme-knob[data-position="right"]{transform:translateX(19px) !important;}
+
+/* Dedicated downloader URL area: no decorative panel, no URL icon, no white glow. */
+.universal-downloader,.downloader-card,.seo-downloader-card{
+  background:transparent !important; border:0 !important; box-shadow:none !important;
+  backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+.universal-input-row,.downloader-form,.seo-downloader-form{background:transparent !important;box-shadow:none !important;border:0 !important;}
+.universal-input-wrap,.downloader-input-wrap,.seo-downloader-input-wrap{
+  background:transparent !important; border:1px solid var(--border) !important;
+  box-shadow:none !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+.input-icon,.downloader-input-icon{display:none !important;}
+.universal-input-wrap input,.downloader-input,.seo-downloader-input{
+  background:transparent !important; box-shadow:none !important; border:0 !important;
+}
+.universal-input-wrap:focus-within,.downloader-input-wrap:focus-within,.seo-downloader-input-wrap:focus-within{
+  border-color:rgba(249,204,0,.38) !important; box-shadow:0 0 0 3px rgba(249,204,0,.07) !important;
+}
+.clear-input-btn,.downloader-clear{
+  width:32px !important;height:32px !important;min-width:32px !important;padding:0 !important;
+  border-radius:50% !important;background:transparent !important;color:var(--text-muted) !important;
+  box-shadow:none !important;
+}
+.clear-input-btn:hover,.downloader-clear:hover{background:rgba(249,204,0,.10) !important;color:var(--text) !important;}
+
+/* Dark mode: absolutely no white/neumorphic highlight shadows. */
+html[data-theme="dark"] *,html.vs-dark-mode *,body.dark-mode *,body.vs-dark-mode *{--shadow-light:transparent !important;}
+html[data-theme="dark"] .site-header.vs-shared-header,body.dark-mode .site-header.vs-shared-header,body.vs-dark-mode .site-header.vs-shared-header{box-shadow:0 8px 24px rgba(0,0,0,.34) !important;}
+html[data-theme="dark"] .vs-theme-toggle,body.dark-mode .vs-theme-toggle,body.vs-dark-mode .vs-theme-toggle{box-shadow:none !important;background:#211f13 !important;}
+html[data-theme="dark"] .vs-theme-knob,body.dark-mode .vs-theme-knob,body.vs-dark-mode .vs-theme-knob{background:#f9cc00 !important;box-shadow:0 1px 3px rgba(0,0,0,.4) !important;}
+html[data-theme="dark"] .language-menu,body.dark-mode .language-menu{box-shadow:0 18px 40px rgba(0,0,0,.55) !important;}
+html[data-theme="dark"] .universal-input-wrap,body.dark-mode .universal-input-wrap,html[data-theme="dark"] .downloader-input-wrap,body.dark-mode .downloader-input-wrap{box-shadow:none !important;background:transparent !important;}
+
+/* Shared FAQ/footer: same visual component on every page. */
+.vs-shared-faq{margin-top:64px !important;}
+.vs-shared-footer{margin-top:70px !important;}
+
+/* Stable desktop-to-tablet navbar. */
+@media (max-width:1250px){
+  .site-header.vs-shared-header{width:calc(100% - 20px) !important;}
+  .site-header.vs-shared-header .nav-platform{padding-left:5px !important;padding-right:5px !important;font-size:.64rem !important;}
+  .site-header.vs-shared-header .brand{font-size:1rem !important;}
+  .site-header.vs-shared-header .brand .logo-icon{width:36px !important;height:36px !important;}
+}
+@media (max-width:900px){
+  .site-header.vs-shared-header{height:auto !important;min-height:60px !important;}
+  .site-header.vs-shared-header .navbar{min-height:60px !important;height:auto !important;flex-wrap:wrap !important;overflow:visible !important;}
+  .site-header.vs-shared-header .brand{order:1 !important;}
+  .site-header.vs-shared-header .language-selector{order:2 !important;margin-left:auto !important;}
+  .site-header.vs-shared-header .nav-platforms{order:3 !important;flex:0 0 100% !important;width:100% !important;overflow-x:auto !important;justify-content:flex-start !important;padding:2px 0 3px !important;scrollbar-width:none !important;}
+  .site-header.vs-shared-header .nav-platforms::-webkit-scrollbar{display:none;}
+  .site-header.vs-shared-header .nav-platform{flex:0 0 auto !important;font-size:.72rem !important;}
+  .site-header.vs-shared-header .language-menu{right:0 !important;max-width:calc(100vw - 28px) !important;}
+}
+@media (max-width:600px){
+  .site-header.vs-shared-header{width:calc(100% - 10px) !important;border-radius:16px !important;top:5px !important;margin-top:5px !important;}
+  .site-header.vs-shared-header .navbar{padding:7px !important;}
+  .site-header.vs-shared-header .brand span:last-child{display:inline !important;font-size:.95rem !important;}
+  .site-header.vs-shared-header .brand .logo-icon{width:34px !important;height:34px !important;border-radius:10px !important;}
+  .site-header.vs-shared-header .language-btn{max-width:150px !important;height:38px !important;min-height:38px !important;font-size:.70rem !important;}
+  .site-header.vs-shared-header .language-btn #vs-current-language{max-width:78px !important;overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important;}
+  .vs-theme-row{height:50px !important;min-height:50px !important;}
+  .universal-input-row{flex-direction:column !important;}
+  .universal-input-row .fetch-btn{width:100% !important;}
+  .downloader-form,.seo-downloader-form{flex-direction:column !important;}
+  .downloader-fetch{width:100% !important;}
+}
+
+/* ============================================================
+   V5.1 POLISH + BUG FIX OVERRIDES
+   ============================================================ */
+
+/* One predictable page shell: footer is outside main and can sit
+   naturally at the bottom instead of being pulled into the content. */
+html, body { min-height: 100%; }
+body { min-height: 100vh; }
+
+/* Shared navbar is identical on home + every downloader page. */
+.site-header.vs-shared-header {
+  width: min(1500px, calc(100% - 48px)) !important;
+  margin: 18px auto 0 !important;
+  border-radius: 24px !important;
+  background: rgba(18, 17, 12, 0.92) !important;
+  border-color: rgba(249, 204, 0, 0.14) !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,.18) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+}
+
+html[data-theme="light"] .site-header.vs-shared-header,
+body[data-theme="light"] .site-header.vs-shared-header {
+  background: rgba(245, 238, 204, 0.92) !important;
+  border-color: rgba(170, 135, 20, 0.14) !important;
+  box-shadow: 0 10px 28px rgba(112, 91, 20, .10) !important;
+}
+
+.site-header.vs-shared-header .navbar {
+  min-height: 76px !important;
+  height: auto !important;
+  padding: 10px 14px !important;
+  gap: 14px !important;
+}
+
+.site-header.vs-shared-header .nav-platforms {
+  gap: 3px !important;
+  justify-content: space-between !important;
+  overflow-x: auto !important;
+  scrollbar-width: none !important;
+}
+.site-header.vs-shared-header .nav-platforms::-webkit-scrollbar { display:none !important; }
+
+.site-header.vs-shared-header .nav-platform {
+  min-height: 42px !important;
+  height: 42px !important;
+  padding: 8px 10px !important;
+  font-size: .82rem !important;
+  font-weight: 700 !important;
+}
+
+.site-header.vs-shared-header .nav-actions {
+  flex: 0 0 auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* Theme control lives inside the navbar so it cannot disappear on mobile. */
+.site-header.vs-shared-header .vs-theme-toggle {
+  width: auto !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 4px 7px !important;
+  gap: 7px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 999px !important;
+  background: var(--bg-card) !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+}
+.site-header.vs-shared-header .vs-theme-icon {
+  width: 27px !important;
+  height: 27px !important;
+  font-size: 15px !important;
+}
+.site-header.vs-shared-header .vs-theme-label {
+  min-width: 28px !important;
+  font-size: .76rem !important;
+}
+.site-header.vs-shared-header .vs-theme-track {
+  width: 40px !important;
+  height: 23px !important;
+  flex-basis: 40px !important;
+}
+.site-header.vs-shared-header .vs-theme-knob {
+  width: 15px !important;
+  height: 15px !important;
+}
+.site-header.vs-shared-header .vs-theme-knob[data-position="right"] { transform: translateX(17px) !important; }
+
+/* URL field: clean, flat, no link icon and no bright neumorphic halo. */
+.input-icon,
+.downloader-input-icon { display: none !important; }
+.universal-input-wrap input,
+.downloader-form input,
+.seo-downloader-form input,
+.downloader-input,
+.seo-downloader-input {
+  padding-left: 18px !important;
+  background: var(--bg-soft) !important;
+  box-shadow: none !important;
+  border-color: var(--border) !important;
+}
+.universal-input-wrap input:hover,
+.downloader-form input:hover,
+.seo-downloader-form input:hover { background: var(--bg-soft) !important; }
+.universal-input-wrap input:focus,
+.downloader-form input:focus,
+.seo-downloader-form input:focus {
+  box-shadow: 0 0 0 3px rgba(249,204,0,.10) !important;
+}
+
+/* Dedicated downloader cards should not inherit the old bright light glow. */
+.downloader-card,
+.seo-downloader-card,
+.universal-result,
+.downloader-result,
+.seo-downloader-result {
+  box-shadow: 0 12px 30px rgba(0,0,0,.12) !important;
+}
+
+/* Shared FAQ/footer: same visual component on every page. */
+.vs-shared-faq { margin-bottom: 72px !important; }
+.vs-shared-footer {
+  width: min(1500px, calc(100% - 48px)) !important;
+  margin: 0 auto !important;
+  padding: 54px 20px 60px !important;
+  border-top: 1px solid var(--border) !important;
+  background: transparent !important;
+}
+.vs-shared-footer .footer-inner { width: min(1180px, 100%) !important; }
+
+/* Desktop: keep the navbar in one consistent row. */
+@media (min-width: 901px) {
+  .site-header.vs-shared-header .nav-platforms { flex: 1 1 auto !important; }
+}
+
+/* Tablet/mobile: brand + controls on row 1, platform scroller on row 2. */
+@media (max-width: 900px) {
+  .site-header.vs-shared-header {
+    width: calc(100% - 24px) !important;
+    margin-top: 10px !important;
+    position: relative !important;
+  }
+  .site-header.vs-shared-header .navbar {
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    padding: 9px 10px !important;
+  }
+  .site-header.vs-shared-header .nav-platforms {
+    order: 3 !important;
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    padding: 2px 0 3px !important;
+  }
+  .site-header.vs-shared-header .nav-actions { margin-left: auto !important; }
+  .site-header.vs-shared-header .nav-platform { flex: 0 0 auto !important; }
+  .site-header.vs-shared-header .language-menu {
+    position: fixed !important;
+    top: 72px !important;
+    right: 12px !important;
+    left: auto !important;
+    width: min(250px, calc(100vw - 24px)) !important;
+    max-height: 70vh !important;
+    z-index: 5000 !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .site-header.vs-shared-header .brand { font-size: 1.05rem !important; }
+  .site-header.vs-shared-header .brand .logo-icon { width: 36px !important; height: 36px !important; }
+  .site-header.vs-shared-header .vs-theme-label { display: none !important; }
+  .site-header.vs-shared-header .vs-theme-toggle { padding-right: 6px !important; }
+  .site-header.vs-shared-header .language-btn { min-height: 40px !important; height: 40px !important; }
+  .site-header.vs-shared-header .language-btn #vs-current-language { display: inline !important; }
+  .vs-shared-footer { width: calc(100% - 24px) !important; padding: 45px 14px 52px !important; }
+}
+
+/* Dark mode must override old light neumorphism everywhere relevant. */
+html[data-theme="dark"] .universal-input-wrap input,
+body[data-theme="dark"] .universal-input-wrap input,
+html[data-theme="dark"] .downloader-form input,
+body[data-theme="dark"] .downloader-form input,
+html[data-theme="dark"] .seo-downloader-form input,
+body[data-theme="dark"] .seo-downloader-form input {
+  background: #17160f !important;
+  color: #fff4b8 !important;
+  border-color: rgba(249,204,0,.16) !important;
+  box-shadow: none !important;
+}
+
+/* ============================================================
+   V5.1.5 — FINAL UI POLISH
+   ------------------------------------------------------------
+   Scope: visual fixes only. Downloader/fetch/download logic is
+   intentionally untouched.
+   ============================================================ */
+
+/* URL fields: completely clean surface in both themes. */
+.universal-input-wrap .input-icon,
+.downloader-input-wrap .input-icon,
+.downloader-input-icon {
+  display: none !important;
+}
+
+.universal-input-wrap input,
+.downloader-form input,
+.seo-downloader-form input,
+.downloader-input,
+.seo-downloader-input {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: var(--bg-soft) !important;
+  background-image: none !important;
+}
+
+.universal-input-wrap input:hover,
+.universal-input-wrap input:focus,
+.downloader-form input:hover,
+.downloader-form input:focus,
+.seo-downloader-form input:hover,
+.seo-downloader-form input:focus,
+.downloader-input:hover,
+.downloader-input:focus,
+.seo-downloader-input:hover,
+.seo-downloader-input:focus {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background-image: none !important;
+}
+
+/* The URL container itself must not create a glow/halo behind the field. */
+.downloader-card,
+.seo-downloader-card {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* Home/universal URL shell: keep its layout, remove only the unwanted shadow. */
+.universal-downloader {
+  box-shadow: none !important;
+}
+
+/* Never show the optional raw video preview below the thumbnail.
+   The thumbnail remains the only media preview and keeps its 16:9 size. */
+.universal-video-wrap,
+#video-preview-wrap,
+.video-preview-wrap {
+  display: none !important;
+}
+
+#universal-thumbnail,
+.downloader-thumbnail,
+.seo-downloader-thumbnail {
+  display: block !important;
+  width: 100% !important;
+  aspect-ratio: 16 / 9 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  object-fit: cover !important;
+}
+
+.result-media {
+  overflow: hidden !important;
+}
+
+/* ============================================================
+   DAY MODE — clean warm surface
+   ============================================================ */
+html[data-theme="light"],
+html:not([data-theme="dark"]),
+body:not(.dark-mode):not(.vs-dark-mode) {
+  --bg: #f5eecc;
+  --bg-soft: #fffdf0;
+  --bg-card: rgba(255, 253, 240, 0.78);
+  --bg-card-strong: rgba(255, 253, 240, 0.94);
+  --text: #3a2e00;
+  --text-soft: #6f5c20;
+  --text-muted: #9a8547;
+  --shadow-dark: rgba(120, 95, 20, 0.10);
+  --shadow-light: rgba(255,255,255,0.55);
+}
+
+/* ============================================================
+   NIGHT MODE — true dark surface, no light neumorphic glow
+   ============================================================ */
+html[data-theme="dark"],
+html.vs-dark-mode,
+body.dark-mode,
+body.vs-dark-mode {
+  --bg: #0d0d0b !important;
+  --bg-soft: #151511 !important;
+  --bg-card: #171711 !important;
+  --bg-card-strong: #1b1b14 !important;
+  --text: #f7f0c9 !important;
+  --text-soft: #d2c78e !important;
+  --text-muted: #9b9160 !important;
+  --border: rgba(249,204,0,0.13) !important;
+  --shadow-dark: rgba(0,0,0,0.34) !important;
+  --shadow-light: transparent !important;
+}
+
+html[data-theme="dark"] body,
+html.vs-dark-mode body,
+body.dark-mode,
+body.vs-dark-mode {
+  background: #0d0d0b !important;
+  background-image:
+    radial-gradient(circle at 50% -10%, rgba(249,204,0,0.055), transparent 34%),
+    linear-gradient(180deg, #0d0d0b 0%, #10100d 100%) !important;
+}
+
+/* Dark URL areas stay flat — no shadow, no bright edge. */
+html[data-theme="dark"] .universal-input-wrap input,
+html.vs-dark-mode .universal-input-wrap input,
+body.dark-mode .universal-input-wrap input,
+body.vs-dark-mode .universal-input-wrap input,
+html[data-theme="dark"] .downloader-form input,
+html.vs-dark-mode .downloader-form input,
+body.dark-mode .downloader-form input,
+body.vs-dark-mode .downloader-form input,
+html[data-theme="dark"] .seo-downloader-form input,
+html.vs-dark-mode .seo-downloader-form input,
+body.dark-mode .seo-downloader-form input,
+body.vs-dark-mode .seo-downloader-form input,
+html[data-theme="dark"] .downloader-input,
+html.vs-dark-mode .downloader-input,
+body.dark-mode .downloader-input,
+body.vs-dark-mode .downloader-input {
+  background: #151511 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #f7f0c9 !important;
+}
+
+/* Remove the outer URL-card shadow in dark mode as requested. */
+html[data-theme="dark"] .universal-downloader,
+html.vs-dark-mode .universal-downloader,
+body.dark-mode .universal-downloader,
+body.vs-dark-mode .universal-downloader,
+html[data-theme="dark"] .downloader-card,
+html.vs-dark-mode .downloader-card,
+body.dark-mode .downloader-card,
+body.vs-dark-mode .downloader-card,
+html[data-theme="dark"] .seo-downloader-card,
+html.vs-dark-mode .seo-downloader-card,
+body.dark-mode .seo-downloader-card,
+body.vs-dark-mode .seo-downloader-card {
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* Keep result cards readable in night mode without the old white glow. */
+html[data-theme="dark"] .universal-result,
+html.vs-dark-mode .universal-result,
+body.dark-mode .universal-result,
+body.vs-dark-mode .universal-result,
+html[data-theme="dark"] .downloader-result,
+html.vs-dark-mode .downloader-result,
+body.dark-mode .downloader-result,
+body.vs-dark-mode .downloader-result,
+html[data-theme="dark"] .seo-downloader-result,
+html.vs-dark-mode .seo-downloader-result,
+body.dark-mode .seo-downloader-result,
+body.vs-dark-mode .seo-downloader-result {
+  background: #151511 !important;
+  border-color: rgba(249,204,0,0.12) !important;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.30) !important;
+}
+
+/* ============================================================
+   FINAL RESPONSIVE RULES
+   ============================================================ */
+@media (max-width: 900px) {
+  .site-header.vs-shared-header .nav-actions {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin-left: auto !important;
+    flex: 0 0 auto !important;
+  }
+
+  .site-header.vs-shared-header .vs-theme-toggle,
+  .site-header.vs-shared-header .language-btn {
+    display: inline-flex !important;
+    visibility: visible !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .site-header.vs-shared-header .nav-actions {
+    gap: 5px !important;
+  }
+
+  .site-header.vs-shared-header .language-btn {
+    min-width: 40px !important;
+    padding: 7px 9px !important;
+  }
+
+  .site-header.vs-shared-header .vs-theme-toggle {
+    min-width: 40px !important;
+    padding: 4px 6px !important;
+  }
+}
+
+
+
+/* Final night-mode fix: remove only the decorative glow/gradient behind the URL field. */
+html[data-theme="dark"] .downloader-card::before,
+html.vs-dark-mode .downloader-card::before,
+body.dark-mode .downloader-card::before,
+body.vs-dark-mode .downloader-card::before {
+  background: none !important;
+  box-shadow: none !important;
+}
+
+
+/* Final DAY MODE fix: remove the unwanted shadow/halo below the URL field only. */
+html[data-theme="light"] .downloader-card,
+html:not([data-theme="dark"]) .downloader-card,
+body:not(.dark-mode):not(.vs-dark-mode) .downloader-card,
+html[data-theme="light"] .downloader-input,
+html:not([data-theme="dark"]) .downloader-input,
+body:not(.dark-mode):not(.vs-dark-mode) .downloader-input {
+  box-shadow: none !important;
+}
+
+/* Keep the decorative card overlay from creating a shadow-like patch in Day Mode. */
+html[data-theme="light"] .downloader-card::before,
+html:not([data-theme="dark"]) .downloader-card::before,
+body:not(.dark-mode):not(.vs-dark-mode) .downloader-card::before {
+  box-shadow: none !important;
+}
+
+/* ============================================================
+   RESULT CARD — NIGHT MODE CLEANUP
+   Keep the result layout compact and remove light neumorphic
+   glows that look like white halos in dark mode.
+   ============================================================ */
+
+html[data-theme="dark"] .result-media,
+html.vs-dark-mode .result-media,
+body.dark-mode .result-media,
+body.vs-dark-mode .result-media {
+  background: #151511 !important;
+  border-color: rgba(255, 215, 75, 0.12) !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.34) !important;
+}
+
+html[data-theme="dark"] .result-media::after,
+html.vs-dark-mode .result-media::after,
+body.dark-mode .result-media::after,
+body.vs-dark-mode .result-media::after {
+  background: none !important;
+}
+
+html[data-theme="dark"] .result-details h2,
+html.vs-dark-mode .result-details h2,
+body.dark-mode .result-details h2,
+body.vs-dark-mode .result-details h2,
+html[data-theme="dark"] #universal-title,
+html.vs-dark-mode #universal-title,
+body.dark-mode #universal-title,
+body.vs-dark-mode #universal-title {
+  color: #fff6cf !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="dark"] .result-platform,
+html.vs-dark-mode .result-platform,
+body.dark-mode .result-platform,
+body.vs-dark-mode .result-platform {
+  color: #d9b92f !important;
+  background: rgba(255, 205, 35, 0.10) !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="dark"] .result-meta span,
+html.vs-dark-mode .result-meta span,
+body.dark-mode .result-meta span,
+body.vs-dark-mode .result-meta span {
+  color: #d9cfaa !important;
+  background: #24241f !important;
+  border-color: rgba(255, 215, 75, 0.10) !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="dark"] .quality-title,
+html.vs-dark-mode .quality-title,
+body.dark-mode .quality-title,
+body.vs-dark-mode .quality-title,
+html[data-theme="dark"] #universal-quality-label,
+html.vs-dark-mode #universal-quality-label,
+body.dark-mode #universal-quality-label,
+body.vs-dark-mode #universal-quality-label {
+  color: #d9b92f !important;
+}
+
+html[data-theme="dark"] .format-btn,
+html.vs-dark-mode .format-btn,
+body.dark-mode .format-btn,
+body.vs-dark-mode .format-btn {
+  color: #e4dcc0 !important;
+  background: #24241f !important;
+  border-color: rgba(255, 215, 75, 0.10) !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="dark"] .format-btn:hover,
+html.vs-dark-mode .format-btn:hover,
+body.dark-mode .format-btn:hover,
+body.vs-dark-mode .format-btn:hover {
+  color: #fff6cf !important;
+  background: #2b2a23 !important;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.28) !important;
+}
+
+html[data-theme="dark"] .format-btn.active,
+html.vs-dark-mode .format-btn.active,
+body.dark-mode .format-btn.active,
+body.vs-dark-mode .format-btn.active {
+  color: #392c00 !important;
+  background: linear-gradient(135deg, #f9d63d, #e9ad00) !important;
+  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.30) !important;
+}
+
+html[data-theme="dark"] .download-btn,
+html.vs-dark-mode .download-btn,
+body.dark-mode .download-btn,
+body.vs-dark-mode .download-btn {
+  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.30) !important;
+}
+
+html[data-theme="dark"] .audio-btn,
+html.vs-dark-mode .audio-btn,
+body.dark-mode .audio-btn,
+body.vs-dark-mode .audio-btn {
+  color: #e4dcc0 !important;
+  background: #24241f !important;
+  border-color: rgba(255, 215, 75, 0.10) !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="dark"] .audio-btn:hover,
+html.vs-dark-mode .audio-btn:hover,
+body.dark-mode .audio-btn:hover,
+body.vs-dark-mode .audio-btn:hover {
+  color: #fff6cf !important;
+  background: #2b2a23 !important;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.28) !important;
+}
+
+
+/* ============================================================
+   FINAL MOBILE NAV OVERRIDE
+   Mobile must show ONLY: brand + theme + language + hamburger.
+   Platform navigation is available exclusively inside the hamburger menu.
+   ============================================================ */
+@media (max-width: 900px) {
+  .site-header.vs-shared-header .navbar {
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+  }
+
+  .site-header.vs-shared-header .nav-platforms {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    flex: 0 0 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .site-header.vs-shared-header .brand {
+    order: 1 !important;
+    margin-right: auto !important;
+  }
+
+  .site-header.vs-shared-header .nav-actions {
+    order: 2 !important;
+    display: flex !important;
+    align-items: center !important;
+    flex: 0 0 auto !important;
+    gap: 6px !important;
+    margin-left: 0 !important;
+  }
+
+  .site-header.vs-shared-header .vs-mobile-menu-btn {
+    display: inline-flex !important;
+    order: 4 !important;
+    flex: 0 0 40px !important;
+  }
+
+  .site-header.vs-shared-header .vs-mobile-menu {
+    display: none !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .site-header.vs-shared-header .vs-mobile-menu.hidden {
+    display: none !important;
+  }
+
+  .site-header.vs-shared-header .vs-mobile-menu:not(.hidden) {
+    display: block !important;
+  }
+
+  .site-header.vs-shared-header .vs-mobile-menu-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .site-header.vs-shared-header .navbar {
+    min-height: 58px !important;
+    height: auto !important;
+    padding: 7px 9px !important;
+    gap: 6px !important;
+  }
+
+  .site-header.vs-shared-header .brand {
+    min-width: 0 !important;
+    margin-right: auto !important;
+  }
+
+  .site-header.vs-shared-header .nav-actions {
+    gap: 5px !important;
+  }
+
+  .site-header.vs-shared-header .language-selector {
+    order: 3 !important;
+    margin-left: 0 !important;
+  }
+
+  .site-header.vs-shared-header .vs-theme-toggle {
+    order: 2 !important;
+  }
+
+  .site-header.vs-shared-header .vs-mobile-menu-btn {
+    order: 4 !important;
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+  }
+}

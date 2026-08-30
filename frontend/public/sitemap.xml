@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- =====================================================
+       HOME
+       ===================================================== -->
+
+  <url>
+    <loc>https://vidsnatch.fun/</loc>
+    <lastmod>2026-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+
+  <!-- =====================================================
+       YOUTUBE
+       ===================================================== -->
+
+  <url>
+    <loc>https://vidsnatch.fun/youtube-video-downloader/</loc>
+    <lastmod>2026-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+
+  <!-- =====================================================
+       INSTAGRAM
+       ===================================================== -->
+
+  <url>
+    <loc>https://vidsnatch.fun/instagram-reel-downloader/</loc>
+    <lastmod>2026-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+
+  <!-- =====================================================
+       FACEBOOK
+       ===================================================== -->
+
+  <url>
+    <loc>https://vidsnatch.fun/facebook-video-downloader/</loc>
+    <lastmod>2026-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+
+  <!-- =====================================================
+       TIKTOK
+       ===================================================== -->
+
+  <url>
+    <loc>https://vidsnatch.fun/tiktok-video-downloader/</loc>
+    <lastmod>2026-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+
+  <!-- =====================================================
+       X / TWITTER
+       ===================================================== -->
+
+  <url>
+    <loc>https://vidsnatch.fun/twitter-video-downloader/</loc>
+    <lastmod>2026-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+
+  <!-- =====================================================
+       REDDIT
+       ===================================================== -->
+
+  <url>
+    <loc>https://vidsnatch.fun/reddit-video-downloader/</loc>
+    <lastmod>2026-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+
+  <!-- =====================================================
+       THREADS
+       ===================================================== -->
+
+  <url>
+    <loc>https://vidsnatch.fun/threads-video-downloader/</loc>
+    <lastmod>2026-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+
+  <!-- =====================================================
+       PINTEREST
+       ===================================================== -->
+
+  <url>
+    <loc>https://vidsnatch.fun/pinterest-video-downloader/</loc>
+    <lastmod>2026-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+
+  <!-- =====================================================
+       SNAPCHAT
+       ===================================================== -->
+
+  <url>
+    <loc>https://vidsnatch.fun/snapchat-video-downloader/</loc>
+    <lastmod>2026-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+</urlset>

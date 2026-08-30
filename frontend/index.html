@@ -1,0 +1,851 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>VidSnatch — Free Social Media Video Downloader | MP4 & MP3</title>
+
+    <meta
+      name="description"
+      content="VidSnatch is a free online social media video downloader. Download public videos from YouTube, Instagram, TikTok, Facebook, X, Reddit and other supported platforms."
+    />
+
+    <meta
+      name="keywords"
+      content="video downloader, social media video downloader, Instagram downloader, YouTube downloader, TikTok downloader, Facebook video downloader, Twitter video downloader, X video downloader, Reddit video downloader, MP4 downloader, MP3 downloader"
+    />
+
+    <meta name="author" content="VidSnatch" />
+
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+
+    <meta name="theme-color" content="#f5eecc" />
+    <meta name="application-name" content="VidSnatch" />
+    <meta name="apple-mobile-web-app-title" content="VidSnatch" />
+
+    <link rel="canonical" href="https://vidsnatch.fun/" />
+
+    <!-- =========================================================
+         MAIN CSS
+         ========================================================= -->
+    <link rel="stylesheet" href="/src/style.css" />
+
+    <!-- =========================================================
+         OPEN GRAPH
+         ========================================================= -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="VidSnatch" />
+
+    <meta
+      property="og:title"
+      content="VidSnatch — Free Social Media Video Downloader"
+    />
+
+    <meta
+      property="og:description"
+      content="Download public videos from supported social media platforms in available video qualities."
+    />
+
+    <meta property="og:url" content="https://vidsnatch.fun/" />
+
+    <meta property="og:image" content="https://vidsnatch.fun/og-image.png" />
+
+    <meta
+      property="og:image:alt"
+      content="VidSnatch universal social media video downloader"
+    />
+
+    <meta property="og:image:width" content="1200" />
+
+    <meta property="og:image:height" content="630" />
+
+    <!-- =========================================================
+         TWITTER
+         ========================================================= -->
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta
+      name="twitter:title"
+      content="VidSnatch — Free Social Media Video Downloader"
+    />
+
+    <meta
+      name="twitter:description"
+      content="Download public videos from supported social media platforms online."
+    />
+
+    <meta name="twitter:image" content="https://vidsnatch.fun/og-image.png" />
+
+    <!-- =========================================================
+         FAVICON
+         ========================================================= -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- =========================================================
+         FONT
+         ========================================================= -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- =========================================================
+         STRUCTURED DATA
+         ========================================================= -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "VidSnatch",
+            "url": "https://vidsnatch.fun/",
+            "description": "Free online social media video downloader for supported public media URLs.",
+            "applicationCategory": "MultimediaApplication",
+            "operatingSystem": "Web",
+            "browserRequirements": "Requires JavaScript",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "name": "VidSnatch",
+            "url": "https://vidsnatch.fun/"
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What platforms does VidSnatch support?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "VidSnatch supports public media URLs from supported platforms including YouTube, Instagram, Facebook, TikTok, X, Reddit, Threads, Pinterest and Snapchat, subject to platform availability and technical restrictions."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do I download a video?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Paste a supported public video URL into the VidSnatch universal downloader, click Fetch, select an available format or quality, and start the download."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is VidSnatch free?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. VidSnatch provides its downloader interface without requiring an account or subscription."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I download private videos?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. VidSnatch is intended for publicly accessible media and cannot guarantee access to private, restricted or unavailable content."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <!-- =========================================================
+         GLOBAL SCRIPTS
+
+         IMPORTANT ORDER:
+         1. translations.js
+         2. site-ui.js
+         3. main.js
+         ========================================================= -->
+  
+    <!-- Shared site UI + home downloader scripts. Keep this order. -->
+    <script src="/translations.js"></script>
+    <script src="/site-ui.js"></script>
+    <script type="module" src="/src/main.js"></script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "VidSnatch",
+      "item": "https://vidsnatch.fun/"
+    }
+  ]
+}
+    </script>
+  </head>
+
+  <body>
+    <!-- =========================================================
+         SHARED NAVBAR
+
+         site-ui.js will replace this element with the
+         actual shared navbar.
+
+         DO NOT ADD ANOTHER NAVBAR.
+         ========================================================= -->
+
+    <header class="site-header" id="site-header"></header>
+
+    <!-- =========================================================
+         MAIN
+         ========================================================= -->
+
+    <main>
+      <!-- =======================================================
+           HERO
+           ======================================================= -->
+
+      <section class="hero-section">
+        <div class="hero-content">
+          <div class="hero-badge" data-i18n="hero.badge">
+            ⚡ Fast · Free · No Sign Up
+          </div>
+
+          <h1>
+            <span class="hero-title-main" data-i18n="hero.title">
+              Download Videos
+            </span>
+            <span data-i18n="hero.titleAccent">From Anywhere</span>
+          </h1>
+
+          <p class="hero-subtitle" data-i18n="hero.subtitle">
+            Paste a public video link from a supported social platform and
+            download available video formats with VidSnatch.
+          </p>
+
+          <!-- ===================================================
+               UNIVERSAL DOWNLOADER
+               =================================================== -->
+
+          <div class="universal-downloader">
+            <div class="universal-input-row">
+              <div class="universal-input-wrap">
+<input
+                  id="universal-url-input"
+                  type="url"
+                  autocomplete="off"
+                  spellcheck="false"
+                  placeholder="Paste YouTube, Instagram, TikTok, Facebook, X, Reddit or other supported URL..."
+                  data-i18n-placeholder="downloader.placeholder"
+                  aria-label="Video URL"
+                />
+
+                <button
+                  type="button"
+                  class="clear-input-btn"
+                  id="clear-url-btn"
+                  aria-label="Clear URL"
+                  data-i18n-aria-label="downloader.clear"
+                >
+                  ×
+                </button>
+              </div>
+
+              <button
+                type="button"
+                class="fetch-btn"
+                id="universal-fetch-btn"
+                onclick="fetchUniversal()"
+              >
+                <span aria-hidden="true"> ⚡ </span>
+
+                <span data-i18n="button.fetch"> Fetch </span>
+              </button>
+            </div>
+
+            <!-- DETECTED PLATFORM -->
+
+            <div id="detected-platform" class="detected-platform"></div>
+
+            <!-- LOADER -->
+
+            <div
+              id="universal-loader"
+              class="loader-box hidden"
+              aria-live="polite"
+            >
+              <div class="spinner" aria-hidden="true"></div>
+
+              <div>
+                <strong data-i18n="loading.fetching">
+                  Fetching media information...
+                </strong>
+
+                <small data-i18n="loading.detecting">
+                  Detecting platform and available formats
+                </small>
+              </div>
+            </div>
+
+            <!-- ERROR -->
+
+            <div
+              id="universal-error"
+              class="error-box hidden"
+              role="alert"
+            ></div>
+
+            <!-- =================================================
+                 RESULT
+                 ================================================= -->
+
+            <div id="universal-result" class="universal-result hidden">
+              <div class="result-header">
+                <div class="result-platform">
+                  <span id="universal-platform"></span>
+                </div>
+              </div>
+
+              <div class="result-grid">
+                <!-- MEDIA -->
+
+                <div class="result-media">
+                  <img
+                    id="universal-thumbnail"
+                    src=""
+                    alt="Video thumbnail"
+                    loading="lazy"
+                  />
+
+                  <div
+                    id="universal-video-wrap"
+                    class="universal-video-wrap hidden"
+                  >
+                    <video
+                      id="universal-video"
+                      controls
+                      playsinline
+                      preload="metadata"
+                    ></video>
+                  </div>
+                </div>
+
+                <!-- DETAILS -->
+
+                <div class="result-details">
+                  <h2 id="universal-title" data-i18n="result.video">Video</h2>
+
+                  <div class="result-meta">
+                    <span id="universal-uploader"> 👤 — </span>
+
+                    <span id="universal-duration"> ⏱ — </span>
+
+                    <span id="universal-views"> 👁 — </span>
+
+                    <span id="universal-resolution"> 📐 — </span>
+                  </div>
+
+                  <!-- QUALITY -->
+
+                  <div class="quality-section">
+                    <div
+                      class="quality-title"
+                      id="universal-quality-label"
+                      data-i18n="quality.title"
+                    >
+                      Select video quality
+                    </div>
+
+                    <div id="universal-formats" class="formats-grid"></div>
+                  </div>
+
+                  <!-- DOWNLOAD BUTTONS -->
+
+                  <div
+                    id="universal-download-wrap"
+                    class="download-actions hidden"
+                  >
+                    <button
+                      type="button"
+                      class="download-btn"
+                      id="universal-download-btn"
+                      onclick="downloadUniversalVideo()"
+                    >
+                      <span aria-hidden="true"> ⬇️ </span>
+
+                      <span
+                        id="universal-download-label"
+                        data-i18n="button.downloadVideo"
+                      >
+                        Download Video
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="audio-btn"
+                      id="universal-audio-btn"
+                      onclick="downloadUniversalAudio()"
+                    >
+                      <span aria-hidden="true"> 🎵 </span>
+
+                      <span data-i18n="button.downloadMp3"> Download MP3 </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- =================================================
+                 DOWNLOAD PROGRESS
+                 ================================================= -->
+
+            <div
+              id="universal-progress"
+              class="download-progress hidden"
+              aria-live="polite"
+            >
+              <div class="progress-track">
+                <div id="universal-progress-fill" class="progress-fill"></div>
+              </div>
+
+              <div
+                id="universal-progress-label"
+                class="progress-label"
+                data-i18n="loading.preparing"
+              >
+                ⏳ Preparing download...
+              </div>
+            </div>
+          </div>
+
+          <!-- =================================================
+               SUPPORTED PLATFORMS
+               ================================================= -->
+
+          <div class="supported-platforms">
+            <span data-i18n="supported.title"> Supported: </span>
+
+            <span>▶ YouTube</span>
+            <span>◎ Instagram</span>
+            <span>♪ TikTok</span>
+            <span>f Facebook</span>
+            <span>𝕏 X</span>
+            <span>● Reddit</span>
+            <span>@ Threads</span>
+            <span>P Pinterest</span>
+            <span>👻 Snapchat</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- =======================================================
+           FEATURES
+           ======================================================= -->
+
+      <section class="features-section">
+        <div class="section-heading">
+          <span class="eyebrow" data-i18n="features.eyebrow">
+            WHY VIDSNATCH
+          </span>
+
+          <h2 data-i18n="features.title">Simple. Fast. Flexible.</h2>
+
+          <p data-i18n="features.subtitle">
+            Everything you need to save publicly accessible media in one place.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">⚡</div>
+
+            <h3 data-i18n="features.fast.title">Fast Processing</h3>
+
+            <p data-i18n="features.fast.text">
+              Optimized fetching and download processing help reduce unnecessary
+              waiting.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">🌐</div>
+
+            <h3 data-i18n="features.platforms.title">Multiple Platforms</h3>
+
+            <p data-i18n="features.platforms.text">
+              Use one universal input for supported social-media platforms.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">🎯</div>
+
+            <h3 data-i18n="features.quality.title">Quality Selection</h3>
+
+            <p data-i18n="features.quality.text">
+              Choose from the video qualities made available for supported
+              videos.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">🔒</div>
+
+            <h3 data-i18n="features.account.title">No Account Required</h3>
+
+            <p data-i18n="features.account.text">
+              Start downloading without creating an account or signing up for a
+              subscription.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- =======================================================
+           SEO CONTENT
+           ======================================================= -->
+
+      <section class="content-section">
+        <div class="content-container">
+          <span class="eyebrow" data-i18n="seo.eyebrow">
+            UNIVERSAL VIDEO DOWNLOADER
+          </span>
+
+          <h2 data-i18n="seo.title">Download Social Media Videos Online</h2>
+
+          <p data-i18n="seo.intro1">
+            VidSnatch provides a simple online downloader for publicly
+            accessible media from supported social platforms. Instead of using a
+            different tool for every platform, paste your link into the
+            universal downloader above and let VidSnatch identify the platform
+            automatically.
+          </p>
+
+          <p data-i18n="seo.intro2">
+            Depending on the platform and the media available, VidSnatch may
+            provide different video qualities and download options. You can
+            choose an available quality and start the download directly from
+            your browser.
+          </p>
+
+          <h3 data-i18n="seo.instagram.title">Instagram Video Downloader</h3>
+
+          <p data-i18n="seo.instagram.text">
+            Download publicly accessible Instagram Reels and supported Instagram
+            videos by pasting their URL into VidSnatch.
+          </p>
+
+          <a
+            href="/instagram-reel-downloader/"
+            class="content-link"
+            data-i18n="seo.instagram.link"
+          >
+            Instagram Reel Downloader →
+          </a>
+
+          <h3 data-i18n="seo.youtube.title">YouTube Video Downloader</h3>
+
+          <p data-i18n="seo.youtube.text">
+            Paste a supported YouTube video URL to retrieve available video
+            qualities. Supported YouTube videos may also provide an audio-only
+            MP3 option.
+          </p>
+
+          <a
+            href="/youtube-video-downloader/"
+            class="content-link"
+            data-i18n="seo.youtube.link"
+          >
+            YouTube Video Downloader →
+          </a>
+
+          <h3 data-i18n="seo.tiktok.title">TikTok Video Downloader</h3>
+
+          <p data-i18n="seo.tiktok.text">
+            Use the universal downloader with a publicly accessible TikTok URL.
+            Availability depends on the media and current platform restrictions.
+          </p>
+
+          <a
+            href="/tiktok-video-downloader/"
+            class="content-link"
+            data-i18n="seo.tiktok.link"
+          >
+            TikTok Video Downloader →
+          </a>
+
+          <h3 data-i18n="seo.facebook.title">Facebook Video Downloader</h3>
+
+          <p data-i18n="seo.facebook.text">
+            VidSnatch can process supported public Facebook video URLs when the
+            media is accessible to the downloader.
+          </p>
+
+          <a
+            href="/facebook-video-downloader/"
+            class="content-link"
+            data-i18n="seo.facebook.link"
+          >
+            Facebook Video Downloader →
+          </a>
+
+          <h3 data-i18n="seo.twitter.title">X and Twitter Video Downloader</h3>
+
+          <p data-i18n="seo.twitter.text">
+            Paste a supported public X or Twitter media URL into the universal
+            downloader to check whether downloadable media is available.
+          </p>
+
+          <a
+            href="/twitter-video-downloader/"
+            class="content-link"
+            data-i18n="seo.twitter.link"
+          >
+            X / Twitter Video Downloader →
+          </a>
+
+          <h3 data-i18n="seo.reddit.title">Reddit Video Downloader</h3>
+
+          <p data-i18n="seo.reddit.text">
+            Public Reddit media URLs can be checked using VidSnatch's universal
+            downloader.
+          </p>
+
+          <a
+            href="/reddit-video-downloader/"
+            class="content-link"
+            data-i18n="seo.reddit.link"
+          >
+            Reddit Video Downloader →
+          </a>
+        </div>
+      </section>
+
+      <!-- =======================================================
+           HOW IT WORKS
+           ======================================================= -->
+
+      <section class="how-section">
+        <div class="section-heading">
+          <span class="eyebrow" data-i18n="how.eyebrow"> HOW IT WORKS </span>
+
+          <h2 data-i18n="how.title">Download in Three Steps</h2>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <span class="step-number"> 01 </span>
+
+            <h3 data-i18n="how.step1.title">Copy the URL</h3>
+
+            <p data-i18n="how.step1.text">
+              Copy the URL of a publicly accessible video from a supported
+              platform.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <span class="step-number"> 02 </span>
+
+            <h3 data-i18n="how.step2.title">Paste & Fetch</h3>
+
+            <p data-i18n="how.step2.text">
+              Paste the link into VidSnatch and click Fetch. The platform is
+              detected automatically.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <span class="step-number"> 03 </span>
+
+            <h3 data-i18n="how.step3.title">Download</h3>
+
+            <p data-i18n="how.step3.text">
+              Choose an available format or quality and start your download.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =======================================================
+           FAQ
+           ======================================================= -->
+
+      <section class="faq-section">
+        <div class="section-heading">
+          <span class="eyebrow" data-i18n="faq.eyebrow"> FAQ </span>
+
+          <h2 data-i18n="faq.title">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary data-i18n="faq.support.question">
+              What platforms does VidSnatch support?
+            </summary>
+
+            <p data-i18n="faq.support.answer">
+              VidSnatch is designed around a universal downloader for supported
+              public URLs from platforms such as YouTube, Instagram, TikTok,
+              Facebook, X, Reddit, Threads, Pinterest and Snapchat. Actual
+              availability can vary by platform and media.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary data-i18n="faq.download.question">
+              How do I download a video?
+            </summary>
+
+            <p data-i18n="faq.download.answer">
+              Copy a supported public video URL, paste it into the universal
+              VidSnatch input, click Fetch, choose an available quality and then
+              click Download.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary data-i18n="faq.free.question">Is VidSnatch free?</summary>
+
+            <p data-i18n="faq.free.answer">
+              Yes. VidSnatch provides the downloader interface without requiring
+              an account or subscription.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary data-i18n="faq.private.question">
+              Can I download private videos?
+            </summary>
+
+            <p data-i18n="faq.private.answer">
+              VidSnatch is intended for publicly accessible media. Private,
+              restricted or unavailable content may not be downloadable.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary data-i18n="faq.fail.question">
+              Why does a particular video fail?
+            </summary>
+
+            <p data-i18n="faq.fail.answer">
+              A platform may restrict access, the media may be private or
+              unavailable, or the current platform extractor may not support
+              that URL. VidSnatch cannot guarantee availability for every URL.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary data-i18n="faq.account.question">
+              Is an account required?
+            </summary>
+
+            <p data-i18n="faq.account.answer">
+              No account is required to use the downloader interface.
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <!-- =========================================================
+         FOOTER
+         ========================================================= -->
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo">⚡ VidSnatch</div>
+
+          <p class="footer-note" data-i18n="footer.note">
+            For personal use only. Respect copyright laws, platform rules and
+            content creators.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <button
+            type="button"
+            onclick="openLegalModal('terms')"
+            data-i18n="footer.terms"
+          >
+            Terms
+          </button>
+
+          <button
+            type="button"
+            onclick="openLegalModal('privacy')"
+            data-i18n="footer.privacy"
+          >
+            Privacy
+          </button>
+
+          <button
+            type="button"
+            onclick="openLegalModal('copyright')"
+            data-i18n="footer.copyright"
+          >
+            Copyright
+          </button>
+
+          <button
+            type="button"
+            onclick="openLegalModal('contact')"
+            data-i18n="footer.contact"
+          >
+            Contact
+          </button>
+        </div>
+
+        <div class="footer-copy">© 2026 VidSnatch. All rights reserved.</div>
+      </div>
+    </footer>
+
+    <!-- =========================================================
+         LEGAL MODAL
+         ========================================================= -->
+
+    <div
+      id="legal-modal"
+      class="legal-modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="legal-modal-title"
+    >
+      <div class="legal-modal-card">
+        <div class="legal-modal-header">
+          <h2 id="legal-modal-title">Terms</h2>
+
+          <button
+            type="button"
+            class="legal-modal-close"
+            onclick="closeLegalModal()"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+
+        <div id="legal-modal-content" class="legal-modal-content"></div>
+      </div>
+    </div>
+
+    <!-- =========================================================
+         TOAST
+         ========================================================= -->
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

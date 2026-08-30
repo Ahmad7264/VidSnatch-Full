@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /api/
+Disallow: /server/
+Disallow: /backend/
+Disallow: /node_modules/
+
+Sitemap: https://vidsnatch.fun/sitemap.xml
