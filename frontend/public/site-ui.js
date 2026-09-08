@@ -137,10 +137,11 @@
           <p class="footer-note" data-i18n="footer.note">For personal use only. Respect copyright laws, platform rules and content creators.</p>
         </div>
         <div class="footer-links">
-          <button type="button" data-vs-legal="terms" data-i18n="footer.terms">Terms</button>
-          <button type="button" data-vs-legal="privacy" data-i18n="footer.privacy">Privacy</button>
-          <button type="button" data-vs-legal="copyright" data-i18n="footer.copyright">Copyright</button>
-          <button type="button" data-vs-legal="contact" data-i18n="footer.contact">Contact</button>
+          <a href="/terms/" data-i18n="footer.terms">Terms</a>
+          <a href="/privacy/" data-i18n="footer.privacy">Privacy</a>
+          <a href="/copyright/" data-i18n="footer.copyright">Copyright</a>
+          <a href="/contact/" data-i18n="footer.contact">Contact</a>
+          <a href="/about/">About</a>
         </div>
         <div class="footer-copy">© ${year} VidSnatch. All rights reserved.</div>
       </div>

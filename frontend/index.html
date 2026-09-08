@@ -173,24 +173,24 @@
          2. site-ui.js
          3. main.js
          ========================================================= -->
-  
+
     <!-- Shared site UI + home downloader scripts. Keep this order. -->
     <script src="/translations.js"></script>
     <script src="/site-ui.js"></script>
     <script type="module" src="/src/main.js"></script>
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "VidSnatch",
-      "item": "https://vidsnatch.fun/"
-    }
-  ]
-}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "VidSnatch",
+            "item": "https://vidsnatch.fun/"
+          }
+        ]
+      }
     </script>
   </head>
 
@@ -218,19 +218,19 @@
       <section class="hero-section">
         <div class="hero-content">
           <div class="hero-badge" data-i18n="hero.badge">
-            ⚡ Fast · Free · No Sign Up
+            ⚡ Simple & Fast Video Downloads
           </div>
 
           <h1>
             <span class="hero-title-main" data-i18n="hero.title">
               Download Videos
             </span>
-            <span data-i18n="hero.titleAccent">From Anywhere</span>
+            <span data-i18n="hero.titleAccent">Made Simple</span>
           </h1>
 
           <p class="hero-subtitle" data-i18n="hero.subtitle">
-            Paste a public video link from a supported social platform and
-            download available video formats with VidSnatch.
+            Paste a supported video link and save content you own or have
+            permission to download.
           </p>
 
           <!-- ===================================================
@@ -240,7 +240,7 @@
           <div class="universal-downloader">
             <div class="universal-input-row">
               <div class="universal-input-wrap">
-<input
+                <input
                   id="universal-url-input"
                   type="url"
                   autocomplete="off"
@@ -684,8 +684,7 @@
 
       <section class="faq-section">
         <div class="section-heading">
-          <span class="eyebrow" data-i18n="faq.eyebrow"> FAQ </span>
-
+          <span class="eyebrow" data-i18n="faq.eyebrow">FAQ</span>
           <h2 data-i18n="faq.title">Frequently Asked Questions</h2>
         </div>
 
@@ -694,66 +693,75 @@
             <summary data-i18n="faq.support.question">
               What platforms does VidSnatch support?
             </summary>
-
             <p data-i18n="faq.support.answer">
-              VidSnatch is designed around a universal downloader for supported
-              public URLs from platforms such as YouTube, Instagram, TikTok,
-              Facebook, X, Reddit, Threads, Pinterest and Snapchat. Actual
-              availability can vary by platform and media.
+              VidSnatch supports video links from several popular platforms,
+              including YouTube, Instagram, TikTok, Facebook, X, Reddit,
+              Threads, Pinterest and Snapchat. Availability may vary depending
+              on the platform, URL and media type.
             </p>
           </details>
 
           <details class="faq-item">
             <summary data-i18n="faq.download.question">
-              How do I download a video?
+              How do I use VidSnatch?
             </summary>
-
             <p data-i18n="faq.download.answer">
-              Copy a supported public video URL, paste it into the universal
-              VidSnatch input, click Fetch, choose an available quality and then
-              click Download.
+              Copy a supported public video URL, paste it into the VidSnatch
+              input box and click Fetch. If compatible media is available,
+              select a format or quality and use the provided download option.
             </p>
           </details>
 
           <details class="faq-item">
-            <summary data-i18n="faq.free.question">Is VidSnatch free?</summary>
-
+            <summary data-i18n="faq.free.question">
+              Is VidSnatch free to use?
+            </summary>
             <p data-i18n="faq.free.answer">
-              Yes. VidSnatch provides the downloader interface without requiring
-              an account or subscription.
+              Yes. VidSnatch provides its basic video-downloading interface
+              without requiring an account or subscription.
             </p>
           </details>
 
           <details class="faq-item">
             <summary data-i18n="faq.private.question">
-              Can I download private videos?
+              Can I download private or restricted videos?
             </summary>
-
             <p data-i18n="faq.private.answer">
-              VidSnatch is intended for publicly accessible media. Private,
-              restricted or unavailable content may not be downloadable.
+              No. VidSnatch is intended for publicly accessible media. Private,
+              restricted or unavailable content may not be accessible through
+              the service.
             </p>
           </details>
 
           <details class="faq-item">
             <summary data-i18n="faq.fail.question">
-              Why does a particular video fail?
+              Why might a video fail to download?
             </summary>
-
             <p data-i18n="faq.fail.answer">
-              A platform may restrict access, the media may be private or
-              unavailable, or the current platform extractor may not support
-              that URL. VidSnatch cannot guarantee availability for every URL.
+              A video may fail if the platform restricts access, the media is
+              unavailable, the URL is unsupported or the current extractor
+              cannot process that particular media. VidSnatch cannot guarantee
+              that every supported URL will always be available.
             </p>
           </details>
 
           <details class="faq-item">
             <summary data-i18n="faq.account.question">
-              Is an account required?
+              Do I need an account to use VidSnatch?
             </summary>
-
             <p data-i18n="faq.account.answer">
-              No account is required to use the downloader interface.
+              No. You can use the downloader interface without creating an
+              account or providing personal account credentials.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>What content am I allowed to download?</summary>
+            <p>
+              Only download content that you own, have permission to use, or are
+              otherwise legally permitted to download. Always respect copyright,
+              intellectual property rights and the terms of the platform hosting
+              the content.
             </p>
           </details>
         </div>
