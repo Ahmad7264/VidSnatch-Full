@@ -390,15 +390,22 @@ function ytDlpPath() {
 
 async function prepareYouTubeCookies() {
   const secretFile = "/etc/secrets/youtube-cookies.txt";
+  const target = path.join(os.tmpdir(), "vidsnatch-youtube-cookies.txt");
 
   // Preferred: Render Secret File
   try {
     const stat = await fsp.stat(secretFile);
 
     if (stat.isFile() && stat.size > 100) {
-      console.log(`[cookies] Using Render secret file (${stat.size} bytes)`);
+      await fsp.copyFile(secretFile, target);
 
-      return secretFile;
+      await fsp.chmod(target, 0o600);
+
+      console.log(
+        `[cookies] Copied Render secret file to writable temp (${stat.size} bytes)`,
+      );
+
+      return target;
     }
   } catch {
     // Secret file unavailable; use environment fallback
@@ -412,8 +419,6 @@ async function prepareYouTubeCookies() {
     return null;
   }
 
-  const target = path.join(os.tmpdir(), "vidsnatch-youtube-cookies.txt");
-
   await fsp.writeFile(target, cookies, {
     encoding: "utf8",
     mode: 0o600,
@@ -423,7 +428,6 @@ async function prepareYouTubeCookies() {
 
   return target;
 }
-
 /* =========================================================
    YT-DLP COMMON ARGS
    ========================================================= */
