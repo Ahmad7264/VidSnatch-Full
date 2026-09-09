@@ -21,8 +21,4 @@ services:
         value: https://vidsnatch.fun,https://www.vidsnatch.fun
 
       - key: MAX_ACTIVE_JOBS
-        value: "2"
-      - key: INFO_TIMEOUT_MS
-        value: "90000"
-      - key: INFO_SOCKET_TIMEOUT
-        value: "20"
+        value: "1"

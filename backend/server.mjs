@@ -30,8 +30,9 @@ const HOST = "0.0.0.0";
    CONFIG
    ========================================================= */
 
-const INFO_TIMEOUT_MS = Number(process.env.INFO_TIMEOUT_MS || 90000);
-const INFO_SOCKET_TIMEOUT = Number(process.env.INFO_SOCKET_TIMEOUT || 20);
+const INFO_TIMEOUT_MS = Number(process.env.INFO_TIMEOUT_MS || 25000);
+
+const INFO_SOCKET_TIMEOUT = Number(process.env.INFO_SOCKET_TIMEOUT || 7);
 
 const INFO_CACHE_TTL_MS = Number(
   process.env.INFO_CACHE_TTL_MS || 15 * 60 * 1000,
@@ -41,10 +42,7 @@ const DOWNLOAD_TIMEOUT_MS = Number(
   process.env.DOWNLOAD_TIMEOUT_MS || 15 * 60 * 1000,
 );
 
-const JOB_TTL_MS = Math.max(
-  Number(process.env.JOB_TTL_MS || 15 * 60 * 1000),
-  5 * 60 * 1000,
-);
+const JOB_TTL_MS = Number(process.env.JOB_TTL_MS || 15 * 60 * 1000);
 
 const MAX_ACTIVE_JOBS = Number(process.env.MAX_ACTIVE_JOBS || 2);
 
@@ -171,10 +169,7 @@ function rateLimit(maxRequests) {
 
     if (recent.length >= maxRequests) {
       const oldest = recent[0] || now;
-      const retryAfter = Math.max(
-        1,
-        Math.ceil((60_000 - (now - oldest)) / 1000),
-      );
+      const retryAfter = Math.max(1, Math.ceil((60_000 - (now - oldest)) / 1000));
 
       res.setHeader("Retry-After", String(retryAfter));
 
@@ -389,42 +384,18 @@ function ytDlpPath() {
    ========================================================= */
 
 async function prepareYouTubeCookies() {
-  const secretFile = "/etc/secrets/youtube-cookies.txt";
-  const target = path.join(os.tmpdir(), "vidsnatch-youtube-cookies.txt");
-
-  // Preferred: Render Secret File
-  try {
-    const stat = await fsp.stat(secretFile);
-
-    if (stat.isFile() && stat.size > 100) {
-      await fsp.copyFile(secretFile, target);
-
-      await fsp.chmod(target, 0o600);
-
-      console.log(
-        `[cookies] Copied Render secret file to writable temp (${stat.size} bytes)`,
-      );
-
-      return target;
-    }
-  } catch {
-    // Secret file unavailable; use environment fallback
-  }
-
-  // Fallback: YOUTUBE_COOKIES environment variable
   const cookies = process.env.YOUTUBE_COOKIES;
 
   if (!cookies || !cookies.trim()) {
-    console.warn("[cookies] No YouTube cookies configured");
     return null;
   }
+
+  const target = path.join(os.tmpdir(), "vidsnatch-youtube-cookies.txt");
 
   await fsp.writeFile(target, cookies, {
     encoding: "utf8",
     mode: 0o600,
   });
-
-  console.log(`[cookies] Using YOUTUBE_COOKIES env (${cookies.length} chars)`);
 
   return target;
 }
@@ -437,27 +408,34 @@ function ytBaseArgs(platform, mode = "info") {
   const args = [
     "--no-warnings",
     "--no-playlist",
+
     "--socket-timeout",
     String(mode === "info" ? INFO_SOCKET_TIMEOUT : 10),
   ];
 
+  /*
+   * YouTube needs bgutil.
+   */
   if (platform === "youtube") {
     args.push(
       "--js-runtimes",
       "node",
 
-      // Use default clients + mweb
-      "--extractor-args",
-      "youtube:player_client=default,mweb",
-
-      // bgutil PO Token provider
       "--extractor-args",
       `youtubepot-bgutilhttp:base_url=${
         process.env.BGUTIL_POT_BASE_URL || "http://127.0.0.1:4416"
       }`,
+
+      /*
+       * Current YouTube extraction also needs yt-dlp's EJS challenge
+       * components. The GitHub remote component keeps the bundled binary
+       * usable on both local Windows and Render without a separate Python
+       * installation. Node 24+ is already the project's runtime.
+       */
+      "--remote-components",
+      process.env.YTDLP_EJS_REMOTE_COMPONENTS || "ejs:github",
     );
 
-    // Use writable copy of Render Secret File
     if (youtubeCookiesPath && fs.existsSync(youtubeCookiesPath)) {
       args.push("--cookies", youtubeCookiesPath);
     }
@@ -600,6 +578,7 @@ function normalizeInfo(raw, platform) {
     resolution: videoFormats[0]?.height
       ? `${videoFormats[0].height}p`
       : "Available",
+
     formats: videoFormats.map((format) => ({
       formatId: String(format.format_id),
 
@@ -1199,6 +1178,7 @@ function runDownload(job, params) {
 /* =========================================================
    /api/download/start
    ========================================================= */
+
 app.post("/api/download/start", rateLimit(20), async (req, res) => {
   const { url, platform, type, mediaType, formatId, videoTitle } =
     req.body || {};
@@ -1335,38 +1315,11 @@ app.get("/api/download/status/:jobId", rateLimit(90), (req, res) => {
    ========================================================= */
 
 app.get("/api/download/file/:jobId", async (req, res) => {
-  const requestedId = String(req.params.jobId || "").replace(
-    /[^a-zA-Z0-9]/g,
-    "",
-  );
-  let job = jobs.get(requestedId);
-
-  /*
-   * A ready job must remain downloadable even if the in-memory job map was
-   * briefly lost/reloaded. Recover the final file from the temp directory
-   * instead of returning a misleading 404.
-   */
-  if (!job) {
-    const recoveredPrefix = `job-${requestedId}`;
-    const recoveredFile = await findOutputFile(recoveredPrefix);
-
-    if (recoveredFile) {
-      job = {
-        id: requestedId,
-        status: "ready",
-        filePath: recoveredFile,
-        filename: `VidSnatch_video${path.extname(recoveredFile) || ".mp4"}`,
-        prefix: recoveredPrefix,
-        expiresAt: Date.now() + JOB_TTL_MS,
-      };
-      jobs.set(requestedId, job);
-    }
-  }
+  const job = jobs.get(req.params.jobId);
 
   if (!job || job.status !== "ready" || !job.filePath) {
     return res.status(404).json({
-      error:
-        "Download file is not ready or has expired. Please wait a moment and try again.",
+      error: "Download file is not ready or has expired.",
     });
   }
 
@@ -1470,10 +1423,12 @@ app.get("/api/download/file/:jobId", async (req, res) => {
       end,
     }).pipe(res);
   } catch (error) {
-    console.error(`[download/file] ${job.id}:`, error?.message || error);
+    await cleanupJob(job);
 
-    return res.status(503).json({
-      error: "Download file is temporarily unavailable. Please try again.",
+    jobs.delete(job.id);
+
+    return res.status(404).json({
+      error: "Download file is no longer available.",
     });
   }
 });

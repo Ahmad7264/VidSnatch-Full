@@ -919,7 +919,7 @@ async function triggerDownload(jobId, filename = "VidSnatch.mp4") {
   let response = null;
   let lastError = null;
 
-  for (let attempt = 0; attempt < 6; attempt++) {
+  for (let attempt = 0; attempt < 4; attempt++) {
     try {
       response = await fetch(fileUrl, {
         method: "GET",
@@ -937,8 +937,8 @@ async function triggerDownload(jobId, filename = "VidSnatch.mp4") {
       lastError = error;
     }
 
-    if (attempt < 5) {
-      await sleep(700 * (attempt + 1));
+    if (attempt < 3) {
+      await sleep(500 * (attempt + 1));
     }
   }
 

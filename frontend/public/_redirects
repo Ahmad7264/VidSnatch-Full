@@ -15,9 +15,3 @@
 /threads-video-downloader    /threads-video-downloader/index.html    200
 /pinterest-video-downloader  /pinterest-video-downloader/index.html  200
 /snapchat-video-downloader   /snapchat-video-downloader/index.html   200
-# Trust / policy pages
-/terms    /terms/index.html    200
-/privacy    /privacy/index.html    200
-/copyright    /copyright/index.html    200
-/contact    /contact/index.html    200
-/about    /about/index.html    200
