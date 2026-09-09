@@ -445,14 +445,19 @@ function ytBaseArgs(platform, mode = "info") {
       "--js-runtimes",
       "node",
 
-      // Keep bgutil PO Token provider
+      // Use the normal/default YouTube clients
+      // together with mweb for PO-token-backed formats.
+      "--extractor-args",
+      "youtube:player_client=default,mweb",
+
+      // bgutil PO Token provider
       "--extractor-args",
       `youtubepot-bgutilhttp:base_url=${
         process.env.BGUTIL_POT_BASE_URL || "http://127.0.0.1:4416"
       }`,
     );
 
-    // Use writable YouTube cookies copy
+    // Use the writable copy of the Render Secret File
     if (youtubeCookiesPath && fs.existsSync(youtubeCookiesPath)) {
       args.push("--cookies", youtubeCookiesPath);
     }
@@ -460,7 +465,6 @@ function ytBaseArgs(platform, mode = "info") {
 
   return args;
 }
-
 /* =========================================================
    FORMAT LABEL
    ========================================================= */
