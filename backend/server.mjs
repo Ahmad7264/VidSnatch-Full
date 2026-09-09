@@ -389,9 +389,26 @@ function ytDlpPath() {
    ========================================================= */
 
 async function prepareYouTubeCookies() {
+  const secretFile = "/etc/secrets/youtube-cookies.txt";
+
+  // Preferred: Render Secret File
+  try {
+    const stat = await fsp.stat(secretFile);
+
+    if (stat.isFile() && stat.size > 100) {
+      console.log(`[cookies] Using Render secret file (${stat.size} bytes)`);
+
+      return secretFile;
+    }
+  } catch {
+    // Secret file unavailable; use environment fallback
+  }
+
+  // Fallback: YOUTUBE_COOKIES environment variable
   const cookies = process.env.YOUTUBE_COOKIES;
 
   if (!cookies || !cookies.trim()) {
+    console.warn("[cookies] No YouTube cookies configured");
     return null;
   }
 
@@ -401,6 +418,8 @@ async function prepareYouTubeCookies() {
     encoding: "utf8",
     mode: 0o600,
   });
+
+  console.log(`[cookies] Using YOUTUBE_COOKIES env (${cookies.length} chars)`);
 
   return target;
 }
@@ -413,34 +432,43 @@ function ytBaseArgs(platform, mode = "info") {
   const args = [
     "--no-warnings",
     "--no-playlist",
-
     "--socket-timeout",
     String(mode === "info" ? INFO_SOCKET_TIMEOUT : 10),
   ];
 
-  /*
-   * YouTube needs bgutil.
+  /**
+   * YouTube extraction
+   *
+   * Uses:
+   * - Node.js JS runtime
+   * - mweb YouTube client
+   * - bgutil PO Token provider
    */
   if (platform === "youtube") {
     args.push(
       "--js-runtimes",
       "node",
 
+      // Use the mweb client for current YouTube PO-token/GVS handling
+      "--extractor-args",
+      "youtube:player_client=mweb",
+
+      // Existing bgutil PO Token provider
       "--extractor-args",
       `youtubepot-bgutilhttp:base_url=${
         process.env.BGUTIL_POT_BASE_URL || "http://127.0.0.1:4416"
       }`,
-
-      /*
-       * Current YouTube extraction also needs yt-dlp's EJS challenge
-       * components. The GitHub remote component keeps the bundled binary
-       * usable on both local Windows and Render without a separate Python
-       * installation. Node 24+ is already the project's runtime.
-       */
-      "--remote-components",
-      process.env.YTDLP_EJS_REMOTE_COMPONENTS || "ejs:github",
     );
 
+    /**
+     * YouTube cookies
+     *
+     * Preferred on Render:
+     * /etc/secrets/youtube-cookies.txt
+     *
+     * Local/fallback:
+     * whatever path youtubeCookiesPath points to.
+     */
     if (youtubeCookiesPath && fs.existsSync(youtubeCookiesPath)) {
       args.push("--cookies", youtubeCookiesPath);
     }
