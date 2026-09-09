@@ -440,39 +440,19 @@ function ytBaseArgs(platform, mode = "info") {
     String(mode === "info" ? INFO_SOCKET_TIMEOUT : 10),
   ];
 
-  /**
-   * YouTube extraction
-   *
-   * Uses:
-   * - Node.js JS runtime
-   * - mweb YouTube client
-   * - bgutil PO Token provider
-   */
   if (platform === "youtube") {
     args.push(
       "--js-runtimes",
       "node",
 
-      // Use the mweb client for current YouTube PO-token/GVS handling
-      "--extractor-args",
-      "youtube:player_client=mweb",
-
-      // Existing bgutil PO Token provider
+      // Keep bgutil PO Token provider
       "--extractor-args",
       `youtubepot-bgutilhttp:base_url=${
         process.env.BGUTIL_POT_BASE_URL || "http://127.0.0.1:4416"
       }`,
     );
 
-    /**
-     * YouTube cookies
-     *
-     * Preferred on Render:
-     * /etc/secrets/youtube-cookies.txt
-     *
-     * Local/fallback:
-     * whatever path youtubeCookiesPath points to.
-     */
+    // Use writable YouTube cookies copy
     if (youtubeCookiesPath && fs.existsSync(youtubeCookiesPath)) {
       args.push("--cookies", youtubeCookiesPath);
     }
