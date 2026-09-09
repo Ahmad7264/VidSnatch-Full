@@ -445,8 +445,7 @@ function ytBaseArgs(platform, mode = "info") {
       "--js-runtimes",
       "node",
 
-      // Use the normal/default YouTube clients
-      // together with mweb for PO-token-backed formats.
+      // Use default clients + mweb
       "--extractor-args",
       "youtube:player_client=default,mweb",
 
@@ -457,7 +456,7 @@ function ytBaseArgs(platform, mode = "info") {
       }`,
     );
 
-    // Use the writable copy of the Render Secret File
+    // Use writable copy of Render Secret File
     if (youtubeCookiesPath && fs.existsSync(youtubeCookiesPath)) {
       args.push("--cookies", youtubeCookiesPath);
     }
