@@ -425,16 +425,13 @@ function ytBaseArgs(platform, mode = "info") {
       "node",
 
       "--extractor-args",
+      "youtube:player_client=default,mweb",
+
+      "--extractor-args",
       `youtubepot-bgutilhttp:base_url=${
         process.env.BGUTIL_POT_BASE_URL || "http://127.0.0.1:4416"
       }`,
 
-      /*
-       * Current YouTube extraction also needs yt-dlp's EJS challenge
-       * components. The GitHub remote component keeps the bundled binary
-       * usable on both local Windows and Render without a separate Python
-       * installation. Node 24+ is already the project's runtime.
-       */
       "--remote-components",
       process.env.YTDLP_EJS_REMOTE_COMPONENTS || "ejs:github",
     );
