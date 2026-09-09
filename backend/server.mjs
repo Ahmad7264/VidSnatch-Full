@@ -428,6 +428,7 @@ async function prepareYouTubeCookies() {
 
   return target;
 }
+
 /* =========================================================
    YT-DLP COMMON ARGS
    ========================================================= */
@@ -464,6 +465,7 @@ function ytBaseArgs(platform, mode = "info") {
 
   return args;
 }
+
 /* =========================================================
    FORMAT LABEL
    ========================================================= */
@@ -598,7 +600,6 @@ function normalizeInfo(raw, platform) {
     resolution: videoFormats[0]?.height
       ? `${videoFormats[0].height}p`
       : "Available",
-
     formats: videoFormats.map((format) => ({
       formatId: String(format.format_id),
 
@@ -1198,7 +1199,6 @@ function runDownload(job, params) {
 /* =========================================================
    /api/download/start
    ========================================================= */
-
 app.post("/api/download/start", rateLimit(20), async (req, res) => {
   const { url, platform, type, mediaType, formatId, videoTitle } =
     req.body || {};
