@@ -32,7 +32,7 @@ const HOST = "0.0.0.0";
 
 const INFO_TIMEOUT_MS = Number(process.env.INFO_TIMEOUT_MS || 25000);
 
-const INFO_SOCKET_TIMEOUT = Number(process.env.INFO_SOCKET_TIMEOUT || 7);
+const INFO_SOCKET_TIMEOUT = Number(process.env.INFO_SOCKET_TIMEOUT || 30);
 
 const INFO_CACHE_TTL_MS = Number(
   process.env.INFO_CACHE_TTL_MS || 15 * 60 * 1000,
@@ -169,7 +169,10 @@ function rateLimit(maxRequests) {
 
     if (recent.length >= maxRequests) {
       const oldest = recent[0] || now;
-      const retryAfter = Math.max(1, Math.ceil((60_000 - (now - oldest)) / 1000));
+      const retryAfter = Math.max(
+        1,
+        Math.ceil((60_000 - (now - oldest)) / 1000),
+      );
 
       res.setHeader("Retry-After", String(retryAfter));
 
